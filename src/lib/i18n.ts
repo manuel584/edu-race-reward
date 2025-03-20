@@ -59,6 +59,7 @@ export const translations = {
     almost: 'Almost there!',
     keepGoing: 'Keep going!',
     needsImprovement: 'Needs improvement',
+    progressToGoal: 'Progress to Goal',
   },
   ar: {
     appName: 'مكافآت سباق التعليم',
@@ -118,6 +119,7 @@ export const translations = {
     almost: 'تقريبًا هناك!',
     keepGoing: 'استمر!',
     needsImprovement: 'بحاجة إلى تحسين',
+    progressToGoal: 'التقدم نحو الهدف',
   }
 };
 
