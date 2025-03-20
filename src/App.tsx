@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppProvider } from "@/context/AppContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import Students from "./pages/Students";
 import StudentView from "./pages/StudentView";
 import Import from "./pages/Import";
 import NotFound from "./pages/NotFound";
@@ -23,6 +24,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/students" element={<Students />} />
             <Route path="/student/:id" element={<StudentView />} />
             <Route path="/import" element={<Import />} />
             <Route path="*" element={<NotFound />} />
