@@ -1,16 +1,20 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import Header from '@/components/Header';
+import AddStudentDialog from '@/components/AddStudentDialog';
 import { motion } from 'framer-motion';
-import { Search, UserPlus, Filter } from 'lucide-react';
+import { Search, Filter } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 
 const Students = () => {
   const { students, language } = useAppContext();
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
   
   const t = getTranslations(language);
   
@@ -18,6 +22,10 @@ const Students = () => {
   const filteredStudents = students.filter(student => 
     student.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleStudentClick = (id: string) => {
+    navigate(`/student/${id}`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -34,13 +42,7 @@ const Students = () => {
             <h1 className="text-3xl font-display font-bold">{t.students}</h1>
             
             <div className="mt-4 md:mt-0">
-              <Link 
-                to="/dashboard" 
-                className="button-primary inline-flex items-center"
-              >
-                <UserPlus className="mr-2 h-4 w-4" />
-                {t.addStudent}
-              </Link>
+              <AddStudentDialog />
             </div>
           </div>
           
@@ -48,19 +50,19 @@ const Students = () => {
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <input
+                <Input
                   type="text"
                   placeholder={t.searchStudents}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="input-field pl-10"
+                  className="pl-10"
                 />
               </div>
               
-              <button className="button-secondary inline-flex items-center md:w-auto">
+              <Button variant="outline" className="inline-flex items-center md:w-auto">
                 <Filter className="mr-2 h-4 w-4" />
                 {t.filterStudents}
-              </button>
+              </Button>
             </div>
           </div>
           
@@ -72,8 +74,9 @@ const Students = () => {
                   className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:border-blue-200 hover:shadow-md transition-all duration-200"
                   whileHover={{ y: -5 }}
                   transition={{ type: "spring", stiffness: 300 }}
+                  onClick={() => handleStudentClick(student.id)}
                 >
-                  <Link to={`/student/${student.id}`} className="block p-6">
+                  <div className="block p-6 cursor-pointer">
                     <h3 className="text-xl font-semibold mb-2">{student.name}</h3>
                     
                     <div className="flex justify-between items-center">
@@ -87,7 +90,7 @@ const Students = () => {
                         style={{ width: `${Math.min(100, (student.points / 500) * 100)}%` }}
                       ></div>
                     </div>
-                  </Link>
+                  </div>
                 </motion.div>
               ))}
             </div>
