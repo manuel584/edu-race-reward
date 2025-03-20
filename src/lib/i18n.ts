@@ -1,3 +1,4 @@
+
 export const getTranslations = (language: 'en' | 'ar') => {
   const translations = {
     en: {
@@ -58,6 +59,33 @@ export const getTranslations = (language: 'en' | 'ar') => {
       progressToGoal: 'Progress to Goal',
       lastActivity: 'Last Activity',
       on: 'on',
+      deductPoints: 'Deduct Points',
+      reachedGoal: 'has reached the goal!',
+      almost: 'Almost there!',
+      keepGoing: 'Keep going!',
+      needsImprovement: 'Needs improvement',
+      enterReason: 'Enter reason...',
+      date: 'Date',
+      change: 'Change',
+      pointsHistory: 'Points History',
+      // Point adjustment reasons
+      attendanceReason: 'Attendance',
+      participationReason: 'Participation',
+      homeworkReason: 'Homework',
+      testResultReason: 'Test Result',
+      absenceReason: 'Absence',
+      misbehaviorReason: 'Misbehavior',
+      incompleteWorkReason: 'Incomplete Work',
+      lateSubmissionReason: 'Late Submission',
+      quickAdd: 'Quick Add',
+      quickDeduct: 'Quick Deduct',
+      selectReason: 'Select a reason',
+      welcome: 'Welcome',
+      description: 'Track student progress with points',
+      getStarted: 'Get Started',
+      back: 'Back to Home',
+      exportStudents: 'Export Students',
+      importStudents: 'Import Students'
     },
     ar: {
       addStudent: 'إضافة طالب',
@@ -117,6 +145,33 @@ export const getTranslations = (language: 'en' | 'ar') => {
       progressToGoal: 'التقدم نحو الهدف',
       lastActivity: 'آخر نشاط',
       on: 'في',
+      deductPoints: 'خصم النقاط',
+      reachedGoal: 'وصل إلى الهدف!',
+      almost: 'تقريباً هناك!',
+      keepGoing: 'استمر!',
+      needsImprovement: 'يحتاج إلى تحسين',
+      enterReason: 'أدخل السبب...',
+      date: 'التاريخ',
+      change: 'التغيير',
+      pointsHistory: 'سجل النقاط',
+      // Point adjustment reasons
+      attendanceReason: 'الحضور',
+      participationReason: 'المشاركة',
+      homeworkReason: 'الواجب المنزلي',
+      testResultReason: 'نتيجة الاختبار',
+      absenceReason: 'الغياب',
+      misbehaviorReason: 'سوء السلوك',
+      incompleteWorkReason: 'عمل غير مكتمل',
+      lateSubmissionReason: 'تسليم متأخر',
+      quickAdd: 'إضافة سريعة',
+      quickDeduct: 'خصم سريع',
+      selectReason: 'اختر سبباً',
+      welcome: 'مرحباً',
+      description: 'تتبع تقدم الطالب بالنقاط',
+      getStarted: 'البدء',
+      back: 'العودة للرئيسية',
+      exportStudents: 'تصدير الطلاب',
+      importStudents: 'استيراد الطلاب'
     }
   };
 
