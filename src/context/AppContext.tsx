@@ -9,6 +9,9 @@ export type Student = {
   attendance: number;
   booksOwned: number;
   engagementScore: number;
+  nationality: 'international' | 'national';
+  grade: string;
+  subjects: string[];
   pointsHistory: {
     date: string;
     change: number;
@@ -28,6 +31,8 @@ export type AppContextType = {
   importStudents: (students: Omit<Student, 'id' | 'pointsHistory'>[]) => void;
   selectedStudent: Student | null;
   setSelectedStudent: React.Dispatch<React.SetStateAction<Student | null>>;
+  updateStudent: (id: string, studentData: Partial<Omit<Student, 'id' | 'pointsHistory'>>) => void;
+  deleteStudent: (id: string) => void;
 };
 
 // Create context with default values
@@ -43,6 +48,8 @@ const AppContext = createContext<AppContextType>({
   importStudents: () => {},
   selectedStudent: null,
   setSelectedStudent: () => {},
+  updateStudent: () => {},
+  deleteStudent: () => {},
 });
 
 // Hook to use the context
@@ -112,6 +119,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setStudents((prev) => [...prev, newStudent]);
   };
 
+  // Update student data
+  const updateStudent = (id: string, studentData: Partial<Omit<Student, 'id' | 'pointsHistory'>>) => {
+    setStudents((prev) => 
+      prev.map((student) => {
+        if (student.id === id) {
+          return {
+            ...student,
+            ...studentData,
+          };
+        }
+        return student;
+      })
+    );
+  };
+
+  // Delete a student
+  const deleteStudent = (id: string) => {
+    setStudents((prev) => prev.filter(student => student.id !== id));
+  };
+
   // Update student points with history tracking
   const updateStudentPoints = (id: string, change: number, reason: string) => {
     setStudents((prev) => 
@@ -166,6 +193,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     importStudents,
     selectedStudent,
     setSelectedStudent,
+    updateStudent,
+    deleteStudent,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
