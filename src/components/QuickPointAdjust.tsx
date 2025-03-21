@@ -1,90 +1,89 @@
 
 import React, { useState } from 'react';
-import { PlusCircle, MinusCircle, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
-import { Button } from './ui/button';
-import { 
+import { Plus, Minus } from 'lucide-react';
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { toast } from 'sonner';
+} from "@/components/ui/popover";
 
 interface QuickPointAdjustProps {
   studentId: string;
   studentName: string;
-  isAdd?: boolean;
+  isAdd: boolean;
 }
 
 const QuickPointAdjust: React.FC<QuickPointAdjustProps> = ({ 
   studentId, 
   studentName,
-  isAdd = true 
+  isAdd
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const { updateStudentPoints, language } = useAppContext();
-  const [open, setOpen] = useState(false);
   const t = getTranslations(language);
-
-  // Define preset reasons and point values
-  const presetReasons = isAdd 
+  
+  // Reasons for point adjustments
+  const reasons = isAdd 
     ? [
-        { reason: t.attendanceReason, points: 5 },
-        { reason: t.participationReason, points: 3 },
-        { reason: t.homeworkReason, points: 4 },
-        { reason: t.testResultReason, points: 10 }
+        { id: 'attendance', label: t.attendanceReason },
+        { id: 'participation', label: t.participationReason },
+        { id: 'homework', label: t.homeworkReason },
+        { id: 'test', label: t.testResultReason },
       ]
     : [
-        { reason: t.absenceReason, points: 5 },
-        { reason: t.misbehaviorReason, points: 3 },
-        { reason: t.incompleteWorkReason, points: 4 },
-        { reason: t.lateSubmissionReason, points: 2 }
+        { id: 'absence', label: t.absenceReason },
+        { id: 'misbehavior', label: t.misbehaviorReason },
+        { id: 'incomplete', label: t.incompleteWorkReason },
+        { id: 'late', label: t.lateSubmissionReason },
       ];
 
-  const handleAdjustPoints = (points: number, reason: string) => {
-    const pointsToAdjust = isAdd ? points : -points;
-    updateStudentPoints(studentId, pointsToAdjust, reason);
+  // Handle point adjustment
+  const handlePointAdjustment = (reason: string) => {
+    const change = isAdd ? 1 : -1;
+    updateStudentPoints(studentId, change, reason);
+    setIsOpen(false);
     
-    const message = isAdd 
-      ? `Added ${points} points to ${studentName}` 
-      : `Deducted ${points} points from ${studentName}`;
+    const message = isAdd
+      ? `Added 1 point to ${studentName}`
+      : `Deducted 1 point from ${studentName}`;
     
-    toast.success(message);
-    setOpen(false);
+    toast.success(`${message} for ${reason}`);
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button 
-          variant={isAdd ? "default" : "outline"} 
-          size="sm"
-          className={isAdd ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-200 hover:bg-gray-300 text-gray-700"}
+          variant="outline" 
+          size="sm" 
+          className={`flex-1 items-center justify-center gap-1 ${
+            isAdd ? 'text-green-600 hover:bg-green-50' : 'text-red-600 hover:bg-red-50'
+          }`}
         >
-          {isAdd ? <PlusCircle className="h-4 w-4 mr-1" /> : <MinusCircle className="h-4 w-4 mr-1" />}
-          {isAdd ? t.quickAdd : t.quickDeduct}
+          {isAdd ? (
+            <Plus className="h-4 w-4" />
+          ) : (
+            <Minus className="h-4 w-4" />
+          )}
+          <span>{isAdd ? t.quickAdd : t.quickDeduct}</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-56 p-2">
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="text-sm font-medium">{t.selectReason}</h3>
-          <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={() => setOpen(false)}>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-        <div className="space-y-2">
-          {presetReasons.map((preset, index) => (
+      <PopoverContent className="w-60 p-3">
+        <h4 className="text-sm font-medium mb-2">{t.selectReason}</h4>
+        <div className="grid grid-cols-1 gap-2">
+          {reasons.map(reason => (
             <Button 
-              key={index}
-              variant="outline" 
+              key={reason.id} 
+              variant="outline"
               size="sm"
-              className="w-full justify-between"
-              onClick={() => handleAdjustPoints(preset.points, preset.reason)}
+              className="justify-start"
+              onClick={() => handlePointAdjustment(reason.label)}
             >
-              <span>{preset.reason}</span>
-              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                {isAdd ? '+' : '-'}{preset.points}
-              </span>
+              {reason.label}
             </Button>
           ))}
         </div>

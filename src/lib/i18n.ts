@@ -1,4 +1,3 @@
-
 export const getTranslations = (language: 'en' | 'ar') => {
   const translations = {
     en: {
@@ -103,6 +102,44 @@ export const getTranslations = (language: 'en' | 'ar') => {
       progressPoints: 'Progress Points',
       yourProgress: 'Your Progress',
       nextMilestone: 'Next Milestone',
+      
+      // Group management
+      international: 'International',
+      national: 'National',
+      byGrade: 'By Grade',
+      bySubject: 'By Subject',
+      grade: 'Grade',
+      subject: 'Subject',
+      subjects: 'Subjects',
+      selectGrade: 'Select Grade',
+      selectSubject: 'Select Subject',
+      allStudents: 'All Students',
+      byNationality: 'By Nationality',
+      internationalStudents: 'International Students',
+      nationalStudents: 'National Students',
+      noInternationalStudents: 'No international students found',
+      noNationalStudents: 'No national students found',
+      basicInfo: 'Basic Info',
+      academicInfo: 'Academic Info',
+      nationality: 'Nationality',
+      selectNationality: 'Select nationality',
+      
+      // Points management
+      points: 'Points',
+      progressToGoal: 'Progress to Goal',
+      quickAdd: 'Add',
+      quickDeduct: 'Deduct',
+      selectReason: 'Select a reason',
+      
+      // Reasons for points
+      attendanceReason: 'Good Attendance',
+      participationReason: 'Active Participation',
+      homeworkReason: 'Homework Completion',
+      testResultReason: 'Good Test Result',
+      absenceReason: 'Absence',
+      misbehaviorReason: 'Misbehavior',
+      incompleteWorkReason: 'Incomplete Work',
+      lateSubmissionReason: 'Late Submission',
     },
     ar: {
       addStudent: 'إضافة طالب',
@@ -206,6 +243,44 @@ export const getTranslations = (language: 'en' | 'ar') => {
       progressPoints: 'نقاط التقدم',
       yourProgress: 'تقدمك',
       nextMilestone: 'المعلم التالي',
+      
+      // Group management
+      international: 'دولي',
+      national: 'وطني',
+      byGrade: 'حسب الصف',
+      bySubject: 'حسب المادة',
+      grade: 'الصف',
+      subject: 'المادة',
+      subjects: 'المواد',
+      selectGrade: 'اختر الصف',
+      selectSubject: 'اختر المادة',
+      allStudents: 'جميع الطلاب',
+      byNationality: 'حسب الجنسية',
+      internationalStudents: 'الطلاب الدوليون',
+      nationalStudents: 'الطلاب الوطنيون',
+      noInternationalStudents: 'لا يوجد طلاب دوليين',
+      noNationalStudents: 'لا يوجد طلاب وطنيين',
+      basicInfo: 'معلومات أساسية',
+      academicInfo: 'معلومات أكاديمية',
+      nationality: 'الجنسية',
+      selectNationality: 'اختر الجنسية',
+      
+      // Points management
+      points: 'النقاط',
+      progressToGoal: 'التقدم نحو الهدف',
+      quickAdd: 'إضافة',
+      quickDeduct: 'خصم',
+      selectReason: 'اختر سبباً',
+      
+      // Reasons for points
+      attendanceReason: 'حضور جيد',
+      participationReason: 'مشاركة فعالة',
+      homeworkReason: 'إكمال الواجب المنزلي',
+      testResultReason: 'نتيجة اختبار جيدة',
+      absenceReason: 'الغياب',
+      misbehaviorReason: 'سوء السلوك',
+      incompleteWorkReason: 'عمل غير مكتمل',
+      lateSubmissionReason: 'تسليم متأخر',
     }
   };
 
