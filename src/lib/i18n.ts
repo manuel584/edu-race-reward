@@ -1,4 +1,3 @@
-
 // Contains translations for the application
 type Language = 'en' | 'ar';
 
@@ -98,6 +97,21 @@ type Translations = {
     studentsImported: string;
     fileReadError: string;
     upload: string;
+    // Add missing translations
+    basicInfo: string;
+    academicInfo: string;
+    raceToGoal: string;
+    progressOverview: string;
+    welcome: string;
+    description: string;
+    getStarted: string;
+    congratulations: string;
+    reachedGoal: string;
+    almost: string;
+    keepGoing: string;
+    needsImprovement: string;
+    progressToGoal: string;
+    enterReason: string;
   };
 };
 
@@ -197,6 +211,21 @@ const translations: Translations = {
     studentsImported: 'Students imported successfully',
     fileReadError: 'Error reading file',
     upload: 'Upload',
+    // Add missing translations
+    basicInfo: 'Basic Info',
+    academicInfo: 'Academic Info',
+    raceToGoal: 'Race to Goal',
+    progressOverview: 'Progress Overview',
+    welcome: 'Welcome to EduRace',
+    description: 'A student achievement tracking system that helps teachers monitor and motivate their students',
+    getStarted: 'Get Started',
+    congratulations: 'Congratulations',
+    reachedGoal: 'has reached the goal!',
+    almost: 'Almost there!',
+    keepGoing: 'Keep going!',
+    needsImprovement: 'Needs improvement',
+    progressToGoal: 'Progress to goal',
+    enterReason: 'Enter reason',
   },
   ar: {
     addStudent: 'إضافة طالب',
@@ -265,7 +294,7 @@ const translations: Translations = {
     goBack: 'العودة',
     notFound: 'الصفحة غير موجودة',
     notFoundMessage: 'الصفحة التي تبحث عنها غير موجودة أو تم نقلها.',
-    backToHome: 'العودة إلى الرئيسية',
+    backToHome: 'العودة إلى الر��يسية',
     grades: 'الصفوف',
     exportData: 'تصدير البيانات',
     settings: 'الإعدادات',
@@ -293,6 +322,21 @@ const translations: Translations = {
     studentsImported: 'تم استيراد الطلاب بنجاح',
     fileReadError: 'خطأ في قراءة الملف',
     upload: 'رفع',
+    // Add missing translations
+    basicInfo: 'المعلومات الأساسية',
+    academicInfo: 'المعلومات الأكاديمية',
+    raceToGoal: 'سباق إلى الهدف',
+    progressOverview: 'نظرة عامة على التقدم',
+    welcome: 'مرحبًا بك في سباق التعليم',
+    description: 'نظام تتبع إنجازات الطلاب يساعد المعلمين على مراقبة وتحفيز طلابهم',
+    getStarted: 'البدء',
+    congratulations: 'تهانينا',
+    reachedGoal: 'وصل إلى الهدف!',
+    almost: 'اقترب من الهدف!',
+    keepGoing: 'استمر في التقدم!',
+    needsImprovement: 'بحاجة إلى تحسين',
+    progressToGoal: 'التقدم نحو الهدف',
+    enterReason: 'أدخل السبب',
   },
 };
 

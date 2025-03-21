@@ -1,290 +1,238 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import Header from '@/components/Header';
 import AddStudentDialog from '@/components/AddStudentDialog';
-import StudentPointsCard from '@/components/StudentPointsCard';
-import Breadcrumb from '@/components/Breadcrumb';
-import { motion } from 'framer-motion';
-import { Search, Users, GraduationCap, Globe, Home } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import StudentCard from '@/components/StudentCard';
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from '@/components/ui/button';
+import { Breadcrumb, BreadcrumbItem } from '@/components/ui/breadcrumb';
+import {
+  Users,
+  Flag,
+  GraduationCap,
+  Home,
+  Search,
+  X
+} from 'lucide-react';
 
 const Students = () => {
   const { students, language } = useAppContext();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
   const navigate = useNavigate();
-  const location = useLocation();
-  
   const t = getTranslations(language);
   
-  // Parse URL parameters for filtering
-  const searchParams = new URLSearchParams(location.search);
-  const typeFilter = searchParams.get('type');
-  const gradeFilter = searchParams.get('grade');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
+  const [selectedTab, setSelectedTab] = useState<'all' | 'international' | 'national'>('all');
   
-  // Set active tab based on URL parameters
-  useEffect(() => {
-    if (typeFilter) {
-      setActiveTab('nationality');
-    } else if (gradeFilter) {
-      setActiveTab('grade');
-    } else {
-      setActiveTab('all');
-    }
-  }, [typeFilter, gradeFilter]);
+  // Get unique grade levels
+  const uniqueGrades = [...new Set(students.map(student => student.grade))].sort();
   
-  // Apply filters from URL parameters
-  let filteredStudents = students.filter(student => 
-    student.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter students based on search term, selected grade, and tab
+  const filteredStudents = students.filter(student => {
+    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesGrade = selectedGrade ? student.grade === selectedGrade : true;
+    const matchesTab = selectedTab === 'all' ? true : student.nationality === selectedTab;
+    
+    return matchesSearch && matchesGrade && matchesTab;
+  });
   
-  if (typeFilter === 'national') {
-    filteredStudents = filteredStudents.filter(student => student.nationality === 'national');
-  } else if (typeFilter === 'international') {
-    filteredStudents = filteredStudents.filter(student => student.nationality === 'international');
-  }
+  // Filter students by nationality
+  const internationalStudents = filteredStudents.filter(student => student.nationality === 'international');
+  const nationalStudents = filteredStudents.filter(student => student.nationality === 'national');
   
-  if (gradeFilter) {
-    filteredStudents = filteredStudents.filter(student => student.grade === gradeFilter);
-  }
-
-  // Group students by nationality
-  const internationalStudents = filteredStudents.filter(student => 
-    student.nationality === 'international'
-  );
+  // Handle grade selection
+  const handleGradeChange = (grade: string) => {
+    setSelectedGrade(grade === selectedGrade ? null : grade);
+  };
   
-  const nationalStudents = filteredStudents.filter(student => 
-    student.nationality === 'national'
-  );
-
-  // Group students by grade
-  const studentsByGrade = filteredStudents.reduce((acc, student) => {
-    const grade = student.grade || 'Unassigned';
-    if (!acc[grade]) {
-      acc[grade] = [];
-    }
-    acc[grade].push(student);
-    return acc;
-  }, {} as Record<string, typeof filteredStudents>);
-
+  // Clear all filters
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setSelectedGrade(null);
+  };
+  
+  // Navigate to student view
   const handleStudentClick = (id: string) => {
     navigate(`/student/${id}`);
   };
   
-  // Generate breadcrumb items
-  const breadcrumbItems = [
-    { label: t.home, path: '/', icon: <Home className="h-4 w-4" /> },
-    { label: t.students, path: '/students' },
-  ];
-  
-  if (typeFilter === 'national') {
-    breadcrumbItems.push({ label: t.nationalStudents });
-  } else if (typeFilter === 'international') {
-    breadcrumbItems.push({ label: t.internationalStudents });
-  }
-  
-  if (gradeFilter) {
-    breadcrumbItems.push({ label: gradeFilter });
-  }
-
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       
       <main className="page-container">
-        <motion.div 
-          className="mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <Breadcrumb items={breadcrumbItems} />
+        <Breadcrumb className="mb-6">
+          <BreadcrumbItem href="/">
+            <Home className="h-4 w-4 mr-2" />
+            {t.home}
+          </BreadcrumbItem>
+          <BreadcrumbItem isCurrentPage>
+            <Users className="h-4 w-4 mr-2" />
+            {t.students}
+          </BreadcrumbItem>
+          {selectedTab !== 'all' && (
+            <BreadcrumbItem isCurrentPage>
+              <Flag className="h-4 w-4 mr-2" />
+              {selectedTab === 'international' ? t.internationalStudents : t.nationalStudents}
+            </BreadcrumbItem>
+          )}
+          {selectedGrade && (
+            <BreadcrumbItem isCurrentPage>
+              <GraduationCap className="h-4 w-4 mr-2" />
+              {selectedGrade}
+            </BreadcrumbItem>
+          )}
+        </Breadcrumb>
+        
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+          <h1 className="text-3xl font-display font-semibold">
+            {selectedTab === 'all' ? t.allStudents : 
+             selectedTab === 'international' ? t.internationalStudents : 
+             t.nationalStudents}
+          </h1>
           
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-            <h1 className="text-3xl font-display font-bold">
-              {typeFilter === 'national' ? t.nationalStudents :
-               typeFilter === 'international' ? t.internationalStudents :
-               gradeFilter ? `${t.grade}: ${gradeFilter}` : t.students}
-            </h1>
-            
-            <div className="mt-4 md:mt-0 flex gap-2">
-              {(typeFilter || gradeFilter) && (
-                <Button 
-                  variant="outline"
-                  onClick={() => navigate('/students')}
+          <AddStudentDialog />
+        </div>
+        
+        <div className="bg-white p-6 rounded-2xl shadow-sm mb-8">
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="relative flex-grow">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder={t.searchStudents}
+                className="pl-10"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              {searchTerm && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-2 top-2"
+                  onClick={() => setSearchTerm('')}
                 >
-                  {t.clearFilters}
+                  <X className="h-4 w-4" />
                 </Button>
               )}
-              <AddStudentDialog />
             </div>
+            
+            {(searchTerm || selectedGrade) && (
+              <Button variant="outline" onClick={handleClearFilters}>
+                {t.clearFilters}
+              </Button>
+            )}
           </div>
           
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-6 p-4">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  type="text"
-                  placeholder={t.searchStudents}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-          </div>
-          
-          <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3 mb-6">
-              <TabsTrigger 
-                value="all" 
-                className="flex items-center gap-1"
-                onClick={() => navigate('/students')}
-              >
-                <Users className="h-4 w-4" />
+          <Tabs defaultValue="all" value={selectedTab} onValueChange={(value) => setSelectedTab(value as 'all' | 'international' | 'national')}>
+            <TabsList className="mb-6">
+              <TabsTrigger value="all" className="flex items-center">
+                <Users className="mr-2 h-4 w-4" />
                 {t.allStudents}
               </TabsTrigger>
-              <TabsTrigger 
-                value="nationality" 
-                className="flex items-center gap-1"
-                onClick={() => !typeFilter && navigate('/students?type=national')}
-              >
-                <Globe className="h-4 w-4" />
-                {t.byNationality}
+              <TabsTrigger value="international" className="flex items-center">
+                <Flag className="mr-2 h-4 w-4" />
+                {t.internationalStudents}
               </TabsTrigger>
-              <TabsTrigger 
-                value="grade" 
-                className="flex items-center gap-1"
-                onClick={() => !gradeFilter && navigate('/students')}
-              >
-                <GraduationCap className="h-4 w-4" />
-                {t.byGrade}
+              <TabsTrigger value="national" className="flex items-center">
+                <Flag className="mr-2 h-4 w-4" />
+                {t.nationalStudents}
               </TabsTrigger>
             </TabsList>
             
+            <div className="mb-6">
+              <h3 className="text-sm font-medium text-gray-500 mb-3">{t.byGrade}</h3>
+              <div className="flex flex-wrap gap-2">
+                {uniqueGrades.map((grade) => (
+                  <Button
+                    key={grade}
+                    variant={selectedGrade === grade ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handleGradeChange(grade)}
+                    className="flex items-center"
+                  >
+                    <GraduationCap className="mr-2 h-4 w-4" />
+                    {grade}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            
             <TabsContent value="all">
               {filteredStudents.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredStudents.map(student => (
-                    <StudentPointsCard 
-                      key={student.id} 
-                      student={student} 
+                <motion.div 
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ staggerChildren: 0.05 }}
+                >
+                  {filteredStudents.map((student) => (
+                    <StudentCard
+                      key={student.id}
+                      student={student}
                       onClick={() => handleStudentClick(student.id)}
                     />
                   ))}
-                </div>
+                </motion.div>
               ) : (
-                <EmptyState />
+                <div className="text-center py-12 text-gray-500">
+                  {t.noStudents}
+                </div>
               )}
             </TabsContent>
             
-            <TabsContent value="nationality">
-              {filteredStudents.length > 0 ? (
-                <div className="space-y-8">
-                  {(!typeFilter || typeFilter === 'international') && (
-                    <div>
-                      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                        <Globe className="h-5 w-5 text-blue-600" />
-                        {t.internationalStudents} ({internationalStudents.length})
-                      </h2>
-                      
-                      {internationalStudents.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {internationalStudents.map(student => (
-                            <StudentPointsCard 
-                              key={student.id} 
-                              student={student} 
-                              onClick={() => handleStudentClick(student.id)}
-                            />
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
-                          <p className="text-gray-500">{t.noInternationalStudents}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  
-                  {(!typeFilter || typeFilter === 'national') && (
-                    <div>
-                      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                        <Users className="h-5 w-5 text-blue-600" />
-                        {t.nationalStudents} ({nationalStudents.length})
-                      </h2>
-                      
-                      {nationalStudents.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {nationalStudents.map(student => (
-                            <StudentPointsCard 
-                              key={student.id} 
-                              student={student} 
-                              onClick={() => handleStudentClick(student.id)}
-                            />
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
-                          <p className="text-gray-500">{t.noNationalStudents}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <EmptyState />
-              )}
-            </TabsContent>
-            
-            <TabsContent value="grade">
-              {filteredStudents.length > 0 ? (
-                <div className="space-y-8">
-                  {Object.entries(studentsByGrade).map(([grade, gradeStudents]) => (
-                    <div key={grade}>
-                      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                        <GraduationCap className="h-5 w-5 text-blue-600" />
-                        {grade} ({gradeStudents.length})
-                      </h2>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {gradeStudents.map(student => (
-                          <StudentPointsCard 
-                            key={student.id} 
-                            student={student} 
-                            onClick={() => handleStudentClick(student.id)}
-                          />
-                        ))}
-                      </div>
-                    </div>
+            <TabsContent value="international">
+              {internationalStudents.length > 0 ? (
+                <motion.div 
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ staggerChildren: 0.05 }}
+                >
+                  {internationalStudents.map((student) => (
+                    <StudentCard
+                      key={student.id}
+                      student={student}
+                      onClick={() => handleStudentClick(student.id)}
+                    />
                   ))}
-                </div>
+                </motion.div>
               ) : (
-                <EmptyState />
+                <div className="text-center py-12 text-gray-500">
+                  {t.noInternationalStudents}
+                </div>
+              )}
+            </TabsContent>
+            
+            <TabsContent value="national">
+              {nationalStudents.length > 0 ? (
+                <motion.div 
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ staggerChildren: 0.05 }}
+                >
+                  {nationalStudents.map((student) => (
+                    <StudentCard
+                      key={student.id}
+                      student={student}
+                      onClick={() => handleStudentClick(student.id)}
+                    />
+                  ))}
+                </motion.div>
+              ) : (
+                <div className="text-center py-12 text-gray-500">
+                  {t.noNationalStudents}
+                </div>
               )}
             </TabsContent>
           </Tabs>
-        </motion.div>
+        </div>
       </main>
-    </div>
-  );
-};
-
-const EmptyState = () => {
-  const { language } = useAppContext();
-  const t = getTranslations(language);
-  
-  return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
-      <p className="text-gray-500">{t.noStudents}</p>
-      <div className="mt-4">
-        <AddStudentDialog />
-      </div>
     </div>
   );
 };
