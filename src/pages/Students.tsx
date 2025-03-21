@@ -5,9 +5,9 @@ import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import Header from '@/components/Header';
 import AddStudentDialog from '@/components/AddStudentDialog';
+import StudentPointsCard from '@/components/StudentPointsCard';
 import { motion } from 'framer-motion';
-import { Search, Filter, Users, GraduationCap, Globe } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Search, Users, GraduationCap, Globe } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -101,7 +101,7 @@ const Students = () => {
               {filteredStudents.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredStudents.map(student => (
-                    <StudentCard 
+                    <StudentPointsCard 
                       key={student.id} 
                       student={student} 
                       onClick={() => handleStudentClick(student.id)}
@@ -125,7 +125,7 @@ const Students = () => {
                     {internationalStudents.length > 0 ? (
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {internationalStudents.map(student => (
-                          <StudentCard 
+                          <StudentPointsCard 
                             key={student.id} 
                             student={student} 
                             onClick={() => handleStudentClick(student.id)}
@@ -148,7 +148,7 @@ const Students = () => {
                     {nationalStudents.length > 0 ? (
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {nationalStudents.map(student => (
-                          <StudentCard 
+                          <StudentPointsCard 
                             key={student.id} 
                             student={student} 
                             onClick={() => handleStudentClick(student.id)}
@@ -179,7 +179,7 @@ const Students = () => {
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {gradeStudents.map(student => (
-                          <StudentCard 
+                          <StudentPointsCard 
                             key={student.id} 
                             student={student} 
                             onClick={() => handleStudentClick(student.id)}
@@ -200,51 +200,6 @@ const Students = () => {
   );
 };
 
-const StudentCard = ({ student, onClick }) => {
-  const { language, goalPoints } = useAppContext();
-  const t = getTranslations(language);
-
-  // Calculate progress percentage (capped at 100%)
-  const progressPercentage = Math.min(100, (student.points / goalPoints) * 100);
-
-  // Generate badge for nationality
-  const nationalityBadge = student.nationality === 'international' 
-    ? <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">{t.international}</span>
-    : <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">{t.national}</span>;
-
-  return (
-    <motion.div 
-      className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:border-blue-200 hover:shadow-md transition-all duration-200"
-      whileHover={{ y: -5 }}
-      transition={{ type: "spring", stiffness: 300 }}
-      onClick={onClick}
-    >
-      <div className="block p-6 cursor-pointer">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-xl font-semibold">{student.name}</h3>
-          {nationalityBadge}
-        </div>
-        
-        <div className="text-sm text-gray-500 mb-3">
-          {student.grade} • {student.subjects?.length || 0} {t.subjects.toLowerCase()}
-        </div>
-        
-        <div className="flex justify-between items-center">
-          <span className="text-gray-500">{t.points}:</span>
-          <span className="font-medium text-blue-600">{student.points}</span>
-        </div>
-        
-        <div className="mt-4 w-full bg-gray-100 rounded-full h-2">
-          <div 
-            className="h-2 rounded-full bg-gradient-to-r from-blue-400 to-blue-600"
-            style={{ width: `${progressPercentage}%` }}
-          ></div>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
 const EmptyState = () => {
   const { language } = useAppContext();
   const t = getTranslations(language);
@@ -252,7 +207,9 @@ const EmptyState = () => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
       <p className="text-gray-500">{t.noStudents}</p>
-      <AddStudentDialog />
+      <div className="mt-4">
+        <AddStudentDialog />
+      </div>
     </div>
   );
 };

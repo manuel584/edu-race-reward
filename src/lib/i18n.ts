@@ -85,7 +85,24 @@ export const getTranslations = (language: 'en' | 'ar') => {
       getStarted: 'Get Started',
       back: 'Back to Home',
       exportStudents: 'Export Students',
-      importStudents: 'Import Students'
+      importStudents: 'Import Students',
+      // Teacher Portal
+      teacherPortal: 'Teacher Portal',
+      examManagement: 'Exam Management',
+      studentResults: 'Student Results',
+      createExam: 'Create Exam',
+      uploadResults: 'Upload Results',
+      performance: 'Performance',
+      reports: 'Reports',
+      profile: 'Profile',
+      achievements: 'Achievements',
+      avatars: 'Avatars',
+      customize: 'Customize',
+      unlocked: 'Unlocked',
+      locked: 'Locked',
+      progressPoints: 'Progress Points',
+      yourProgress: 'Your Progress',
+      nextMilestone: 'Next Milestone',
     },
     ar: {
       addStudent: 'إضافة طالب',
@@ -171,7 +188,24 @@ export const getTranslations = (language: 'en' | 'ar') => {
       getStarted: 'البدء',
       back: 'العودة للرئيسية',
       exportStudents: 'تصدير الطلاب',
-      importStudents: 'استيراد الطلاب'
+      importStudents: 'استيراد الطلاب',
+      // Teacher Portal
+      teacherPortal: 'بوابة المعلم',
+      examManagement: 'إدارة الامتحانات',
+      studentResults: 'نتائج الطلاب',
+      createExam: 'إنشاء امتحان',
+      uploadResults: 'تحميل النتائج',
+      performance: 'الأداء',
+      reports: 'التقارير',
+      profile: 'الملف الشخصي',
+      achievements: 'الإنجازات',
+      avatars: 'الصور الرمزية',
+      customize: 'تخصيص',
+      unlocked: 'مفتوح',
+      locked: 'مقفل',
+      progressPoints: 'نقاط التقدم',
+      yourProgress: 'تقدمك',
+      nextMilestone: 'المعلم التالي',
     }
   };
 

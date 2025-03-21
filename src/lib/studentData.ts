@@ -59,6 +59,9 @@ export const generateSampleStudents = (): Student[] => {
       attendance: 8,
       booksOwned: 3,
       engagementScore: 7,
+      nationality: 'national',
+      grade: 'Grade 3',
+      subjects: ['Math', 'Science', 'English'],
       pointsHistory: [
         {
           date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -89,6 +92,9 @@ export const generateSampleStudents = (): Student[] => {
       attendance: 10,
       booksOwned: 4,
       engagementScore: 8,
+      nationality: 'international',
+      grade: 'Grade 4',
+      subjects: ['Math', 'Science', 'Art', 'Music'],
       pointsHistory: [
         {
           date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -114,6 +120,9 @@ export const generateSampleStudents = (): Student[] => {
       attendance: 5,
       booksOwned: 2,
       engagementScore: 4,
+      nationality: 'national',
+      grade: 'Grade 2',
+      subjects: ['Math', 'English', 'Physical Education'],
       pointsHistory: [
         {
           date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
