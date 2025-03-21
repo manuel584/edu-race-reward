@@ -1,28 +1,57 @@
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import Header from '@/components/Header';
 import AddStudentDialog from '@/components/AddStudentDialog';
 import StudentPointsCard from '@/components/StudentPointsCard';
+import Breadcrumb from '@/components/Breadcrumb';
 import { motion } from 'framer-motion';
-import { Search, Users, GraduationCap, Globe } from 'lucide-react';
+import { Search, Users, GraduationCap, Globe, Home } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from '@/components/ui/button';
 
 const Students = () => {
   const { students, language } = useAppContext();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all');
   const navigate = useNavigate();
+  const location = useLocation();
   
   const t = getTranslations(language);
   
-  // Filter students based on search term
-  const filteredStudents = students.filter(student => 
+  // Parse URL parameters for filtering
+  const searchParams = new URLSearchParams(location.search);
+  const typeFilter = searchParams.get('type');
+  const gradeFilter = searchParams.get('grade');
+  
+  // Set active tab based on URL parameters
+  useEffect(() => {
+    if (typeFilter) {
+      setActiveTab('nationality');
+    } else if (gradeFilter) {
+      setActiveTab('grade');
+    } else {
+      setActiveTab('all');
+    }
+  }, [typeFilter, gradeFilter]);
+  
+  // Apply filters from URL parameters
+  let filteredStudents = students.filter(student => 
     student.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  
+  if (typeFilter === 'national') {
+    filteredStudents = filteredStudents.filter(student => student.nationality === 'national');
+  } else if (typeFilter === 'international') {
+    filteredStudents = filteredStudents.filter(student => student.nationality === 'international');
+  }
+  
+  if (gradeFilter) {
+    filteredStudents = filteredStudents.filter(student => student.grade === gradeFilter);
+  }
 
   // Group students by nationality
   const internationalStudents = filteredStudents.filter(student => 
@@ -46,9 +75,25 @@ const Students = () => {
   const handleStudentClick = (id: string) => {
     navigate(`/student/${id}`);
   };
+  
+  // Generate breadcrumb items
+  const breadcrumbItems = [
+    { label: t.home, path: '/', icon: <Home className="h-4 w-4" /> },
+    { label: t.students, path: '/students' },
+  ];
+  
+  if (typeFilter === 'national') {
+    breadcrumbItems.push({ label: t.nationalStudents });
+  } else if (typeFilter === 'international') {
+    breadcrumbItems.push({ label: t.internationalStudents });
+  }
+  
+  if (gradeFilter) {
+    breadcrumbItems.push({ label: gradeFilter });
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <Header />
       
       <main className="page-container">
@@ -58,10 +103,24 @@ const Students = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
+          <Breadcrumb items={breadcrumbItems} />
+          
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-            <h1 className="text-3xl font-display font-bold">{t.students}</h1>
+            <h1 className="text-3xl font-display font-bold">
+              {typeFilter === 'national' ? t.nationalStudents :
+               typeFilter === 'international' ? t.internationalStudents :
+               gradeFilter ? `${t.grade}: ${gradeFilter}` : t.students}
+            </h1>
             
-            <div className="mt-4 md:mt-0">
+            <div className="mt-4 md:mt-0 flex gap-2">
+              {(typeFilter || gradeFilter) && (
+                <Button 
+                  variant="outline"
+                  onClick={() => navigate('/students')}
+                >
+                  {t.clearFilters}
+                </Button>
+              )}
               <AddStudentDialog />
             </div>
           </div>
@@ -83,15 +142,27 @@ const Students = () => {
           
           <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid grid-cols-3 mb-6">
-              <TabsTrigger value="all" className="flex items-center gap-1">
+              <TabsTrigger 
+                value="all" 
+                className="flex items-center gap-1"
+                onClick={() => navigate('/students')}
+              >
                 <Users className="h-4 w-4" />
                 {t.allStudents}
               </TabsTrigger>
-              <TabsTrigger value="nationality" className="flex items-center gap-1">
+              <TabsTrigger 
+                value="nationality" 
+                className="flex items-center gap-1"
+                onClick={() => !typeFilter && navigate('/students?type=national')}
+              >
                 <Globe className="h-4 w-4" />
                 {t.byNationality}
               </TabsTrigger>
-              <TabsTrigger value="grade" className="flex items-center gap-1">
+              <TabsTrigger 
+                value="grade" 
+                className="flex items-center gap-1"
+                onClick={() => !gradeFilter && navigate('/students')}
+              >
                 <GraduationCap className="h-4 w-4" />
                 {t.byGrade}
               </TabsTrigger>
@@ -116,51 +187,55 @@ const Students = () => {
             <TabsContent value="nationality">
               {filteredStudents.length > 0 ? (
                 <div className="space-y-8">
-                  <div>
-                    <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                      <Globe className="h-5 w-5 text-blue-600" />
-                      {t.internationalStudents} ({internationalStudents.length})
-                    </h2>
-                    
-                    {internationalStudents.length > 0 ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {internationalStudents.map(student => (
-                          <StudentPointsCard 
-                            key={student.id} 
-                            student={student} 
-                            onClick={() => handleStudentClick(student.id)}
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
-                        <p className="text-gray-500">{t.noInternationalStudents}</p>
-                      </div>
-                    )}
-                  </div>
+                  {(!typeFilter || typeFilter === 'international') && (
+                    <div>
+                      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <Globe className="h-5 w-5 text-blue-600" />
+                        {t.internationalStudents} ({internationalStudents.length})
+                      </h2>
+                      
+                      {internationalStudents.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {internationalStudents.map(student => (
+                            <StudentPointsCard 
+                              key={student.id} 
+                              student={student} 
+                              onClick={() => handleStudentClick(student.id)}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
+                          <p className="text-gray-500">{t.noInternationalStudents}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   
-                  <div>
-                    <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                      <Users className="h-5 w-5 text-blue-600" />
-                      {t.nationalStudents} ({nationalStudents.length})
-                    </h2>
-                    
-                    {nationalStudents.length > 0 ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {nationalStudents.map(student => (
-                          <StudentPointsCard 
-                            key={student.id} 
-                            student={student} 
-                            onClick={() => handleStudentClick(student.id)}
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
-                        <p className="text-gray-500">{t.noNationalStudents}</p>
-                      </div>
-                    )}
-                  </div>
+                  {(!typeFilter || typeFilter === 'national') && (
+                    <div>
+                      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <Users className="h-5 w-5 text-blue-600" />
+                        {t.nationalStudents} ({nationalStudents.length})
+                      </h2>
+                      
+                      {nationalStudents.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {nationalStudents.map(student => (
+                            <StudentPointsCard 
+                              key={student.id} 
+                              student={student} 
+                              onClick={() => handleStudentClick(student.id)}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
+                          <p className="text-gray-500">{t.noNationalStudents}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <EmptyState />
