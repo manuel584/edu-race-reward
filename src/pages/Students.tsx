@@ -7,10 +7,10 @@ import { getTranslations } from '@/lib/i18n';
 import Header from '@/components/Header';
 import AddStudentDialog from '@/components/AddStudentDialog';
 import StudentCard from '@/components/StudentCard';
+import CustomBreadcrumb from '@/components/CustomBreadcrumb';
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from '@/components/ui/button';
-import { Breadcrumb, BreadcrumbItem } from '@/components/ui/breadcrumb';
 import {
   Users,
   Flag,
@@ -60,34 +60,45 @@ const Students = () => {
   const handleStudentClick = (id: string) => {
     navigate(`/student/${id}`);
   };
+
+  // Create breadcrumb items
+  const breadcrumbItems = [
+    {
+      label: t.home,
+      icon: <Home className="h-4 w-4" />,
+      href: "/"
+    },
+    {
+      label: t.students,
+      icon: <Users className="h-4 w-4" />,
+      current: selectedTab === 'all' && !selectedGrade
+    }
+  ];
+
+  // Add nationality item if selected
+  if (selectedTab !== 'all') {
+    breadcrumbItems.push({
+      label: selectedTab === 'international' ? t.internationalStudents : t.nationalStudents,
+      icon: <Flag className="h-4 w-4" />,
+      current: !selectedGrade
+    });
+  }
+
+  // Add grade item if selected
+  if (selectedGrade) {
+    breadcrumbItems.push({
+      label: selectedGrade,
+      icon: <GraduationCap className="h-4 w-4" />,
+      current: true
+    });
+  }
   
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       
       <main className="page-container">
-        <Breadcrumb className="mb-6">
-          <BreadcrumbItem href="/">
-            <Home className="h-4 w-4 mr-2" />
-            {t.home}
-          </BreadcrumbItem>
-          <BreadcrumbItem isCurrentPage>
-            <Users className="h-4 w-4 mr-2" />
-            {t.students}
-          </BreadcrumbItem>
-          {selectedTab !== 'all' && (
-            <BreadcrumbItem isCurrentPage>
-              <Flag className="h-4 w-4 mr-2" />
-              {selectedTab === 'international' ? t.internationalStudents : t.nationalStudents}
-            </BreadcrumbItem>
-          )}
-          {selectedGrade && (
-            <BreadcrumbItem isCurrentPage>
-              <GraduationCap className="h-4 w-4 mr-2" />
-              {selectedGrade}
-            </BreadcrumbItem>
-          )}
-        </Breadcrumb>
+        <CustomBreadcrumb items={breadcrumbItems} className="mb-6" />
         
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
           <h1 className="text-3xl font-display font-semibold">

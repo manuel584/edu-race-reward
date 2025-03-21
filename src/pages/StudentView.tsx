@@ -96,7 +96,7 @@ const StudentView = () => {
               </div>
               
               <div className="mt-4 md:mt-0">
-                <QuickPointAdjust student={student} />
+                <QuickPointAdjust studentId={student.id} />
               </div>
             </div>
             
@@ -117,7 +117,7 @@ const StudentView = () => {
               </div>
             </div>
             
-            {/* Add the new StudentProfile component */}
+            {/* Add the StudentProfile component */}
             <StudentProfile student={student} />
           </div>
           
