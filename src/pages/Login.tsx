@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
-import { Google, Apple, Mail, KeyRound, Check } from "lucide-react";
+import { Mail, KeyRound, MessageSquare, User, GithubIcon, ExternalLink } from "lucide-react";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -211,7 +211,7 @@ const Login = () => {
                 className="w-full justify-start"
                 disabled={isLoading}
               >
-                <Google className="mr-2 h-4 w-4" /> Continue with Google
+                <MessageSquare className="mr-2 h-4 w-4" /> Continue with Google
               </Button>
               
               <Button 
@@ -220,7 +220,7 @@ const Login = () => {
                 className="w-full justify-start"
                 disabled={isLoading}
               >
-                <Apple className="mr-2 h-4 w-4" /> Continue with Apple
+                <GithubIcon className="mr-2 h-4 w-4" /> Continue with Apple
               </Button>
               
               <Button 
@@ -229,7 +229,7 @@ const Login = () => {
                 className="w-full justify-start"
                 disabled={isLoading}
               >
-                <Mail className="mr-2 h-4 w-4" /> Continue with Microsoft
+                <ExternalLink className="mr-2 h-4 w-4" /> Continue with Microsoft
               </Button>
               
               <Separator />
