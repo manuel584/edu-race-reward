@@ -96,7 +96,7 @@ const StudentView = () => {
               </div>
               
               <div className="mt-4 md:mt-0">
-                <QuickPointAdjust studentId={student.id} />
+                <QuickPointAdjust studentId={student.id} studentName={student.name} isAdd={true} />
               </div>
             </div>
             
