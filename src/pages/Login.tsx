@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +17,23 @@ const generateStateParam = () => {
          Math.random().toString(36).substring(2, 15);
 };
 
+// Define Google Client ID
+const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID"; // Replace with your actual Google Client ID
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: any) => void;
+          renderButton: (element: HTMLElement, options: any) => void;
+          prompt: () => void;
+        };
+      };
+    };
+  }
+}
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -33,6 +49,8 @@ const Login = () => {
   const [attemptCount, setAttemptCount] = useState(0);
   const [authState, setAuthState] = useState("");
   const [countdownActive, setCountdownActive] = useState(false);
+  const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
+  const [isGoogleAuthReady, setIsGoogleAuthReady] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { login } = useAuth();
@@ -243,10 +261,138 @@ const Login = () => {
     }, 1000);
   };
 
+  const handleGoogleSignIn = () => {
+    if (window.google && isGoogleAuthReady) {
+      try {
+        window.google.accounts.id.prompt();
+      } catch (error) {
+        console.error("Error prompting Google sign-in:", error);
+        toast({
+          title: "Google Sign-In Error",
+          description: "Failed to open Google authentication",
+          variant: "destructive"
+        });
+      }
+    } else {
+      toast({
+        title: "Google Sign-In Error",
+        description: "Google authentication is not ready yet. Please try again in a moment.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const toggleSignUpMode = () => {
     setIsSignUp(!isSignUp);
     setError("");
   };
+
+  // Load Google Identity Services script
+  useEffect(() => {
+    if (!isGoogleScriptLoaded) {
+      const script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      script.onload = () => setIsGoogleScriptLoaded(true);
+      document.body.appendChild(script);
+      
+      return () => {
+        document.body.removeChild(script);
+      };
+    }
+  }, [isGoogleScriptLoaded]);
+
+  // Initialize Google Identity Services
+  useEffect(() => {
+    if (isGoogleScriptLoaded && window.google) {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleResponse,
+          context: "signin",
+          ux_mode: "popup",
+          auto_select: false,
+          itp_support: true,
+        });
+        setIsGoogleAuthReady(true);
+      } catch (error) {
+        console.error("Failed to initialize Google Identity Services:", error);
+        toast({
+          title: "Google Sign-In Error",
+          description: "Failed to initialize Google authentication",
+          variant: "destructive"
+        });
+      }
+    }
+  }, [isGoogleScriptLoaded]);
+
+  // Render Google Sign-In button when ready
+  useEffect(() => {
+    if (isGoogleAuthReady && window.google) {
+      const googleButtonContainer = document.getElementById("google-signin-button");
+      if (googleButtonContainer) {
+        try {
+          window.google.accounts.id.renderButton(googleButtonContainer, {
+            type: "standard",
+            theme: "outline",
+            size: "large",
+            text: "signin_with",
+            shape: "rectangular",
+            logo_alignment: "left",
+            width: "100%",
+          });
+        } catch (error) {
+          console.error("Failed to render Google button:", error);
+        }
+      }
+    }
+  }, [isGoogleAuthReady]);
+
+  // Google authentication response handler
+  const handleGoogleResponse = useCallback((response: any) => {
+    if (!response || !response.credential) {
+      toast({
+        title: "Google Sign-In Error",
+        description: "Authentication failed. Please try again.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    
+    // Here you would normally send this token to your backend
+    // For this demo, we'll simulate a successful authentication
+    try {
+      // Decode the JWT to extract basic user info (this is safe to do on the client side)
+      // Note: In a production app, proper verification should happen on the server
+      const payload = JSON.parse(atob(response.credential.split('.')[1]));
+      
+      login(payload.name, "teacher", {
+        email: payload.email,
+        picture: payload.picture,
+        authMethod: "google",
+        googleId: payload.sub
+      });
+      
+      toast({
+        title: "Google Sign-In Successful",
+        description: `Welcome, ${payload.name}!`,
+      });
+      
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error processing Google response:", error);
+      toast({
+        title: "Authentication Error",
+        description: "Failed to process login information",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [login, navigate, toast]);
 
   if (verificationMode) {
     return (
@@ -459,13 +605,15 @@ const Login = () => {
             
             <TabsContent value="sso" className="mt-0 space-y-4">
               <Button 
-                onClick={() => handleSocialLogin('google')} 
+                onClick={handleGoogleSignIn} 
                 variant="outline" 
                 className="w-full justify-start"
-                disabled={isLoading}
+                disabled={isLoading || !isGoogleAuthReady}
               >
                 <MessageSquare className="mr-2 h-4 w-4" /> Continue with Google
               </Button>
+              
+              <div id="google-signin-button" className="hidden"></div>
               
               <Button 
                 onClick={() => handleSocialLogin('apple')} 

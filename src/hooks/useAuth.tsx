@@ -6,6 +6,10 @@ import { useToast } from "@/hooks/use-toast";
 type UserProfile = {
   subject?: string;
   gradeLevel?: string;
+  email?: string;
+  picture?: string;
+  authMethod?: string;
+  googleId?: string;
   [key: string]: any;
 };
 
@@ -77,6 +81,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
     
+    // Auth logging for security tracking
+    console.log(`User authenticated: ${name}, Method: ${profile?.authMethod || 'standard'}`);
+    
     toast({
       title: "Login successful",
       description: `Welcome, ${name}!`,
@@ -104,6 +111,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
+    // If the user was authenticated with Google, handle Google sign-out
+    const authMethod = user?.profile?.authMethod;
+    if (authMethod === 'google' && window.google?.accounts?.id) {
+      try {
+        // This doesn't actually invalidate the token with Google (which is handled on Google's servers)
+        // But it does clear the local state of Google's auth libraries
+        window.google.accounts.id.disableAutoSelect();
+      } catch (error) {
+        console.error('Error during Google sign-out:', error);
+      }
+    }
+    
     setUser(null);
     localStorage.removeItem('user');
     sessionStorage.removeItem('auth_state');
