@@ -1,17 +1,18 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch"
 import { useTheme } from 'next-themes'
 import { useAppContext } from '@/context/AppContext';
-import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
+import { Moon, Sun, User } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const { language, setLanguage } = useAppContext();
   const { setTheme } = useTheme();
-
-  // Check if user is logged in
-  const userJson = localStorage.getItem('user');
-  const user = userJson ? JSON.parse(userJson) : null;
+  const { user, logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <header className="flex items-center justify-between py-4 px-6 border-b border-border">
@@ -22,24 +23,25 @@ const Header = () => {
           {language === 'en' ? 'عربي' : 'English'}
         </Button>
 
-        <Switch
-          onCheckedChange={(checked) => {
-            setTheme(checked ? 'dark' : 'light');
-          }}
-        />
+        <div className="flex items-center space-x-2">
+          <Sun className="h-[1.2rem] w-[1.2rem] dark:hidden" />
+          <Switch
+            onCheckedChange={(checked) => {
+              setTheme(checked ? 'dark' : 'light');
+            }}
+          />
+          <Moon className="h-[1.2rem] w-[1.2rem] hidden dark:block" />
+        </div>
         
-        {user ? (
+        {isAuthenticated ? (
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium hidden md:block">
-              Welcome, {user.name}
+              Welcome, {user?.name}
             </span>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => {
-                localStorage.removeItem('user');
-                window.location.href = '/login';
-              }}
+              onClick={() => logout()}
             >
               Logout
             </Button>
@@ -47,11 +49,9 @@ const Header = () => {
         ) : (
           <Button
             size="sm"
-            onClick={() => {
-              window.location.href = '/login';
-            }}
+            onClick={() => navigate('/login')}
           >
-            Login
+            <User className="mr-2 h-4 w-4" /> Login
           </Button>
         )}
       </div>

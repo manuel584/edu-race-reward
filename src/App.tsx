@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AppProvider } from "@/context/AppContext";
 import { AppSidebarProvider } from "@/components/AppSidebar";
+import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Students from "./pages/Students";
@@ -19,56 +20,58 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AppProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/"
-              element={
-                <AppSidebarProvider>
-                  <Index />
-                </AppSidebarProvider>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <AppSidebarProvider>
-                  <Dashboard />
-                </AppSidebarProvider>
-              }
-            />
-            <Route
-              path="/students"
-              element={
-                <AppSidebarProvider>
-                  <Students />
-                </AppSidebarProvider>
-              }
-            />
-            <Route
-              path="/student/:id"
-              element={
-                <AppSidebarProvider>
-                  <StudentView />
-                </AppSidebarProvider>
-              }
-            />
-            <Route
-              path="/import"
-              element={
-                <AppSidebarProvider>
-                  <Import />
-                </AppSidebarProvider>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </AppProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <AppProvider>
+            <Toaster />
+            <Sonner />
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/"
+                element={
+                  <AppSidebarProvider>
+                    <Index />
+                  </AppSidebarProvider>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <AppSidebarProvider>
+                    <Dashboard />
+                  </AppSidebarProvider>
+                }
+              />
+              <Route
+                path="/students"
+                element={
+                  <AppSidebarProvider>
+                    <Students />
+                  </AppSidebarProvider>
+                }
+              />
+              <Route
+                path="/student/:id"
+                element={
+                  <AppSidebarProvider>
+                    <StudentView />
+                  </AppSidebarProvider>
+                }
+              />
+              <Route
+                path="/import"
+                element={
+                  <AppSidebarProvider>
+                    <Import />
+                  </AppSidebarProvider>
+                }
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AppProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );

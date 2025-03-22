@@ -1,6 +1,7 @@
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from "@/hooks/use-toast";
 
 type User = {
   name: string;
@@ -19,6 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User>(null);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     // Check if user data exists in localStorage
@@ -37,12 +39,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const userData = { name, role };
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
+    
+    toast({
+      title: "Login successful",
+      description: `Welcome back, ${name}!`,
+    });
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
     navigate('/login');
+    
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out.",
+    });
   };
 
   const value = {
