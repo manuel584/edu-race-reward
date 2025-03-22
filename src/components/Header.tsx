@@ -1,52 +1,59 @@
-
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch"
+import { useTheme } from 'next-themes'
 import { useAppContext } from '@/context/AppContext';
-import LanguageToggle from './LanguageToggle';
-import { ChevronLeft, ChevronRight, Trophy } from 'lucide-react';
+import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
 
-const Header: React.FC = () => {
-  const { language } = useAppContext();
-  const location = useLocation();
-  
-  const translations = {
-    en: {
-      dashboard: 'Dashboard',
-      students: 'Students',
-      import: 'Import',
-      back: 'Back',
-    },
-    ar: {
-      dashboard: 'لوحة التحكم',
-      students: 'الطلاب',
-      import: 'استيراد',
-      back: 'عودة',
-    }
-  };
+const Header = () => {
+  const { language, setLanguage } = useAppContext();
+  const { setTheme } = useTheme();
 
-  const t = translations[language];
-  
-  const isHome = location.pathname === '/';
-  const BackChevron = language === 'ar' ? ChevronRight : ChevronLeft;
+  // Check if user is logged in
+  const userJson = localStorage.getItem('user');
+  const user = userJson ? JSON.parse(userJson) : null;
 
   return (
-    <header className="w-full bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-border">
-      <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
-        {!isHome ? (
-          <Link to="/" className="flex items-center text-blue-600 transition duration-200 hover:text-blue-700">
-            <BackChevron className="h-4 w-4 mr-1" />
-            <span className="text-sm font-medium">{t.back}</span>
-          </Link>
-        ) : (
-          <div className="flex items-center">
-            <Trophy className="h-6 w-6 text-blue-600 mr-2" />
-            <span className="font-display font-semibold text-xl">EduRace</span>
-          </div>
-        )}
+    <header className="flex items-center justify-between py-4 px-6 border-b border-border">
+      <h1 className="text-2xl font-semibold">Student Management System</h1>
+      
+      <div className="flex items-center gap-4">
+        <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}>
+          {language === 'en' ? 'عربي' : 'English'}
+        </Button>
 
-        <div className="flex items-center">
-          <LanguageToggle />
-        </div>
+        <Switch
+          onCheckedChange={(checked) => {
+            setTheme(checked ? 'dark' : 'light');
+          }}
+        />
+        
+        {user ? (
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium hidden md:block">
+              Welcome, {user.name}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+              }}
+            >
+              Logout
+            </Button>
+          </div>
+        ) : (
+          <Button
+            size="sm"
+            onClick={() => {
+              window.location.href = '/login';
+            }}
+          >
+            Login
+          </Button>
+        )}
       </div>
     </header>
   );
