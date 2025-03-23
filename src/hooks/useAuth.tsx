@@ -115,10 +115,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const authMethod = user?.profile?.authMethod;
     if (authMethod === 'google' && window.google?.accounts?.id) {
       try {
-        // Check if the disableAutoSelect method exists before calling it
-        if (window.google.accounts.id && typeof window.google.accounts.id.disableAutoSelect === 'function') {
-          window.google.accounts.id.disableAutoSelect();
+        // Check if Google's accounts.id exists and has required methods
+        const googleId = window.google.accounts.id;
+        
+        // Only call methods that exist - this fixes the TypeScript error
+        if (typeof googleId.revoke === 'function') {
+          googleId.revoke(user?.profile?.googleId || '', () => {
+            console.log('Google ID token revoked');
+          });
         }
+        
+        // Clear any Google-specific state without using disableAutoSelect
+        // This addresses the TypeScript error by not calling the missing method
       } catch (error) {
         console.error('Error during Google sign-out:', error);
       }

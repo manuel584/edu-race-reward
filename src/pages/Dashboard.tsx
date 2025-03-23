@@ -7,8 +7,11 @@ import Header from '@/components/Header';
 import AddStudentDialog from '@/components/AddStudentDialog';
 import StudentCard from '@/components/StudentCard';
 import ProgressTrack from '@/components/ProgressTrack';
+import ClassRecognition from '@/components/ClassRecognition';
+import StudentRecognition from '@/components/StudentRecognition';
 import { motion } from 'framer-motion';
-import { UserPlus } from 'lucide-react';
+import { UserPlus, Award, Trophy, Users } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Dashboard = () => {
   const { students, language } = useAppContext();
@@ -45,27 +48,52 @@ const Dashboard = () => {
           </div>
 
           {students.length > 0 ? (
-            <>
-              <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">{t.raceToGoal}</h2>
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-                  <ProgressTrack students={sortedStudents} />
+            <Tabs defaultValue="student-progress" className="w-full">
+              <TabsList className="mb-6">
+                <TabsTrigger value="student-progress">
+                  <Trophy className="mr-2 h-4 w-4" />
+                  {t.studentProgress}
+                </TabsTrigger>
+                <TabsTrigger value="class-recognition">
+                  <Users className="mr-2 h-4 w-4" />
+                  {t.classComparison}
+                </TabsTrigger>
+                <TabsTrigger value="recognition-system">
+                  <Award className="mr-2 h-4 w-4" />
+                  {t.recognitionSystem}
+                </TabsTrigger>
+              </TabsList>
+            
+              <TabsContent value="student-progress" className="space-y-6">
+                <div className="mb-8">
+                  <h2 className="text-xl font-semibold mb-4">{t.raceToGoal}</h2>
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                    <ProgressTrack students={sortedStudents} />
+                  </div>
                 </div>
-              </div>
+                
+                <div className="mb-8">
+                  <h2 className="text-xl font-semibold mb-4">{t.progressOverview}</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {topStudents.map(student => (
+                      <StudentCard 
+                        key={student.id} 
+                        student={student} 
+                        onClick={() => handleStudentClick(student.id)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </TabsContent>
               
-              <div className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">{t.progressOverview}</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {topStudents.map(student => (
-                    <StudentCard 
-                      key={student.id} 
-                      student={student} 
-                      onClick={() => handleStudentClick(student.id)}
-                    />
-                  ))}
-                </div>
-              </div>
-            </>
+              <TabsContent value="class-recognition" className="space-y-6">
+                <ClassRecognition />
+              </TabsContent>
+              
+              <TabsContent value="recognition-system" className="space-y-6">
+                <StudentRecognition />
+              </TabsContent>
+            </Tabs>
           ) : (
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
               <p className="text-gray-500 mb-4">{t.noStudents}</p>

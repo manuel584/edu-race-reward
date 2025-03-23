@@ -7,12 +7,15 @@ import { getTranslations } from '@/lib/i18n';
 import { formatDateFromIso } from '@/lib/studentData';
 import Header from '@/components/Header';
 import StudentProfile from '@/components/StudentProfile';
+import StudentRecognitionProfile from '@/components/StudentRecognitionProfile';
 import QuickPointAdjust from '@/components/QuickPointAdjust';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Calendar,
   ArrowDown,
   ArrowUp,
-  Trophy
+  Trophy,
+  Award
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -117,8 +120,25 @@ const StudentView = () => {
               </div>
             </div>
             
-            {/* Add the StudentProfile component */}
-            <StudentProfile student={student} />
+            <Tabs defaultValue="profile">
+              <TabsList className="mb-6">
+                <TabsTrigger value="profile">
+                  {t.profile}
+                </TabsTrigger>
+                <TabsTrigger value="recognition">
+                  <Award className="mr-2 h-4 w-4" />
+                  {t.recognition}
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="profile">
+                <StudentProfile student={student} />
+              </TabsContent>
+              
+              <TabsContent value="recognition">
+                <StudentRecognitionProfile student={student} />
+              </TabsContent>
+            </Tabs>
           </div>
           
           <div className="border-t border-gray-100">
