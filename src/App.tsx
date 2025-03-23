@@ -14,9 +14,103 @@ import StudentView from "./pages/StudentView";
 import Import from "./pages/Import";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import { useAuth } from "@/hooks/useAuth";
 
 const queryClient = new QueryClient();
 
+// Protected route component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated } = useAuth();
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+// Component that redirects authenticated users away from login page
+const RedirectIfAuthenticated = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated } = useAuth();
+  
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+// Refactored App component to use route protection
+const AppRoutes = () => {
+  return (
+    <Routes>
+      {/* Public login route that redirects to dashboard if already authenticated */}
+      <Route 
+        path="/login" 
+        element={
+          <RedirectIfAuthenticated>
+            <Login />
+          </RedirectIfAuthenticated>
+        } 
+      />
+      
+      {/* Redirect root path to login or dashboard based on auth status */}
+      <Route 
+        path="/" 
+        element={
+          <ProtectedRoute>
+            <Navigate to="/dashboard" replace />
+          </ProtectedRoute>
+        } 
+      />
+      
+      {/* Protected routes */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <AppSidebarProvider>
+              <Dashboard />
+            </AppSidebarProvider>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/students"
+        element={
+          <ProtectedRoute>
+            <AppSidebarProvider>
+              <Students />
+            </AppSidebarProvider>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/:id"
+        element={
+          <ProtectedRoute>
+            <AppSidebarProvider>
+              <StudentView />
+            </AppSidebarProvider>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/import"
+        element={
+          <ProtectedRoute>
+            <AppSidebarProvider>
+              <Import />
+            </AppSidebarProvider>
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+
+// Main app component with providers
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -25,50 +119,7 @@ const App = () => (
           <AppProvider>
             <Toaster />
             <Sonner />
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route
-                path="/"
-                element={
-                  <AppSidebarProvider>
-                    <Index />
-                  </AppSidebarProvider>
-                }
-              />
-              <Route
-                path="/dashboard"
-                element={
-                  <AppSidebarProvider>
-                    <Dashboard />
-                  </AppSidebarProvider>
-                }
-              />
-              <Route
-                path="/students"
-                element={
-                  <AppSidebarProvider>
-                    <Students />
-                  </AppSidebarProvider>
-                }
-              />
-              <Route
-                path="/student/:id"
-                element={
-                  <AppSidebarProvider>
-                    <StudentView />
-                  </AppSidebarProvider>
-                }
-              />
-              <Route
-                path="/import"
-                element={
-                  <AppSidebarProvider>
-                    <Import />
-                  </AppSidebarProvider>
-                }
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <AppRoutes />
           </AppProvider>
         </AuthProvider>
       </BrowserRouter>

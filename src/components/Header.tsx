@@ -13,6 +13,9 @@ const Header = () => {
   const { setTheme } = useTheme();
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  
+  // Get user's display name
+  const displayName = user?.name || 'User';
 
   return (
     <header className="flex items-center justify-between py-4 px-6 border-b border-border">
@@ -36,7 +39,7 @@ const Header = () => {
         {isAuthenticated ? (
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium hidden md:block">
-              Welcome, {user?.name}
+              Welcome, {displayName}
             </span>
             <Button
               variant="outline"
