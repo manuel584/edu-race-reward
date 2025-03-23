@@ -57,16 +57,22 @@ const ClassRecognition = () => {
     
     // Group students by class and calculate average performance by subject
     students.forEach(student => {
-      if (!subjectData[student.grade]) return;
+      // Add a null check to prevent trying to access properties of undefined
+      if (!subjectData[student.grade]) {
+        return;
+      }
       
-      student.subjects.forEach(subject => {
-        if (!subjectData[student.grade][subject]) {
-          subjectData[student.grade][subject] = 0;
-        }
-        // Simple approximation of subject performance based on overall points
-        // In a real app, you would have subject-specific scores
-        subjectData[student.grade][subject] += student.points / student.subjects.length;
-      });
+      // Make sure student.subjects exists and is an array before calling forEach
+      if (student.subjects && Array.isArray(student.subjects)) {
+        student.subjects.forEach(subject => {
+          if (!subjectData[student.grade][subject]) {
+            subjectData[student.grade][subject] = 0;
+          }
+          // Simple approximation of subject performance based on overall points
+          // In a real app, you would have subject-specific scores
+          subjectData[student.grade][subject] += student.points / student.subjects.length;
+        });
+      }
     });
     
     // Average the scores and format for the chart
@@ -110,11 +116,12 @@ const ClassRecognition = () => {
     }
     
     // Add subject-specific strengths
-    const subjectPerf = getSubjectPerformance().chartData.find(c => c.name === classData.name);
+    const { chartData } = getSubjectPerformance();
+    const subjectPerf = chartData.find(c => c.name === classData.name);
     if (subjectPerf) {
       const bestSubject = Object.entries(subjectPerf)
         .filter(([key]) => key !== 'name')
-        .sort(([, a], [, b]) => b - a)[0];
+        .sort(([, a], [, b]) => Number(b) - Number(a))[0];
       
       if (bestSubject && bestSubject[1] > 50) {
         strengths.push(`${t.strongIn} ${bestSubject[0]}`);
@@ -129,7 +136,11 @@ const ClassRecognition = () => {
     return strengths.length > 0 ? strengths : [t.developingStrengths];
   };
   
-  const { chartData, subjects } = getSubjectPerformance();
+  // Get the subject performance data and subjects list safely
+  const subjectPerformanceData = getSubjectPerformance();
+  const chartData = subjectPerformanceData.chartData || [];
+  const subjects = subjectPerformanceData.subjects || [];
+  
   const COLORS = ['#9b87f5', '#0EA5E9', '#F97316', '#8B5CF6', '#33C3F0']; // Purple, Blue, Orange, etc.
   
   return (
