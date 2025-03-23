@@ -115,10 +115,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const authMethod = user?.profile?.authMethod;
     if (authMethod === 'google' && window.google?.accounts?.id) {
       try {
-        // This revokes the auto-select behavior but doesn't invalidate the token with Google
-        // That happens on Google's servers
-        // Fixes the TypeScript error by checking the property exists first
-        if ('disableAutoSelect' in window.google.accounts.id) {
+        // Check if the disableAutoSelect method exists before calling it
+        if (window.google.accounts.id && typeof window.google.accounts.id.disableAutoSelect === 'function') {
           window.google.accounts.id.disableAutoSelect();
         }
       } catch (error) {

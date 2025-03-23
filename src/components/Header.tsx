@@ -7,26 +7,33 @@ import { useAppContext } from '@/context/AppContext';
 import { Moon, Sun, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Header = () => {
   const { language, setLanguage } = useAppContext();
   const { setTheme } = useTheme();
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   
   // Get user's display name
   const displayName = user?.name || 'User';
 
   return (
-    <header className="flex items-center justify-between py-4 px-6 border-b border-border">
-      <h1 className="text-2xl font-semibold">Student Management System</h1>
+    <header className="flex items-center justify-between py-4 px-4 sm:px-6 border-b border-border">
+      <h1 className="text-xl sm:text-2xl font-semibold">Student Management System</h1>
       
-      <div className="flex items-center gap-4">
-        <Button variant="outline" size="sm" onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}>
-          {language === 'en' ? 'عربي' : 'English'}
+      <div className="flex items-center gap-2 sm:gap-4">
+        <Button 
+          variant="outline" 
+          size={isMobile ? "icon" : "sm"} 
+          onClick={() => setLanguage(language === 'en' ? 'ar' : 'en')}
+          className="h-9 w-9 sm:h-auto sm:w-auto"
+        >
+          {isMobile ? (language === 'en' ? 'ع' : 'E') : (language === 'en' ? 'عربي' : 'English')}
         </Button>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1 sm:space-x-2">
           <Sun className="h-[1.2rem] w-[1.2rem] dark:hidden" />
           <Switch
             onCheckedChange={(checked) => {
@@ -43,10 +50,11 @@ const Header = () => {
             </span>
             <Button
               variant="outline"
-              size="sm"
+              size={isMobile ? "icon" : "sm"}
               onClick={() => logout()}
+              className={isMobile ? "h-9 w-9" : ""}
             >
-              Logout
+              {isMobile ? <User className="h-4 w-4" /> : "Logout"}
             </Button>
           </div>
         ) : (

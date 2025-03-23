@@ -130,6 +130,21 @@
   }
 }
 
+/* Responsive classes */
+@layer utilities {
+  .responsive-padding {
+    @apply px-4 py-3 sm:px-6 sm:py-4;
+  }
+  
+  .responsive-container {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}
+
 /* Smooth page transitions */
 .page-transition-enter {
   opacity: 0;
@@ -151,4 +166,42 @@
   opacity: 0;
   transform: translateY(-10px);
   transition: opacity 300ms, transform 300ms;
+}
+
+/* Sidebar specific animations */
+.sidebar-overlay {
+  @apply fixed inset-0 bg-black/50 z-40 transition-opacity;
+}
+
+.sidebar-overlay-enter {
+  opacity: 0;
+}
+
+.sidebar-overlay-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+
+.sidebar-overlay-exit {
+  opacity: 1;
+}
+
+.sidebar-overlay-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .card-grid {
+    @apply grid-cols-1;
+  }
+  
+  .data-table-container {
+    @apply overflow-x-auto;
+  }
+  
+  .data-table {
+    @apply min-w-full;
+  }
 }
