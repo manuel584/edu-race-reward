@@ -5,7 +5,19 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext, Student } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import { useAuth } from '@/hooks/useAuth';
-import { Badge, HandHeart, Shield, Users, Gem, Heart, MessageSquareHeart } from 'lucide-react';
+import { 
+  BadgeCheck, 
+  HandHeart, 
+  Shield, 
+  Users, 
+  Gem, 
+  Heart, 
+  MessageSquareHeart,
+  Award,
+  Star,
+  Trophy,
+  Medal
+} from 'lucide-react';
 import { 
   Dialog,
   DialogContent,
@@ -16,7 +28,9 @@ import {
   DialogTrigger
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
+import { getLevelInfo } from '@/lib/recognitionUtils';
 
 interface RecognitionCardProps {
   student: Student;
@@ -38,20 +52,19 @@ const RecognitionCard: React.FC<RecognitionCardProps> = ({ student, type, onClic
         return <Users className="h-4 w-4 text-green-500" />;
       case 'excellence':
         return <Gem className="h-4 w-4 text-amber-500" />;
+      default:
+        return <Star className="h-4 w-4 text-gray-500" />;
     }
   };
   
   const getTypeLabel = () => {
-    switch (type) {
-      case 'helpfulness':
-        return t.helpfulness;
-      case 'respect':
-        return t.respect;
-      case 'teamwork':
-        return t.teamwork;
-      case 'excellence':
-        return t.excellence;
-    }
+    const labels = {
+      helpfulness: t.helpfulness || "Helpfulness",
+      respect: t.respect || "Respect",
+      teamwork: t.teamwork || "Teamwork",
+      excellence: t.excellence || "Excellence"
+    };
+    return labels[type];
   };
   
   const getTypeColor = () => {
@@ -64,17 +77,16 @@ const RecognitionCard: React.FC<RecognitionCardProps> = ({ student, type, onClic
         return 'bg-green-50 text-green-600 border-green-100';
       case 'excellence':
         return 'bg-amber-50 text-amber-600 border-amber-100';
+      default:
+        return 'bg-gray-50 text-gray-600 border-gray-100';
     }
   };
   
-  // Get amount of recognitions of this type
-  const recognitionCount = student[type];
+  // Get amount of recognitions of this type (with fallback to 0)
+  const recognitionCount = student[type] || 0;
   
-  // Calculate level based on count (every 5 recognitions = 1 level)
-  const level = Math.floor(recognitionCount / 5) + (recognitionCount % 5 > 0 ? 1 : 0);
-  
-  // Get progress to next level (0-100%)
-  const progress = ((recognitionCount % 5) / 5) * 100;
+  // Get level info from our utility function
+  const { level, levelName, progress, nextLevelPoints } = getLevelInfo(recognitionCount);
   
   return (
     <motion.div
@@ -87,14 +99,24 @@ const RecognitionCard: React.FC<RecognitionCardProps> = ({ student, type, onClic
           {getTypeIcon()}
           <span className="font-medium text-sm">{getTypeLabel()}</span>
         </div>
-        <div className="flex items-center px-2 py-0.5 bg-white bg-opacity-50 rounded text-xs">
-          <Badge className="h-3 w-3 mr-1" />
-          <span>Lvl {level}</span>
-        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center px-2 py-0.5 bg-white bg-opacity-50 rounded text-xs">
+                <BadgeCheck className="h-3 w-3 mr-1" />
+                <span>Level {level}</span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-xs">{levelName}</p>
+              <p className="text-xs">{nextLevelPoints > 0 ? `${nextLevelPoints} more to next level` : "Max level reached"}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       
       <div className="text-xs mb-1">
-        {recognitionCount} {t.recognitions}
+        {recognitionCount} {t.recognitions || "Recognitions"}
       </div>
       
       <div className="w-full bg-white bg-opacity-50 h-1.5 rounded-full overflow-hidden">
@@ -119,10 +141,10 @@ const StudentRecognition = () => {
   const [nominationCategory, setNominationCategory] = useState<string>('');
   
   // Get top students for each category
-  const topHelpfulStudents = [...students].sort((a, b) => b.helpfulness - a.helpfulness).slice(0, 2);
-  const topRespectfulStudents = [...students].sort((a, b) => b.respect - a.respect).slice(0, 2);
-  const topTeamworkStudents = [...students].sort((a, b) => b.teamwork - a.teamwork).slice(0, 2);
-  const topExcellenceStudents = [...students].sort((a, b) => b.excellence - a.excellence).slice(0, 2);
+  const topHelpfulStudents = [...students].sort((a, b) => (b.helpfulness || 0) - (a.helpfulness || 0)).slice(0, 2);
+  const topRespectfulStudents = [...students].sort((a, b) => (b.respect || 0) - (a.respect || 0)).slice(0, 2);
+  const topTeamworkStudents = [...students].sort((a, b) => (b.teamwork || 0) - (a.teamwork || 0)).slice(0, 2);
+  const topExcellenceStudents = [...students].sort((a, b) => (b.excellence || 0) - (a.excellence || 0)).slice(0, 2);
   
   const handleRecognition = () => {
     if (!selectedStudent) return;
@@ -172,7 +194,7 @@ const StudentRecognition = () => {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <HandHeart className="h-5 w-5 text-rose-500" />
-              <h3 className="font-medium">{t.helpfulness}</h3>
+              <h3 className="font-medium">{t.helpfulness || "Helpfulness"}</h3>
             </div>
             
             <div className="space-y-3">
@@ -197,7 +219,7 @@ const StudentRecognition = () => {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Shield className="h-5 w-5 text-blue-500" />
-              <h3 className="font-medium">{t.respect}</h3>
+              <h3 className="font-medium">{t.respect || "Respect"}</h3>
             </div>
             
             <div className="space-y-3">
@@ -222,7 +244,7 @@ const StudentRecognition = () => {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Users className="h-5 w-5 text-green-500" />
-              <h3 className="font-medium">{t.teamwork}</h3>
+              <h3 className="font-medium">{t.teamwork || "Teamwork"}</h3>
             </div>
             
             <div className="space-y-3">
@@ -247,7 +269,7 @@ const StudentRecognition = () => {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Gem className="h-5 w-5 text-amber-500" />
-              <h3 className="font-medium">{t.excellence}</h3>
+              <h3 className="font-medium">{t.excellence || "Excellence"}</h3>
             </div>
             
             <div className="space-y-3">
@@ -274,12 +296,12 @@ const StudentRecognition = () => {
             <DialogTrigger asChild>
               <Button variant="outline" className="gap-2">
                 <Heart className="h-4 w-4 text-rose-500" />
-                {t.nominateStudent}
+                {t.nominateStudent || "Nominate Student"}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>{t.nominateStudent}</DialogTitle>
+                <DialogTitle>{t.nominateStudent || "Nominate Student"}</DialogTitle>
                 <DialogDescription>
                   {t.nominateStudentDesc || "Nominate a student who has shown exceptional qualities"}
                 </DialogDescription>
@@ -313,19 +335,19 @@ const StudentRecognition = () => {
                     onChange={(e) => setNominationCategory(e.target.value)}
                   >
                     <option value="">{t.selectCategory || "Select Category"}</option>
-                    <optgroup label={t.helpfulness}>
-                      <option value="academic help">{t.academicHelp}</option>
-                      <option value="emotional support">{t.emotionalSupport}</option>
+                    <optgroup label={t.helpfulness || "Helpfulness"}>
+                      <option value="academic help">{t.academicHelp || "Academic Help"}</option>
+                      <option value="emotional support">{t.emotionalSupport || "Emotional Support"}</option>
                     </optgroup>
-                    <optgroup label={t.respect}>
-                      <option value="cultural sensitivity">{t.culturalSensitivity}</option>
-                      <option value="conflict resolution">{t.conflictResolution}</option>
+                    <optgroup label={t.respect || "Respect"}>
+                      <option value="cultural sensitivity">{t.culturalSensitivity || "Cultural Sensitivity"}</option>
+                      <option value="conflict resolution">{t.conflictResolution || "Conflict Resolution"}</option>
                     </optgroup>
-                    <optgroup label={t.teamwork}>
-                      <option value="group contribution">{t.groupContribution}</option>
-                      <option value="collaboration">{t.collaboration}</option>
+                    <optgroup label={t.teamwork || "Teamwork"}>
+                      <option value="group contribution">{t.groupContribution || "Group Contribution"}</option>
+                      <option value="collaboration">{t.collaboration || "Collaboration"}</option>
                     </optgroup>
-                    <optgroup label={t.excellence}>
+                    <optgroup label={t.excellence || "Excellence"}>
                       <option value="academic excellence">{t.academicExcellence || "Academic Excellence"}</option>
                       <option value="special talent">{t.specialTalent || "Special Talent"}</option>
                     </optgroup>
@@ -349,12 +371,12 @@ const StudentRecognition = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {recognitionType && t[recognitionType]} {t.recognition || "Recognition"}
+              {recognitionType && (t[recognitionType] || recognitionType)} {t.recognition || "Recognition"}
             </DialogTitle>
             <DialogDescription>
               {selectedStudent ? 
                 (t.addRecognitionFor ? 
-                  t.addRecognitionFor.replace('{name}', selectedStudent.name) : 
+                  (t.addRecognitionFor || "").replace('{name}', selectedStudent.name) : 
                   `Add recognition for ${selectedStudent.name}`
                 ) : ''}
             </DialogDescription>
@@ -362,7 +384,7 @@ const StudentRecognition = () => {
           
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">{t.reason}</label>
+              <label className="text-sm font-medium">{t.reason || "Reason"}</label>
               <textarea 
                 className="w-full border border-gray-300 rounded-md p-2 min-h-[100px]"
                 value={reason}
@@ -374,10 +396,10 @@ const StudentRecognition = () => {
           
           <DialogFooter>
             <Button variant="outline" onClick={() => setSelectedStudent(null)}>
-              {t.cancel}
+              {t.cancel || "Cancel"}
             </Button>
             <Button onClick={handleRecognition} disabled={!reason}>
-              {t.addRecognition}
+              {t.addRecognition || "Add Recognition"}
             </Button>
           </DialogFooter>
         </DialogContent>

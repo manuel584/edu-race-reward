@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Types
@@ -146,7 +145,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           reason: 'Initial points',
         },
       ],
-      // Initialize recognition system fields
+      // Initialize recognition system fields with proper numerical values
       helpfulness: 0,
       respect: 0,
       teamwork: 0,
@@ -214,7 +213,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           reason: 'Initial points from import',
         },
       ],
-      // Initialize recognition system fields
+      // Initialize recognition system fields with proper numerical values
       helpfulness: 0,
       respect: 0,
       teamwork: 0,
@@ -231,10 +230,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setStudents((prev) => 
       prev.map((student) => {
         if (student.id === studentId) {
+          // Ensure current value is a valid number
+          const currentValue = typeof student[type] === 'number' && !isNaN(student[type]) ? student[type] : 0;
+          
           const updatedStudent = {
             ...student,
             recognitions: [
-              ...student.recognitions,
+              ...(student.recognitions || []),
               {
                 date: new Date().toISOString(),
                 type,
@@ -243,13 +245,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             ],
           };
           
-          // Update the corresponding metric
-          updatedStudent[type] = student[type] + 1;
+          // Update the corresponding metric with proper validation
+          updatedStudent[type] = currentValue + 1;
           
           // Add award if needed (5 recognitions of the same type)
           if (updatedStudent[type] % 5 === 0) {
-            const award = `${type.charAt(0).toUpperCase() + type.slice(1)} Star (Level ${Math.floor(updatedStudent[type] / 5)})`;
-            updatedStudent.awards = [...student.awards, award];
+            // Import the getAwardName function from recognitionUtils
+            const { getAwardName } = require('../lib/recognitionUtils');
+            const level = Math.floor(updatedStudent[type] / 5);
+            const award = getAwardName(type, level);
+            updatedStudent.awards = [...(student.awards || []), award];
           }
           
           return updatedStudent;
