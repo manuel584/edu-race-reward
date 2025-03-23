@@ -131,8 +131,13 @@ const StudentRecognition = () => {
     setSelectedStudent(null);
     setReason('');
     
-    toast.success(t.recognitionAdded, {
-      description: `${selectedStudent.name} ${t.receivedRecognitionFor} ${t[recognitionType]}`
+    // Safe version with null check for translation strings
+    const recognitionMessage = t.recognitionAdded || "Recognition added";
+    const receivedMessage = t.receivedRecognitionFor || "received recognition for";
+    const typeMessage = t[recognitionType] || recognitionType;
+    
+    toast.success(recognitionMessage, {
+      description: `${selectedStudent.name} ${receivedMessage} ${typeMessage}`
     });
   };
   
@@ -143,8 +148,12 @@ const StudentRecognition = () => {
     setSelectedStudent(null);
     setNominationCategory('');
     
-    toast.success(t.nominationSubmitted, {
-      description: `${selectedStudent.name} ${t.nominatedFor} ${nominationCategory}`
+    // Safe version with null check for translation strings
+    const nominationMessage = t.nominationSubmitted || "Nomination submitted";
+    const nominatedForMessage = t.nominatedFor || "nominated for";
+    
+    toast.success(nominationMessage, {
+      description: `${selectedStudent.name} ${nominatedForMessage} ${nominationCategory}`
     });
   };
   
@@ -156,7 +165,7 @@ const StudentRecognition = () => {
   return (
     <>
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h2 className="text-xl font-semibold mb-4">{t.studentRecognitions}</h2>
+        <h2 className="text-xl font-semibold mb-4">{t.studentRecognitions || "Student Recognitions"}</h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {/* Helpfulness Section */}
@@ -178,7 +187,7 @@ const StudentRecognition = () => {
                 ))
               ) : (
                 <div className="text-sm text-gray-500 p-3 bg-gray-50 rounded">
-                  {t.noRecognitionsYet}
+                  {t.noRecognitionsYet || "No recognitions yet"}
                 </div>
               )}
             </div>
@@ -203,7 +212,7 @@ const StudentRecognition = () => {
                 ))
               ) : (
                 <div className="text-sm text-gray-500 p-3 bg-gray-50 rounded">
-                  {t.noRecognitionsYet}
+                  {t.noRecognitionsYet || "No recognitions yet"}
                 </div>
               )}
             </div>
@@ -228,7 +237,7 @@ const StudentRecognition = () => {
                 ))
               ) : (
                 <div className="text-sm text-gray-500 p-3 bg-gray-50 rounded">
-                  {t.noRecognitionsYet}
+                  {t.noRecognitionsYet || "No recognitions yet"}
                 </div>
               )}
             </div>
@@ -253,7 +262,7 @@ const StudentRecognition = () => {
                 ))
               ) : (
                 <div className="text-sm text-gray-500 p-3 bg-gray-50 rounded">
-                  {t.noRecognitionsYet}
+                  {t.noRecognitionsYet || "No recognitions yet"}
                 </div>
               )}
             </div>
@@ -272,13 +281,13 @@ const StudentRecognition = () => {
               <DialogHeader>
                 <DialogTitle>{t.nominateStudent}</DialogTitle>
                 <DialogDescription>
-                  {t.nominateStudentDesc}
+                  {t.nominateStudentDesc || "Nominate a student who has shown exceptional qualities"}
                 </DialogDescription>
               </DialogHeader>
               
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">{t.selectStudent}</label>
+                  <label className="text-sm font-medium">{t.selectStudent || "Select Student"}</label>
                   <select 
                     className="w-full border border-gray-300 rounded-md p-2"
                     value={selectedStudent?.id || ''}
@@ -287,7 +296,7 @@ const StudentRecognition = () => {
                       setSelectedStudent(selected || null);
                     }}
                   >
-                    <option value="">{t.selectStudent}</option>
+                    <option value="">{t.selectStudent || "Select Student"}</option>
                     {students.map(student => (
                       <option key={student.id} value={student.id}>
                         {student.name} ({student.grade})
@@ -297,13 +306,13 @@ const StudentRecognition = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">{t.nominationCategory}</label>
+                  <label className="text-sm font-medium">{t.nominationCategory || "Nomination Category"}</label>
                   <select 
                     className="w-full border border-gray-300 rounded-md p-2"
                     value={nominationCategory}
                     onChange={(e) => setNominationCategory(e.target.value)}
                   >
-                    <option value="">{t.selectCategory}</option>
+                    <option value="">{t.selectCategory || "Select Category"}</option>
                     <optgroup label={t.helpfulness}>
                       <option value="academic help">{t.academicHelp}</option>
                       <option value="emotional support">{t.emotionalSupport}</option>
@@ -317,8 +326,8 @@ const StudentRecognition = () => {
                       <option value="collaboration">{t.collaboration}</option>
                     </optgroup>
                     <optgroup label={t.excellence}>
-                      <option value="academic excellence">{t.academicExcellence}</option>
-                      <option value="special talent">{t.specialTalent}</option>
+                      <option value="academic excellence">{t.academicExcellence || "Academic Excellence"}</option>
+                      <option value="special talent">{t.specialTalent || "Special Talent"}</option>
                     </optgroup>
                   </select>
                 </div>
@@ -327,7 +336,7 @@ const StudentRecognition = () => {
               <DialogFooter>
                 <Button onClick={handleNomination} disabled={!selectedStudent || !nominationCategory}>
                   <MessageSquareHeart className="mr-2 h-4 w-4" />
-                  {t.submitNomination}
+                  {t.submitNomination || "Submit Nomination"}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -340,10 +349,14 @@ const StudentRecognition = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {recognitionType && t[recognitionType]} {t.recognition}
+              {recognitionType && t[recognitionType]} {t.recognition || "Recognition"}
             </DialogTitle>
             <DialogDescription>
-              {selectedStudent ? t.addRecognitionFor.replace('{name}', selectedStudent.name) : ''}
+              {selectedStudent ? 
+                (t.addRecognitionFor ? 
+                  t.addRecognitionFor.replace('{name}', selectedStudent.name) : 
+                  `Add recognition for ${selectedStudent.name}`
+                ) : ''}
             </DialogDescription>
           </DialogHeader>
           
@@ -354,7 +367,7 @@ const StudentRecognition = () => {
                 className="w-full border border-gray-300 rounded-md p-2 min-h-[100px]"
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                placeholder={t.enterReason}
+                placeholder={t.enterReason || "Enter reason for recognition"}
               />
             </div>
           </div>
