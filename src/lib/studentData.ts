@@ -84,6 +84,24 @@ export const generateSampleStudents = (): Student[] => {
           reason: 'Class engagement',
         },
       ],
+      // Add recognition system fields
+      helpfulness: 2,
+      respect: 3,
+      teamwork: 1,
+      excellence: 2,
+      awards: ['Respect Star (Level 1)'],
+      recognitions: [
+        {
+          date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+          type: 'respect',
+          description: 'Helped a new student adjust',
+        },
+        {
+          date: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          type: 'helpfulness',
+          description: 'Assisted classmates with homework',
+        },
+      ],
     },
     {
       id: '2',
@@ -112,6 +130,19 @@ export const generateSampleStudents = (): Student[] => {
           reason: 'Class engagement',
         },
       ],
+      // Add recognition system fields
+      helpfulness: 4,
+      respect: 2,
+      teamwork: 5,
+      excellence: 3,
+      awards: ['Teamwork Star (Level 1)'],
+      recognitions: [
+        {
+          date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+          type: 'teamwork',
+          description: 'Led group project exceptionally',
+        },
+      ],
     },
     {
       id: '3',
@@ -138,6 +169,19 @@ export const generateSampleStudents = (): Student[] => {
           date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
           change: 5,
           reason: 'Book ownership',
+        },
+      ],
+      // Add recognition system fields
+      helpfulness: 1,
+      respect: 1,
+      teamwork: 2,
+      excellence: 0,
+      awards: [],
+      recognitions: [
+        {
+          date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+          type: 'teamwork',
+          description: 'Good collaboration during group activity',
         },
       ],
     },

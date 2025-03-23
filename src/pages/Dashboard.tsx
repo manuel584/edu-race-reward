@@ -10,7 +10,7 @@ import ProgressTrack from '@/components/ProgressTrack';
 import ClassRecognition from '@/components/ClassRecognition';
 import StudentRecognition from '@/components/StudentRecognition';
 import { motion } from 'framer-motion';
-import { UserPlus, Award, Trophy, Users } from 'lucide-react';
+import { UserPlus, Award, Trophy, Users, BookOpen, Star } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Dashboard = () => {
@@ -49,7 +49,7 @@ const Dashboard = () => {
 
           {students.length > 0 ? (
             <Tabs defaultValue="student-progress" className="w-full">
-              <TabsList className="mb-6">
+              <TabsList className="mb-6 flex flex-wrap">
                 <TabsTrigger value="student-progress">
                   <Trophy className="mr-2 h-4 w-4" />
                   {t.studentProgress}

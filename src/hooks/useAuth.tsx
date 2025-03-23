@@ -28,6 +28,25 @@ type AuthContextType = {
   updateProfile: (profileData: Partial<UserProfile>) => void;
 };
 
+// Define the GoogleAccountsType interface to match what's available in the window object
+interface GoogleAccountsType {
+  id: {
+    initialize: (config: any) => void;
+    renderButton: (element: HTMLElement, options: any) => void;
+    prompt: () => void;
+    // Don't include revoke if it might not exist
+  }
+}
+
+// Extend the Window interface to include google property
+declare global {
+  interface Window {
+    google?: {
+      accounts?: GoogleAccountsType;
+    };
+  }
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -115,18 +134,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const authMethod = user?.profile?.authMethod;
     if (authMethod === 'google' && window.google?.accounts?.id) {
       try {
-        // Check if Google's accounts.id exists and has required methods
+        // Check if Google's accounts.id exists
         const googleId = window.google.accounts.id;
         
-        // Only call methods that exist - this fixes the TypeScript error
-        if (typeof googleId.revoke === 'function') {
-          googleId.revoke(user?.profile?.googleId || '', () => {
+        // Since TypeScript doesn't know about the revoke method, we'll use a safer approach
+        // to avoid TypeScript errors
+        if (typeof (googleId as any).revoke === 'function') {
+          (googleId as any).revoke(user?.profile?.googleId || '', () => {
             console.log('Google ID token revoked');
           });
         }
         
-        // Clear any Google-specific state without using disableAutoSelect
-        // This addresses the TypeScript error by not calling the missing method
+        // Note: We're not calling disableAutoSelect since it might not exist
+        // and was causing TypeScript errors
       } catch (error) {
         console.error('Error during Google sign-out:', error);
       }
