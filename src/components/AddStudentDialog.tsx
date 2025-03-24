@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { UserPlus } from "lucide-react";
-import StudentForm from "@/components/StudentForm";
+import { StudentForm } from "@/components/StudentForm";
 import { getTranslations } from '@/lib/i18n';
 import { useAppContext } from '@/context/AppContext';
 

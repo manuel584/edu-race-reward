@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
 import { Button } from "@/components/ui/button";
@@ -45,10 +46,10 @@ const FileUpload: React.FC<FileUploadProps> = ({ onClose }) => {
           nationality: item.nationality === 'international' ? 'international' : 'national',
           grade: item.grade || '',
           subjects: item.subjects ? item.subjects.split(',').map((s: string) => s.trim()) : [],
-          helpfulness: 0,
-          respect: 0,
-          teamwork: 0,
-          excellence: 0
+          helpfulness: parseInt(item.helpfulness) || 0,
+          respect: parseInt(item.respect) || 0,
+          teamwork: parseInt(item.teamwork) || 0,
+          excellence: parseInt(item.excellence) || 0
         }));
         
         importStudents(students);
