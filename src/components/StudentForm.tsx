@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +15,7 @@ interface StudentFormProps {
   onClose?: () => void;
 }
 
-const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }) => {
+export const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }) => {
   const { addStudent, updateStudent, language } = useAppContext();
   const t = getTranslations(language);
   
@@ -79,7 +79,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }
   return (
     <form onSubmit={handleFormSubmit} className="space-y-4">
       <div className="space-y-2">
-        <label htmlFor="name" className="text-sm font-medium">{t.name}</label>
+        <label htmlFor="name" className="text-sm font-medium">{t.name || "Name"}</label>
         <Input 
           id="name" 
           value={name} 
@@ -89,7 +89,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }
       </div>
       
       <div className="space-y-2">
-        <label htmlFor="grade" className="text-sm font-medium">{t.grade}</label>
+        <label htmlFor="grade" className="text-sm font-medium">{t.grade || "Grade"}</label>
         <Input 
           id="grade" 
           value={grade} 
@@ -99,23 +99,23 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }
       </div>
       
       <div className="space-y-2">
-        <label htmlFor="nationality" className="text-sm font-medium">{t.nationality}</label>
+        <label htmlFor="nationality" className="text-sm font-medium">{t.nationality || "Nationality"}</label>
         <Select 
           value={nationality} 
           onValueChange={(value: 'international' | 'national') => setNationality(value)}
         >
           <SelectTrigger>
-            <SelectValue placeholder={t.selectNationality} />
+            <SelectValue placeholder={t.selectNationality || "Select Nationality"} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="national">{t.national}</SelectItem>
-            <SelectItem value="international">{t.international}</SelectItem>
+            <SelectItem value="national">{t.national || "National"}</SelectItem>
+            <SelectItem value="international">{t.international || "International"}</SelectItem>
           </SelectContent>
         </Select>
       </div>
       
       <div className="space-y-2">
-        <label htmlFor="points" className="text-sm font-medium">{t.points}</label>
+        <label htmlFor="points" className="text-sm font-medium">{t.points || "Points"}</label>
         <Input 
           id="points" 
           type="number" 
@@ -126,7 +126,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }
       </div>
       
       <div className="space-y-2">
-        <label htmlFor="attendance" className="text-sm font-medium">{t.attendance}</label>
+        <label htmlFor="attendance" className="text-sm font-medium">{t.attendance || "Attendance"}</label>
         <Input 
           id="attendance" 
           type="number" 
@@ -137,7 +137,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }
       </div>
       
       <div className="space-y-2">
-        <label htmlFor="booksOwned" className="text-sm font-medium">{t.booksOwned}</label>
+        <label htmlFor="booksOwned" className="text-sm font-medium">{t.booksOwned || "Books Owned"}</label>
         <Input 
           id="booksOwned" 
           type="number" 
@@ -148,7 +148,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }
       </div>
       
       <div className="space-y-2">
-        <label htmlFor="engagementScore" className="text-sm font-medium">{t.engagementScore}</label>
+        <label htmlFor="engagementScore" className="text-sm font-medium">{t.engagementScore || "Engagement Score"}</label>
         <Input 
           id="engagementScore" 
           type="number" 
@@ -159,7 +159,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }
       </div>
       
       <div className="space-y-2">
-        <label className="text-sm font-medium">{t.helpfulness}</label>
+        <label className="text-sm font-medium">{t.helpfulness || "Helpfulness"}</label>
         <Input 
           type="number" 
           value={helpfulness} 
@@ -169,7 +169,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }
       </div>
       
       <div className="space-y-2">
-        <label className="text-sm font-medium">{t.respect}</label>
+        <label className="text-sm font-medium">{t.respect || "Respect"}</label>
         <Input 
           type="number" 
           value={respect} 
@@ -179,7 +179,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }
       </div>
       
       <div className="space-y-2">
-        <label className="text-sm font-medium">{t.teamwork}</label>
+        <label className="text-sm font-medium">{t.teamwork || "Teamwork"}</label>
         <Input 
           type="number" 
           value={teamwork} 
@@ -189,7 +189,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }
       </div>
       
       <div className="space-y-2">
-        <label className="text-sm font-medium">{t.excellence}</label>
+        <label className="text-sm font-medium">{t.excellence || "Excellence"}</label>
         <Input 
           type="number" 
           value={excellence} 
@@ -199,7 +199,7 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }
       </div>
       
       <div className="space-y-2">
-        <label className="text-sm font-medium">{t.subjects}</label>
+        <label className="text-sm font-medium">{t.subjects || "Subjects"}</label>
         <div className="grid grid-cols-2 gap-2">
           {availableSubjects.map((subject) => (
             <div key={subject} className="flex items-center space-x-2">
@@ -220,10 +220,8 @@ const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }
       </div>
       
       <div className="flex justify-end pt-4">
-        <Button type="submit">{student ? t.updateStudent : t.addStudent}</Button>
+        <Button type="submit">{student ? (t.updateStudent || "Update Student") : (t.addStudent || "Add Student")}</Button>
       </div>
     </form>
   );
 };
-
-export { StudentForm };
