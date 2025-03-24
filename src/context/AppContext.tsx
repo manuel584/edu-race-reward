@@ -16,7 +16,6 @@ export type Student = {
     change: number;
     reason: string;
   }[];
-  // Adding recognition system fields
   helpfulness: number;
   respect: number;
   teamwork: number;
@@ -53,14 +52,12 @@ export type AppContextType = {
   setSelectedStudent: React.Dispatch<React.SetStateAction<Student | null>>;
   updateStudent: (id: string, studentData: Partial<Omit<Student, 'id' | 'pointsHistory'>>) => void;
   deleteStudent: (id: string) => void;
-  // New recognition system methods
   addRecognition: (studentId: string, type: 'helpfulness' | 'respect' | 'teamwork' | 'excellence', description: string) => void;
   addClassAchievement: (className: string, achievement: string) => void;
   getClassMetrics: () => ClassMetrics[];
   nominateStudent: (studentId: string, category: string, nominatorId: string) => void;
 };
 
-// Create context with default values
 const AppContext = createContext<AppContextType>({
   students: [],
   setStudents: () => {},
@@ -75,17 +72,14 @@ const AppContext = createContext<AppContextType>({
   setSelectedStudent: () => {},
   updateStudent: () => {},
   deleteStudent: () => {},
-  // New recognition system methods
   addRecognition: () => {},
   addClassAchievement: () => {},
   getClassMetrics: () => [],
   nominateStudent: () => {},
 });
 
-// Hook to use the context
 export const useAppContext = () => useContext(AppContext);
 
-// Provider component
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [students, setStudents] = useState<Student[]>([]);
   const [language, setLanguage] = useState<'en' | 'ar'>('en');
@@ -93,7 +87,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [classAchievements, setClassAchievements] = useState<{[className: string]: string[]}>({});
 
-  // Load data from localStorage on mount
   useEffect(() => {
     const savedStudents = localStorage.getItem('students');
     const savedLanguage = localStorage.getItem('language');
@@ -112,14 +105,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, []);
 
-  // Save data to localStorage when it changes
   useEffect(() => {
     localStorage.setItem('students', JSON.stringify(students));
   }, [students]);
 
   useEffect(() => {
     localStorage.setItem('language', language);
-    // Update document direction and lang
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = language;
   }, [language]);
@@ -128,12 +119,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem('goalPoints', goalPoints.toString());
   }, [goalPoints]);
 
-  // Generate a unique ID
   const generateId = () => {
     return Date.now().toString(36) + Math.random().toString(36).substring(2);
   };
 
-  // Add a new student
   const addStudent = (student: Omit<Student, 'id' | 'pointsHistory' | 'recognitions' | 'awards'>) => {
     const newStudent: Student = {
       ...student,
@@ -145,7 +134,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           reason: 'Initial points',
         },
       ],
-      // Initialize recognition system fields with proper numerical values
       helpfulness: 0,
       respect: 0,
       teamwork: 0,
@@ -157,7 +145,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setStudents((prev) => [...prev, newStudent]);
   };
 
-  // Update student data
   const updateStudent = (id: string, studentData: Partial<Omit<Student, 'id' | 'pointsHistory'>>) => {
     setStudents((prev) => 
       prev.map((student) => {
@@ -172,12 +159,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
   };
 
-  // Delete a student
   const deleteStudent = (id: string) => {
     setStudents((prev) => prev.filter(student => student.id !== id));
   };
 
-  // Update student points with history tracking
   const updateStudentPoints = (id: string, change: number, reason: string) => {
     setStudents((prev) => 
       prev.map((student) => {
@@ -201,11 +186,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
   };
 
-  // Import multiple students from external source (like Excel)
   const importStudents = (newStudents: Omit<Student, 'id' | 'pointsHistory' | 'recognitions' | 'awards'>[]) => {
     const formattedStudents = newStudents.map(student => ({
       ...student,
       id: generateId(),
+      helpfulness: 0,
+      respect: 0,
+      teamwork: 0,
+      excellence: 0,
+      awards: [],
       pointsHistory: [
         {
           date: new Date().toISOString(),
@@ -213,24 +202,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           reason: 'Initial points from import',
         },
       ],
-      // Initialize recognition system fields with proper numerical values
-      helpfulness: 0,
-      respect: 0,
-      teamwork: 0,
-      excellence: 0,
-      awards: [],
       recognitions: [],
     }));
     
     setStudents((prev) => [...prev, ...formattedStudents]);
   };
 
-  // New method to add a recognition to a student
   const addRecognition = (studentId: string, type: 'helpfulness' | 'respect' | 'teamwork' | 'excellence', description: string) => {
     setStudents((prev) => 
       prev.map((student) => {
         if (student.id === studentId) {
-          // Ensure current value is a valid number
           const currentValue = typeof student[type] === 'number' && !isNaN(student[type]) ? student[type] : 0;
           
           const updatedStudent = {
@@ -245,12 +226,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             ],
           };
           
-          // Update the corresponding metric with proper validation
           updatedStudent[type] = currentValue + 1;
           
-          // Add award if needed (5 recognitions of the same type)
           if (updatedStudent[type] % 5 === 0) {
-            // Import the getAwardName function from recognitionUtils
             const { getAwardName } = require('../lib/recognitionUtils');
             const level = Math.floor(updatedStudent[type] / 5);
             const award = getAwardName(type, level);
@@ -264,7 +242,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
   };
 
-  // Add an achievement to a class
   const addClassAchievement = (className: string, achievement: string) => {
     setClassAchievements(prev => {
       const classAchievementsList = prev[className] || [];
@@ -275,11 +252,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
-  // Calculate class metrics for comparison
   const getClassMetrics = (): ClassMetrics[] => {
     const classBuckets: {[className: string]: Student[]} = {};
     
-    // Group students by class/grade
     students.forEach(student => {
       if (!classBuckets[student.grade]) {
         classBuckets[student.grade] = [];
@@ -292,8 +267,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const averageAttendance = classStudents.reduce((sum, student) => sum + student.attendance, 0) / classStudents.length;
       const averageEngagement = classStudents.reduce((sum, student) => sum + student.engagementScore, 0) / classStudents.length;
       
-      // Simple calculation for weekly improvement (could be enhanced with real historical data)
-      const weeklyImprovement = Math.random() * 10; // Placeholder improvement metric
+      const weeklyImprovement = Math.random() * 10;
       
       return {
         id: className,
@@ -307,11 +281,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
-  // Nominate a student for recognition
   const nominateStudent = (studentId: string, category: string, nominatorId: string) => {
-    // In a real app, this would store nominations for teacher verification
     console.log(`Student ${studentId} nominated for ${category} by ${nominatorId}`);
-    // For now, we'll simulate immediate recognition
     const recognitionType = category === 'academic help' || category === 'emotional support' 
       ? 'helpfulness'
       : category === 'conflict resolution' || category === 'cultural sensitivity'
@@ -323,7 +294,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addRecognition(studentId, recognitionType, `Nominated for ${category}`);
   };
 
-  // Context value
   const value = {
     students,
     setStudents,
@@ -338,7 +308,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setSelectedStudent,
     updateStudent,
     deleteStudent,
-    // New recognition system methods
     addRecognition,
     addClassAchievement,
     getClassMetrics,
