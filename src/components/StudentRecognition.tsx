@@ -6,6 +6,7 @@ import { useAppContext, Student } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import { useAuth } from '@/hooks/useAuth';
 import StudentNominationForm from '@/components/StudentNominationForm';
+import { getLevelInfo } from '@/lib/recognitionUtils';
 import { 
   BadgeCheck, 
   HandHeart, 
@@ -13,25 +14,10 @@ import {
   Users, 
   Gem, 
   Heart, 
-  MessageSquareHeart,
-  Award,
-  Star,
-  Trophy,
-  Medal
+  Star
 } from 'lucide-react';
-import { 
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from "@/components/ui/dialog";
+import { TooltipProvider, TooltipContent, Tooltip, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { toast } from "sonner";
-import { getLevelInfo } from '@/lib/recognitionUtils';
 
 interface RecognitionCardProps {
   student: Student;
@@ -117,7 +103,7 @@ const RecognitionCard: React.FC<RecognitionCardProps> = ({ student, type, onClic
       </div>
       
       <div className="text-xs mb-1">
-        {recognitionCount} {t.recognitions || "Recognitions"}
+        {recognitionCount} {t.recognition || "Recognitions"}
       </div>
       
       <div className="w-full bg-white bg-opacity-50 h-1.5 rounded-full overflow-hidden">
@@ -132,12 +118,9 @@ const RecognitionCard: React.FC<RecognitionCardProps> = ({ student, type, onClic
 
 const StudentRecognition = () => {
   const { students, language } = useAppContext();
-  const { user } = useAuth();
   const navigate = useNavigate();
   const t = getTranslations(language);
   
-  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  const [recognitionType, setRecognitionType] = useState<'helpfulness' | 'respect' | 'teamwork' | 'excellence'>('helpfulness');
   const [isNominateOpen, setIsNominateOpen] = useState(false);
   
   // Get top students for each category
@@ -147,8 +130,6 @@ const StudentRecognition = () => {
   const topExcellenceStudents = [...students].sort((a, b) => (b.excellence || 0) - (a.excellence || 0)).slice(0, 2);
   
   const handleStudentClick = (student: Student, type: 'helpfulness' | 'respect' | 'teamwork' | 'excellence') => {
-    setSelectedStudent(student);
-    setRecognitionType(type);
     navigate(`/student/${student.id}`);
   };
   

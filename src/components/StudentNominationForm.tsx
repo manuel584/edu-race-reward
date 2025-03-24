@@ -44,7 +44,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { useAuth } from '@/hooks/useAuth';
-import { useMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type NominationCategory = {
   id: string;
@@ -121,7 +121,7 @@ const StudentNominationForm = ({
 }) => {
   const { students, nominateStudent, language } = useAppContext();
   const { user } = useAuth();
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
   const t = getTranslations(language);
   
   const [searchTerm, setSearchTerm] = useState('');
