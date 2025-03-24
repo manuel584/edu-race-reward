@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Types
@@ -134,10 +135,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           reason: 'Initial points',
         },
       ],
-      helpfulness: 0,
-      respect: 0,
-      teamwork: 0,
-      excellence: 0,
+      helpfulness: student.helpfulness || 0,
+      respect: student.respect || 0,
+      teamwork: student.teamwork || 0,
+      excellence: student.excellence || 0,
       awards: [],
       recognitions: [],
     };
@@ -190,10 +191,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const formattedStudents = newStudents.map(student => ({
       ...student,
       id: generateId(),
-      helpfulness: 0,
-      respect: 0,
-      teamwork: 0,
-      excellence: 0,
+      helpfulness: student.helpfulness || 0,
+      respect: student.respect || 0,
+      teamwork: student.teamwork || 0,
+      excellence: student.excellence || 0,
       awards: [],
       pointsHistory: [
         {

@@ -76,7 +76,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ student }) => {
       // Add photo URL to student data if needed
     });
     setIsEditingProfile(false);
-    toast.success(t.studentUpdated);
+    toast.success(t.studentUpdated || 'Student updated successfully');
   };
   
   const handleCancelEdit = () => {
@@ -285,21 +285,21 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ student }) => {
                     onClick={handleCancelEdit}
                   >
                     <X className="mr-2 h-4 w-4" />
-                    {t.cancel}
+                    {t.cancel || "Cancel"}
                   </Button>
                   <Button 
                     size="sm" 
                     onClick={handleSaveProfile}
                   >
                     <Save className="mr-2 h-4 w-4" />
-                    {t.save}
+                    {t.save || "Save"}
                   </Button>
                 </div>
               </div>
               
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="student-name">{t.studentName}</Label>
+                  <Label htmlFor="student-name">{t.studentName || "Student Name"}</Label>
                   <Input 
                     id="student-name" 
                     value={editedStudent.name} 
@@ -314,7 +314,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ student }) => {
                     onValueChange={handleChangeGrade}
                   >
                     <SelectTrigger id="student-grade">
-                      <SelectValue placeholder={t.selectGrade} />
+                      <SelectValue placeholder={t.selectGrade || "Select Grade"} />
                     </SelectTrigger>
                     <SelectContent>
                       {grades.map(grade => (
@@ -331,11 +331,11 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ student }) => {
                     onValueChange={handleChangeNationality as (value: string) => void}
                   >
                     <SelectTrigger id="student-nationality">
-                      <SelectValue placeholder={t.selectNationality} />
+                      <SelectValue placeholder={t.selectNationality || "Select Nationality"} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="national">{t.national}</SelectItem>
-                      <SelectItem value="international">{t.international}</SelectItem>
+                      <SelectItem value="national">{t.national || "National"}</SelectItem>
+                      <SelectItem value="international">{t.international || "International"}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -356,7 +356,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ student }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <div>
-                    <div className="text-sm font-medium text-gray-500">{t.studentName}</div>
+                    <div className="text-sm font-medium text-gray-500">{t.studentName || "Student Name"}</div>
                     <div className="font-medium">{student.name}</div>
                   </div>
                   
@@ -367,7 +367,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ student }) => {
                   
                   <div>
                     <div className="text-sm font-medium text-gray-500">{t.nationality}</div>
-                    <div className="font-medium">{student.nationality === 'international' ? t.international : t.national}</div>
+                    <div className="font-medium">{student.nationality === 'international' ? (t.international || "International") : (t.national || "National")}</div>
                   </div>
                 </div>
                 
@@ -383,7 +383,7 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ student }) => {
                   </div>
                   
                   <div>
-                    <div className="text-sm font-medium text-gray-500">{t.engagement}</div>
+                    <div className="text-sm font-medium text-gray-500">{t.engagement || "Engagement"}</div>
                     <div className="font-medium">{student.engagementScore}%</div>
                   </div>
                 </div>
@@ -392,15 +392,19 @@ const StudentProfile: React.FC<StudentProfileProps> = ({ student }) => {
               <div className="pt-4 border-t border-gray-100">
                 <h3 className="text-md font-medium mb-2">{t.subjects}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {student.subjects.map(subject => (
-                    <span 
-                      key={subject} 
-                      className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full"
-                    >
-                      {subject}
-                    </span>
-                  ))}
-                  {student.subjects.length === 0 && (
+                  {Array.isArray(student.subjects) ? (
+                    student.subjects.map(subject => (
+                      <span 
+                        key={subject} 
+                        className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full"
+                      >
+                        {subject}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-gray-500 text-sm">No subjects enrolled</span>
+                  )}
+                  {Array.isArray(student.subjects) && student.subjects.length === 0 && (
                     <span className="text-gray-500 text-sm">No subjects enrolled</span>
                   )}
                 </div>

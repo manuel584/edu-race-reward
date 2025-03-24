@@ -21,77 +21,46 @@ const FileUpload: React.FC<FileUploadProps> = ({ onClose }) => {
     }
   };
 
-  const handleUpload = () => {
+  const handleImport = () => {
     if (!file) {
-      toast.error(t.noFileSelected);
+      toast.error(t.noFileSelected || "No file selected");
       return;
     }
-
+    
     const reader = new FileReader();
-    reader.onload = (e: any) => {
-      const binaryStr = e.target.result;
-      const workbook = XLSX.read(binaryStr, { type: 'binary' });
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-      
-      // Convert to array of objects, using the first row as keys
-      const headers = data[0] as string[];
-      const jsonData = data.slice(1).map(row => {
-        const rowData: { [key: string]: any } = {};
-        headers.forEach((header, index) => {
-          rowData[header] = row[index];
-        });
-        return rowData;
-      });
-
+    reader.onload = (e) => {
       try {
-        const students = processExcelData(jsonData);
+        const data = e.target?.result;
+        const workbook = XLSX.read(data, { type: 'binary' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet);
+        
+        const students = json.map((item: any) => ({
+          name: item.name || '',
+          points: parseInt(item.points) || 0,
+          attendance: parseInt(item.attendance) || 0,
+          booksOwned: parseInt(item.booksOwned) || 0,
+          engagementScore: parseInt(item.engagementScore) || 0,
+          nationality: item.nationality === 'international' ? 'international' : 'national',
+          grade: item.grade || '',
+          subjects: item.subjects ? item.subjects.split(',').map((s: string) => s.trim()) : [],
+          helpfulness: 0,
+          respect: 0,
+          teamwork: 0,
+          excellence: 0
+        }));
+        
         importStudents(students);
-        toast.success(t.studentsImported);
+        toast.success(t.studentsImported || "Students imported successfully");
         onClose();
-      } catch (error: any) {
-        toast.error(error.message);
+      } catch (error) {
+        console.error(error);
+        toast.error(t.fileReadError || "Error reading file");
       }
     };
-    reader.onerror = () => {
-      toast.error(t.fileReadError);
-    };
+    
     reader.readAsBinaryString(file);
-  };
-
-  const processExcelData = (data: any[]): { 
-    name: string;
-    points: number;
-    attendance: number;
-    booksOwned: number;
-    engagementScore: number;
-    nationality: 'international' | 'national';
-    grade: string;
-    subjects: string[];
-  }[] => {
-    return data.map(row => {
-      // Extract basic data
-      const processedRow = {
-        name: row['Student Name'] || row['Name'] || '',
-        points: parseInt(row['Points'] || '0', 10),
-        attendance: parseInt(row['Attendance'] || '0', 10),
-        booksOwned: parseInt(row['Books Owned'] || '0', 10),
-        engagementScore: parseInt(row['Engagement Score'] || '0', 10),
-        nationality: (row['Nationality'] || 'national').toLowerCase() === 'international' 
-          ? 'international' as const
-          : 'national' as const,
-        grade: row['Grade'] || 'Grade 1',
-        subjects: row['Subjects'] ? row['Subjects'].split(',').map((s: string) => s.trim()) : [],
-      };
-      
-      // Validate data
-      if (!processedRow.name) {
-        throw new Error('Each student must have a name');
-      }
-      
-      return processedRow;
-    });
   };
 
   return (
@@ -103,7 +72,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onClose }) => {
         <Button type="button" variant="outline" onClick={onClose}>
           {t.cancel}
         </Button>
-        <Button type="button" onClick={handleUpload} disabled={!file}>
+        <Button type="button" onClick={handleImport} disabled={!file}>
           {t.upload}
         </Button>
       </div>
