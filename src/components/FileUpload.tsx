@@ -1,83 +1,97 @@
 
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useAppContext } from '@/context/AppContext';
+import { useAppContext, Student } from '@/context/AppContext';
 import { toast } from 'sonner';
 import { getTranslations } from '@/lib/i18n';
 
 interface FileUploadProps {
-  onClose: () => void;
+  onUploadComplete?: () => void;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ onClose }) => {
-  const [file, setFile] = useState<File | null>(null);
+const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
+  const [isUploading, setIsUploading] = useState(false);
   const { importStudents, language } = useAppContext();
   const t = getTranslations(language);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
-    }
-  };
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-  const handleImport = () => {
-    if (!file) {
-      toast.error(t.noFileSelected || "No file selected");
-      return;
-    }
-    
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = e.target?.result;
-        const workbook = XLSX.read(data, { type: 'binary' });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const json = XLSX.utils.sheet_to_json(worksheet);
-        
-        const students = json.map((item: any) => ({
-          name: item.name || '',
-          points: parseInt(item.points) || 0,
-          attendance: parseInt(item.attendance) || 0,
-          booksOwned: parseInt(item.booksOwned) || 0,
-          engagementScore: parseInt(item.engagementScore) || 0,
-          nationality: item.nationality === 'international' ? 'international' : 'national',
-          grade: item.grade || '',
-          subjects: item.subjects ? item.subjects.split(',').map((s: string) => s.trim()) : [],
-          helpfulness: parseInt(item.helpfulness) || 0,
-          respect: parseInt(item.respect) || 0,
-          teamwork: parseInt(item.teamwork) || 0,
-          excellence: parseInt(item.excellence) || 0
-        }));
-        
-        importStudents(students);
-        toast.success(t.studentsImported || "Students imported successfully");
-        onClose();
-      } catch (error) {
-        console.error(error);
-        toast.error(t.fileReadError || "Error reading file");
+    setIsUploading(true);
+
+    try {
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data);
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+      if (jsonData.length === 0) {
+        toast.error(t.noStudentsFound || "No students found in the file");
+        setIsUploading(false);
+        return;
       }
-    };
-    
-    reader.readAsBinaryString(file);
+
+      // Transform data to match Student type
+      const students = jsonData.map((row: any) => {
+        // Ensure nationality is either 'international' or 'national'
+        let nationality: 'international' | 'national' = 'national';
+        if (row.nationality && 
+            (row.nationality.toLowerCase() === 'international' || 
+             row.nationality.toLowerCase() === 'international student')) {
+          nationality = 'international';
+        }
+
+        // Process subjects if they exist
+        let subjects: string[] = [];
+        if (row.subjects) {
+          if (Array.isArray(row.subjects)) {
+            subjects = row.subjects;
+          } else if (typeof row.subjects === 'string') {
+            subjects = row.subjects.split(',').map((s: string) => s.trim());
+          }
+        }
+
+        return {
+          name: row.name || "Unknown Student",
+          points: parseInt(row.points, 10) || 0,
+          attendance: parseInt(row.attendance, 10) || 0,
+          booksOwned: parseInt(row.booksOwned, 10) || 0,
+          engagementScore: parseInt(row.engagementScore, 10) || 0,
+          nationality: nationality,
+          grade: row.grade || "Unknown Grade",
+          subjects: subjects,
+          helpfulness: parseInt(row.helpfulness, 10) || 0,
+          respect: parseInt(row.respect, 10) || 0,
+          teamwork: parseInt(row.teamwork, 10) || 0,
+          excellence: parseInt(row.excellence, 10) || 0
+        };
+      });
+
+      // Import students
+      importStudents(students);
+      
+      toast.success(`${students.length} ${t.studentsImported || "students imported successfully"}`);
+      
+      if (onUploadComplete) {
+        onUploadComplete();
+      }
+    } catch (error) {
+      console.error('Error parsing file:', error);
+      toast.error(t.errorParsingFile || "Error parsing file");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
-    <div className="space-y-4">
-      <div>
-        <Input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
-      </div>
-      <div className="flex justify-between">
-        <Button type="button" variant="outline" onClick={onClose}>
-          {t.cancel}
-        </Button>
-        <Button type="button" onClick={handleImport} disabled={!file}>
-          {t.upload}
-        </Button>
-      </div>
-    </div>
+    <input
+      type="file"
+      accept=".xlsx,.xls,.csv"
+      onChange={handleFileUpload}
+      disabled={isUploading}
+      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-solid file:border-gray-300 file:text-sm file:font-semibold file:bg-white file:text-gray-700 hover:file:bg-gray-50"
+    />
   );
 };
 

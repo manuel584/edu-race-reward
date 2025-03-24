@@ -1,665 +1,132 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useToast } from "@/hooks/use-toast";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAuth } from "@/hooks/useAuth";
-import { Mail, KeyRound, MessageSquare, GithubIcon, ExternalLink, User, SendIcon, RotateCw } from "lucide-react";
 
-// Generate a random state string for CSRF protection
-const generateStateParam = () => {
-  return Math.random().toString(36).substring(2, 15) + 
-         Math.random().toString(36).substring(2, 15);
-};
+import React, { useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import { getTranslations } from '@/lib/i18n';
+import { useAppContext } from '@/context/AppContext';
+import LanguageToggle from '@/components/LanguageToggle';
 
-// Define Google Client ID
-const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID"; // Replace with your actual Google Client ID
+// Extended type for google accounts
+interface GoogleAccountsType {
+  id: {
+    initialize: (config: any) => void;
+    renderButton: (element: HTMLElement, options: any) => void;
+    prompt: () => void;
+  };
+}
 
+// Google global type
 declare global {
   interface Window {
-    google?: {
-      accounts: {
-        id: {
-          initialize: (config: any) => void;
-          renderButton: (element: HTMLElement, options: any) => void;
-          prompt: () => void;
-        };
-      };
+    google: {
+      accounts: GoogleAccountsType;
     };
   }
 }
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [verificationMode, setVerificationMode] = useState(false);
-  const [verificationCode, setVerificationCode] = useState("");
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [name, setName] = useState("");
-  const [subject, setSubject] = useState("");
-  const [gradeLevel, setGradeLevel] = useState("");
-  const [codeExpiry, setCodeExpiry] = useState(300); // 5 minutes in seconds
-  const [attemptCount, setAttemptCount] = useState(0);
-  const [authState, setAuthState] = useState("");
-  const [countdownActive, setCountdownActive] = useState(false);
-  const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
-  const [isGoogleAuthReady, setIsGoogleAuthReady] = useState(false);
+  const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const { login } = useAuth();
-
-  // Initialize CSRF state on component mount
+  const { language } = useAppContext();
+  const t = getTranslations(language);
+  
   useEffect(() => {
-    const state = generateStateParam();
-    setAuthState(state);
-    // Store state in sessionStorage for verification
-    sessionStorage.setItem("auth_state", state);
-  }, []);
-
-  // Countdown timer for verification code
-  useEffect(() => {
-    let timer;
-    if (countdownActive && codeExpiry > 0) {
-      timer = setInterval(() => {
-        setCodeExpiry(prev => prev - 1);
-      }, 1000);
-    } else if (codeExpiry === 0) {
-      setError("Verification code expired. Please request a new one.");
-      setCountdownActive(false);
+    if (isAuthenticated) {
+      navigate('/dashboard');
     }
-    
-    return () => clearInterval(timer);
-  }, [countdownActive, codeExpiry]);
-
-  const formatTimeRemaining = () => {
-    const minutes = Math.floor(codeExpiry / 60);
-    const seconds = codeExpiry % 60;
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
-
-  const handleStandardLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
-
-    // Simple validation
-    if (!username || !password) {
-      setError("Please enter both username and password");
-      setIsLoading(false);
-      return;
-    }
-
-    // Simulate server authentication
-    setTimeout(() => {
-      setIsLoading(false);
-      // Initialize verification with new verification code
-      setVerificationMode(true);
-      setCodeExpiry(300); // Reset to 5 minutes
-      setAttemptCount(0);  // Reset attempt count
-      setCountdownActive(true);
-      
-      toast({
-        title: "Verification code sent",
-        description: "Check your email for the 6-digit verification code",
-      });
-    }, 1000);
-  };
-
-  const handleSignUp = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
-
-    // Validation for sign-up
-    if (!username || !password || !name) {
-      setError("Please fill out all required fields");
-      setIsLoading(false);
-      return;
-    }
-
-    // Simulate email domain verification for educational institutions
-    const emailDomain = username.split('@')[1];
-    const allowedDomains = ['edu', 'school', 'k12', 'ac']; // Example educational domains
-    
-    // Simple check if domain ends with an educational TLD
-    const isEducationalDomain = allowedDomains.some(domain => 
-      emailDomain && emailDomain.endsWith(domain)
-    );
-    
-    if (!isEducationalDomain) {
-      toast({
-        title: "Notice",
-        description: "We recommend using an educational email address",
-        variant: "default"
-      });
-    }
-
-    // Simulate account creation
-    setTimeout(() => {
-      setIsLoading(false);
-      setVerificationMode(true);
-      setCodeExpiry(300);
-      setAttemptCount(0);
-      setCountdownActive(true);
-      
-      toast({
-        title: "Account created",
-        description: "Verify your email to complete registration",
-      });
-    }, 1000);
-  };
-
-  const handleResendCode = () => {
-    setCodeExpiry(300);
-    setAttemptCount(0);
-    setCountdownActive(true);
-    
-    toast({
-      title: "New code sent",
-      description: "Check your email for the new verification code",
+  }, [isAuthenticated, navigate]);
+  
+  const handleDemoLogin = () => {
+    login({
+      id: '1',
+      name: 'Demo Teacher',
+      email: 'demo@school.edu',
+      role: 'teacher'
     });
+    
+    navigate('/dashboard');
   };
-
-  const handleVerification = () => {
-    setIsLoading(true);
-    
-    // Increment attempt counter
-    const newAttemptCount = attemptCount + 1;
-    setAttemptCount(newAttemptCount);
-    
-    // Check if max attempts reached (5 max)
-    if (newAttemptCount >= 5) {
-      setError("Too many failed attempts. Please request a new code.");
-      setIsLoading(false);
-      setCountdownActive(false);
-      return;
-    }
-    
-    // Check if verification code is valid (6 digits for this example)
-    if (verificationCode.length !== 6) {
-      setError("Please enter a valid 6-digit verification code");
-      setIsLoading(false);
-      return;
-    }
-
-    // Simulate server verification
-    setTimeout(() => {
-      // In a real app, this would be a secure server-side verification
-
-      // Complete login process - with different flows for login vs. signup
-      if (isSignUp) {
-        login(name, "teacher", {
-          subject,
-          gradeLevel
-        });
-        
-        toast({
-          title: "Registration successful",
-          description: `Welcome, ${name}!`,
-        });
-      } else {
-        login(username, "teacher");
-        
-        toast({
-          title: "Login successful",
-          description: `Welcome back, ${username}!`,
-        });
-      }
-      
-      // Redirect to dashboard
-      navigate("/dashboard");
-      
-      setIsLoading(false);
-    }, 1000);
-  };
-
-  const handleSocialLogin = (provider: string) => {
-    setIsLoading(true);
-    
-    // Store auth state for verification when the OAuth provider redirects back
-    // This prevents CSRF attacks
-    const state = authState || generateStateParam();
-    sessionStorage.setItem("auth_state", state);
-    sessionStorage.setItem("auth_provider", provider);
-    
-    // Simulate OAuth flow (in a real app, this would redirect to the provider)
-    // Here we're just simulating the flow
-    setTimeout(() => {
-      // Verify returned state (simulated here)
-      const storedState = sessionStorage.getItem("auth_state");
-      if (storedState !== state) {
-        setError("Authentication failed: Invalid state parameter");
-        setIsLoading(false);
-        return;
-      }
-      
-      // For demo purposes, simulate successful login with different names based on provider
-      const name = provider === 'google' ? 'John Teacher' : 
-                  provider === 'apple' ? 'Sarah Teacher' : 
-                  'Alex Teacher';
-      
-      login(name, "teacher");
-      
-      toast({
-        title: "Login successful via " + provider,
-        description: `Welcome back, ${name}!`,
-      });
-      
-      // Clean up auth state
-      sessionStorage.removeItem("auth_state");
-      sessionStorage.removeItem("auth_provider");
-      
-      navigate("/dashboard");
-      setIsLoading(false);
-    }, 1000);
-  };
-
-  const handleGoogleSignIn = () => {
-    if (window.google && isGoogleAuthReady) {
-      try {
-        window.google.accounts.id.prompt();
-      } catch (error) {
-        console.error("Error prompting Google sign-in:", error);
-        toast({
-          title: "Google Sign-In Error",
-          description: "Failed to open Google authentication",
-          variant: "destructive"
-        });
-      }
-    } else {
-      toast({
-        title: "Google Sign-In Error",
-        description: "Google authentication is not ready yet. Please try again in a moment.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const toggleSignUpMode = () => {
-    setIsSignUp(!isSignUp);
-    setError("");
-  };
-
-  // Load Google Identity Services script
-  useEffect(() => {
-    if (!isGoogleScriptLoaded) {
-      const script = document.createElement("script");
-      script.src = "https://accounts.google.com/gsi/client";
-      script.async = true;
-      script.defer = true;
-      script.onload = () => setIsGoogleScriptLoaded(true);
-      document.body.appendChild(script);
-      
-      return () => {
-        document.body.removeChild(script);
-      };
-    }
-  }, [isGoogleScriptLoaded]);
-
-  // Initialize Google Identity Services
-  useEffect(() => {
-    if (isGoogleScriptLoaded && window.google) {
-      try {
-        window.google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: handleGoogleResponse,
-          context: "signin",
-          ux_mode: "popup",
-          auto_select: false,
-          itp_support: true,
-        });
-        setIsGoogleAuthReady(true);
-      } catch (error) {
-        console.error("Failed to initialize Google Identity Services:", error);
-        toast({
-          title: "Google Sign-In Error",
-          description: "Failed to initialize Google authentication",
-          variant: "destructive"
-        });
-      }
-    }
-  }, [isGoogleScriptLoaded]);
-
-  // Render Google Sign-In button when ready
-  useEffect(() => {
-    if (isGoogleAuthReady && window.google) {
-      const googleButtonContainer = document.getElementById("google-signin-button");
-      if (googleButtonContainer) {
-        try {
-          window.google.accounts.id.renderButton(googleButtonContainer, {
-            type: "standard",
-            theme: "outline",
-            size: "large",
-            text: "signin_with",
-            shape: "rectangular",
-            logo_alignment: "left",
-            width: "100%",
-          });
-        } catch (error) {
-          console.error("Failed to render Google button:", error);
-        }
-      }
-    }
-  }, [isGoogleAuthReady]);
-
-  // Google authentication response handler
-  const handleGoogleResponse = useCallback((response: any) => {
-    if (!response || !response.credential) {
-      toast({
-        title: "Google Sign-In Error",
-        description: "Authentication failed. Please try again.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    
-    // Here you would normally send this token to your backend
-    // For this demo, we'll simulate a successful authentication
-    try {
-      // Decode the JWT to extract basic user info (this is safe to do on the client side)
-      // Note: In a production app, proper verification should happen on the server
-      const payload = JSON.parse(atob(response.credential.split('.')[1]));
-      
-      login(payload.name, "teacher", {
-        email: payload.email,
-        picture: payload.picture,
-        authMethod: "google",
-        googleId: payload.sub
-      });
-      
-      toast({
-        title: "Google Sign-In Successful",
-        description: `Welcome, ${payload.name}!`,
-      });
-      
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Error processing Google response:", error);
-      toast({
-        title: "Authentication Error",
-        description: "Failed to process login information",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [login, navigate, toast]);
-
-  if (verificationMode) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background p-4">
-        <Card className="w-full max-w-md shadow-lg">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">Verification Required</CardTitle>
-            <CardDescription className="text-center">
-              We've sent a verification code to your email address
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={(e) => { e.preventDefault(); handleVerification(); }} className="space-y-4">
-              {error && (
-                <Alert variant="destructive">
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-              
-              <div className="space-y-2">
-                <div className="flex justify-center pb-4">
-                  <InputOTP maxLength={6} value={verificationCode} onChange={setVerificationCode}>
-                    <InputOTPGroup>
-                      <InputOTPSlot index={0} />
-                      <InputOTPSlot index={1} />
-                      <InputOTPSlot index={2} />
-                      <InputOTPSlot index={3} />
-                      <InputOTPSlot index={4} />
-                      <InputOTPSlot index={5} />
-                    </InputOTPGroup>
-                  </InputOTP>
-                </div>
-                
-                {countdownActive && (
-                  <div className="text-center text-sm text-muted-foreground">
-                    Code expires in: {formatTimeRemaining()}
-                  </div>
-                )}
-                
-                {attemptCount > 0 && (
-                  <div className="text-center text-sm text-muted-foreground">
-                    Attempts: {attemptCount}/5
-                  </div>
-                )}
-              </div>
-              
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Verifying..." : "Verify Code"}
-              </Button>
-              
-              <div className="flex justify-between text-center text-sm">
-                <a 
-                  href="#" 
-                  onClick={(e) => { 
-                    e.preventDefault(); 
-                    handleResendCode(); 
-                  }} 
-                  className="text-primary hover:underline flex items-center"
-                >
-                  <RotateCw className="h-3 w-3 mr-1" /> Resend code
-                </a>
-                <a 
-                  href="#" 
-                  onClick={(e) => { 
-                    e.preventDefault(); 
-                    setVerificationMode(false); 
-                  }} 
-                  className="text-primary hover:underline"
-                >
-                  Back to login
-                </a>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
+  
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">
-            {isSignUp ? "Create Account" : "Welcome Back"}
-          </CardTitle>
-          <CardDescription className="text-center">
-            {isSignUp 
-              ? "Sign up to access your student management system" 
-              : "Login to access your student management system"}
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent>
-          <Tabs defaultValue={isSignUp ? "signup" : "standard"} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-4">
-              <TabsTrigger 
-                value="standard" 
-                onClick={() => setIsSignUp(false)}
-              >
-                {isSignUp ? "Sign Up" : "Standard Login"}
-              </TabsTrigger>
-              <TabsTrigger value="sso">SSO & Social</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="standard" className="mt-0">
-              <form onSubmit={isSignUp ? handleSignUp : handleStandardLogin} className="space-y-4">
-                {error && (
-                  <Alert variant="destructive">
-                    <AlertDescription>{error}</AlertDescription>
-                  </Alert>
-                )}
-                
-                {isSignUp && (
-                  <div className="space-y-2">
-                    <label htmlFor="name" className="text-sm font-medium">
-                      Full Name <span className="text-red-500">*</span>
-                    </label>
-                    <Input
-                      id="name"
-                      type="text"
-                      placeholder="Enter your full name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      disabled={isLoading}
-                      required
-                    />
-                  </div>
-                )}
-                
-                <div className="space-y-2">
-                  <label htmlFor="username" className="text-sm font-medium">
-                    Email Address <span className="text-red-500">*</span>
-                  </label>
-                  <Input
-                    id="username"
-                    type="email"
-                    placeholder="Enter your email"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    autoComplete="email"
-                    disabled={isLoading}
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <label htmlFor="password" className="text-sm font-medium">
-                      Password <span className="text-red-500">*</span>
-                    </label>
-                    {!isSignUp && (
-                      <a href="#" className="text-sm text-primary hover:underline">
-                        Forgot password?
-                      </a>
-                    )}
-                  </div>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder={isSignUp ? "Create a password" : "Enter your password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    autoComplete={isSignUp ? "new-password" : "current-password"}
-                    disabled={isLoading}
-                    required
-                  />
-                </div>
-                
-                {isSignUp && (
-                  <>
-                    <div className="space-y-2">
-                      <label htmlFor="subject" className="text-sm font-medium">
-                        Subject Taught
-                      </label>
-                      <Input
-                        id="subject"
-                        type="text"
-                        placeholder="e.g. Mathematics, Science"
-                        value={subject}
-                        onChange={(e) => setSubject(e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <label htmlFor="gradeLevel" className="text-sm font-medium">
-                        Grade Level
-                      </label>
-                      <Input
-                        id="gradeLevel"
-                        type="text"
-                        placeholder="e.g. K-5, 6-8, 9-12"
-                        value={gradeLevel}
-                        onChange={(e) => setGradeLevel(e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-                  </>
-                )}
-                
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading 
-                    ? (isSignUp ? "Creating Account..." : "Logging in...") 
-                    : (isSignUp ? "Create Account" : "Login with Email")
-                  }
-                </Button>
-              </form>
-            </TabsContent>
-            
-            <TabsContent value="sso" className="mt-0 space-y-4">
-              <Button 
-                onClick={handleGoogleSignIn} 
-                variant="outline" 
-                className="w-full justify-start"
-                disabled={isLoading || !isGoogleAuthReady}
-              >
-                <MessageSquare className="mr-2 h-4 w-4" /> Continue with Google
-              </Button>
-              
-              <div id="google-signin-button" className="hidden"></div>
-              
-              <Button 
-                onClick={() => handleSocialLogin('apple')} 
-                variant="outline" 
-                className="w-full justify-start"
-                disabled={isLoading}
-              >
-                <GithubIcon className="mr-2 h-4 w-4" /> Continue with Apple
-              </Button>
-              
-              <Button 
-                onClick={() => handleSocialLogin('microsoft')} 
-                variant="outline" 
-                className="w-full justify-start"
-                disabled={isLoading}
-              >
-                <ExternalLink className="mr-2 h-4 w-4" /> Continue with Microsoft
-              </Button>
-              
-              <Separator />
-              
-              <div className="text-center text-sm text-muted-foreground">
-                <p>For educational institution SSO, contact your administrator</p>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-        
-        <CardFooter>
-          <p className="text-center text-sm text-muted-foreground w-full">
-            {isSignUp 
-              ? "Already have an account? " 
-              : "Don't have an account? "}
-            <a 
-              href="#" 
-              onClick={(e) => {
-                e.preventDefault();
-                toggleSignUpMode();
-              }} 
-              className="text-primary hover:underline font-medium"
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="absolute top-4 right-4">
+        <LanguageToggle />
+      </div>
+      
+      <div className="flex-1 flex items-center justify-center p-4">
+        <motion.div 
+          className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <div className="text-center mb-8">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="w-20 h-20 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4"
             >
-              {isSignUp ? "Login" : "Sign Up"}
-            </a>
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </motion.div>
+            
+            <h1 className="text-3xl font-bold font-display text-gray-900">Learning Track</h1>
+            <p className="text-gray-600 mt-2">Track student progress and celebrate achievements</p>
+          </div>
+          
+          <div className="space-y-4">
+            <motion.button
+              className="w-full py-3 px-4 rounded-md border border-gray-300 bg-white text-gray-800 font-medium flex items-center justify-center space-x-2 hover:bg-gray-50 transition-colors"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleDemoLogin}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <span>Demo Login (Teacher)</span>
+            </motion.button>
+            
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-4 bg-white text-gray-500">
+                  {t.or || "or"}
+                </span>
+              </div>
+            </div>
+            
+            <motion.button
+              className="w-full py-3 px-4 rounded-md border border-gray-300 bg-white text-gray-800 font-medium flex items-center justify-center space-x-2 hover:bg-gray-50 transition-colors"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleDemoLogin}
+              disabled
+            >
+              <svg viewBox="0 0 48 48" className="h-5 w-5">
+                <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+                <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+                <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+                <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
+              </svg>
+              <span>{t.signInWithGoogle || "Sign in with Google"}</span>
+            </motion.button>
+          </div>
+          
+          <p className="text-sm text-gray-500 text-center mt-8">
+            {t.demoLoginNote || "Note: This is a demo. Actual authentication will be implemented in production."}
           </p>
-        </CardFooter>
-      </Card>
+        </motion.div>
+      </div>
+      
+      <footer className="py-4 text-center text-gray-500 text-sm">
+        &copy; 2023 Learning Track. {t.allRightsReserved || "All rights reserved."}
+      </footer>
     </div>
   );
 };

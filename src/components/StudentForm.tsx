@@ -1,227 +1,309 @@
 
 import React, { useState } from 'react';
-import { toast } from 'sonner';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useAppContext } from '@/context/AppContext';
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { useForm } from 'react-hook-form';
+import { useAppContext, Student } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
-import { Student } from '@/context/AppContext';
+import { toast } from 'sonner';
 
-interface StudentFormProps {
-  student?: Student;
-  onSuccess?: () => void;
-  onClose?: () => void;
+export interface StudentFormProps {
+  onSubmit: (data: StudentFormData) => void;
+  studentToEdit?: Student;
+  onCancel?: () => void;
 }
 
-export const StudentForm: React.FC<StudentFormProps> = ({ student, onSuccess, onClose }) => {
-  const { addStudent, updateStudent, language } = useAppContext();
+export interface StudentFormData {
+  name: string;
+  grade: string;
+  nationality: 'international' | 'national';
+  points: number;
+  attendance: number;
+  booksOwned: number;
+  engagementScore: number;
+  subjects: string[];
+}
+
+export const StudentForm: React.FC<StudentFormProps> = ({
+  onSubmit,
+  studentToEdit,
+  onCancel
+}) => {
+  const { language } = useAppContext();
   const t = getTranslations(language);
   
-  const [name, setName] = useState(student?.name || '');
-  const [points, setPoints] = useState(student?.points?.toString() || '0');
-  const [attendance, setAttendance] = useState(student?.attendance?.toString() || '0');
-  const [booksOwned, setBooksOwned] = useState(student?.booksOwned?.toString() || '0');
-  const [engagementScore, setEngagementScore] = useState(student?.engagementScore?.toString() || '0');
-  const [grade, setGrade] = useState(student?.grade || '');
-  const [nationality, setNationality] = useState<'international' | 'national'>(student?.nationality || 'national');
-  const [helpfulness, setHelpfulness] = useState(student?.helpfulness?.toString() || '0');
-  const [respect, setRespect] = useState(student?.respect?.toString() || '0');
-  const [teamwork, setTeamwork] = useState(student?.teamwork?.toString() || '0');
-  const [excellence, setExcellence] = useState(student?.excellence?.toString() || '0');
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>(
+    studentToEdit?.subjects || []
+  );
   
-  const [selectedSubjects, setSelectedSubjects] = useState<string[]>(student?.subjects || []);
-  const availableSubjects = ['Math', 'Science', 'English', 'History', 'Art', 'Music', 'PE', 'Technology'];
+  const form = useForm<StudentFormData>({
+    defaultValues: {
+      name: studentToEdit?.name || '',
+      grade: studentToEdit?.grade || '',
+      nationality: studentToEdit?.nationality || 'national',
+      points: studentToEdit?.points || 0,
+      attendance: studentToEdit?.attendance || 0,
+      booksOwned: studentToEdit?.booksOwned || 0,
+      engagementScore: studentToEdit?.engagementScore || 0,
+      subjects: studentToEdit?.subjects || [],
+    },
+  });
+  
+  const availableSubjects = [
+    'Math',
+    'Science',
+    'English',
+    'Arabic',
+    'Social Studies',
+    'Physical Education',
+    'Art',
+    'Music',
+    'Computer Science',
+    'Religious Studies'
+  ];
+  
+  const grades = [
+    'Grade 1',
+    'Grade 2',
+    'Grade 3',
+    'Grade 4',
+    'Grade 5',
+    'Grade 6',
+    'Grade 7',
+    'Grade 8',
+    'Grade 9',
+    'Grade 10',
+    'Grade 11',
+    'Grade 12'
+  ];
   
   const handleSubjectToggle = (subject: string) => {
-    if (selectedSubjects.includes(subject)) {
-      setSelectedSubjects(selectedSubjects.filter(s => s !== subject));
-    } else {
-      setSelectedSubjects([...selectedSubjects, subject]);
-    }
+    setSelectedSubjects(prev => {
+      const isSelected = prev.includes(subject);
+      if (isSelected) {
+        return prev.filter(s => s !== subject);
+      } else {
+        return [...prev, subject];
+      }
+    });
   };
   
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Create student object from form data
-    const studentData = {
-      subjects: selectedSubjects,
-      name,
-      points: parseInt(points),
-      attendance: parseInt(attendance),
-      booksOwned: parseInt(booksOwned),
-      engagementScore: parseInt(engagementScore),
-      nationality,
-      grade,
-      helpfulness: parseInt(helpfulness),
-      respect: parseInt(respect),
-      teamwork: parseInt(teamwork),
-      excellence: parseInt(excellence)
-    };
-    
-    if (student) {
-      updateStudent(student.id, studentData);
-      toast.success(t.studentUpdated || "Student updated successfully");
-    } else {
-      addStudent(studentData);
-      toast.success(t.studentAdded || "Student added successfully");
-    }
-    
-    if (onSuccess) {
-      onSuccess();
-    } else if (onClose) {
-      onClose();
+  const handleFormSubmit = (data: StudentFormData) => {
+    try {
+      // Add the selected subjects to the form data
+      data.subjects = selectedSubjects;
+      
+      // Validate numeric fields
+      if (isNaN(data.points)) data.points = 0;
+      if (isNaN(data.attendance)) data.attendance = 0;
+      if (isNaN(data.booksOwned)) data.booksOwned = 0;
+      if (isNaN(data.engagementScore)) data.engagementScore = 0;
+      
+      // Ensure attendance is between 0-10
+      data.attendance = Math.max(0, Math.min(10, data.attendance));
+      
+      // Ensure engagementScore is between 0-10
+      data.engagementScore = Math.max(0, Math.min(10, data.engagementScore));
+      
+      onSubmit(data);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error(t.errorSubmittingForm || 'Error submitting form');
     }
   };
   
   return (
-    <form onSubmit={handleFormSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <label htmlFor="name" className="text-sm font-medium">{t.name || "Name"}</label>
-        <Input 
-          id="name" 
-          value={name} 
-          onChange={(e) => setName(e.target.value)} 
-          required 
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t.studentName || 'Student Name'}</FormLabel>
+              <FormControl>
+                <Input placeholder={t.studentName || 'Enter student name'} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-      
-      <div className="space-y-2">
-        <label htmlFor="grade" className="text-sm font-medium">{t.grade || "Grade"}</label>
-        <Input 
-          id="grade" 
-          value={grade} 
-          onChange={(e) => setGrade(e.target.value)} 
-          required 
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <label htmlFor="nationality" className="text-sm font-medium">{t.nationality || "Nationality"}</label>
-        <Select 
-          value={nationality} 
-          onValueChange={(value: 'international' | 'national') => setNationality(value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder={t.selectNationality || "Select Nationality"} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="national">{t.national || "National"}</SelectItem>
-            <SelectItem value="international">{t.international || "International"}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      
-      <div className="space-y-2">
-        <label htmlFor="points" className="text-sm font-medium">{t.points || "Points"}</label>
-        <Input 
-          id="points" 
-          type="number" 
-          value={points} 
-          onChange={(e) => setPoints(e.target.value)} 
-          required 
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <label htmlFor="attendance" className="text-sm font-medium">{t.attendance || "Attendance"}</label>
-        <Input 
-          id="attendance" 
-          type="number" 
-          value={attendance} 
-          onChange={(e) => setAttendance(e.target.value)} 
-          required 
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <label htmlFor="booksOwned" className="text-sm font-medium">{t.booksOwned || "Books Owned"}</label>
-        <Input 
-          id="booksOwned" 
-          type="number" 
-          value={booksOwned} 
-          onChange={(e) => setBooksOwned(e.target.value)} 
-          required 
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <label htmlFor="engagementScore" className="text-sm font-medium">{t.engagementScore || "Engagement Score"}</label>
-        <Input 
-          id="engagementScore" 
-          type="number" 
-          value={engagementScore} 
-          onChange={(e) => setEngagementScore(e.target.value)} 
-          required 
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <label className="text-sm font-medium">{t.helpfulness || "Helpfulness"}</label>
-        <Input 
-          type="number" 
-          value={helpfulness} 
-          onChange={(e) => setHelpfulness(e.target.value)} 
-          required 
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <label className="text-sm font-medium">{t.respect || "Respect"}</label>
-        <Input 
-          type="number" 
-          value={respect} 
-          onChange={(e) => setRespect(e.target.value)} 
-          required 
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <label className="text-sm font-medium">{t.teamwork || "Teamwork"}</label>
-        <Input 
-          type="number" 
-          value={teamwork} 
-          onChange={(e) => setTeamwork(e.target.value)} 
-          required 
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <label className="text-sm font-medium">{t.excellence || "Excellence"}</label>
-        <Input 
-          type="number" 
-          value={excellence} 
-          onChange={(e) => setExcellence(e.target.value)} 
-          required 
-        />
-      </div>
-      
-      <div className="space-y-2">
-        <label className="text-sm font-medium">{t.subjects || "Subjects"}</label>
-        <div className="grid grid-cols-2 gap-2">
-          {availableSubjects.map((subject) => (
-            <div key={subject} className="flex items-center space-x-2">
-              <Checkbox 
-                id={`subject-${subject}`} 
-                checked={selectedSubjects.includes(subject)}
-                onCheckedChange={() => handleSubjectToggle(subject)}
-              />
-              <label 
-                htmlFor={`subject-${subject}`}
-                className="text-sm cursor-pointer"
-              >
-                {subject}
-              </label>
-            </div>
-          ))}
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="grade"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t.grade || 'Grade'}</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t.selectGrade || 'Select Grade'} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {grades.map((grade) => (
+                      <SelectItem key={grade} value={grade}>
+                        {grade}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="nationality"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t.nationality || 'Nationality'}</FormLabel>
+                <Select
+                  onValueChange={field.onChange as (value: string) => void}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t.selectNationality || 'Select Nationality'} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="national">{t.national || 'National'}</SelectItem>
+                    <SelectItem value="international">{t.international || 'International'}</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
-      </div>
-      
-      <div className="flex justify-end pt-4">
-        <Button type="submit">{student ? (t.updateStudent || "Update Student") : (t.addStudent || "Add Student")}</Button>
-      </div>
-    </form>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="points"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t.points || 'Points'}</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    placeholder="0" 
+                    {...field} 
+                    onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="attendance"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t.attendance || 'Attendance'} (0-10)</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    placeholder="0" 
+                    min="0" 
+                    max="10" 
+                    {...field} 
+                    onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="booksOwned"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t.books || 'Books Owned'}</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    placeholder="0" 
+                    min="0" 
+                    {...field} 
+                    onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="engagementScore"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t.engagement || 'Engagement Score'} (0-10)</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="number" 
+                    placeholder="0" 
+                    min="0" 
+                    max="10" 
+                    {...field} 
+                    onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        
+        <div>
+          <Label>{t.subjects || 'Subjects'}</Label>
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            {availableSubjects.map((subject) => (
+              <div key={subject} className="flex items-center space-x-2">
+                <Checkbox 
+                  id={`subject-${subject}`} 
+                  checked={selectedSubjects.includes(subject)}
+                  onCheckedChange={() => handleSubjectToggle(subject)}
+                />
+                <label htmlFor={`subject-${subject}`} className="text-sm cursor-pointer">
+                  {subject}
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="flex justify-end space-x-2">
+          {onCancel && (
+            <Button type="button" variant="outline" onClick={onCancel}>
+              {t.cancel || 'Cancel'}
+            </Button>
+          )}
+          <Button type="submit">
+            {studentToEdit ? (t.updateStudent || 'Update Student') : (t.addStudent || 'Add Student')}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
+
+export default StudentForm;

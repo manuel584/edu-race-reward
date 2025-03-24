@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext, Student } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import { useAuth } from '@/hooks/useAuth';
+import StudentNominationForm from '@/components/StudentNominationForm';
 import { 
   BadgeCheck, 
   HandHeart, 
@@ -58,7 +59,7 @@ const RecognitionCard: React.FC<RecognitionCardProps> = ({ student, type, onClic
   };
   
   const getTypeLabel = () => {
-    const labels = {
+    const labels: Record<string, string> = {
       helpfulness: t.helpfulness || "Helpfulness",
       respect: t.respect || "Respect",
       teamwork: t.teamwork || "Teamwork",
@@ -130,15 +131,14 @@ const RecognitionCard: React.FC<RecognitionCardProps> = ({ student, type, onClic
 };
 
 const StudentRecognition = () => {
-  const { students, addRecognition, nominateStudent, language } = useAppContext();
+  const { students, language } = useAppContext();
   const { user } = useAuth();
   const navigate = useNavigate();
   const t = getTranslations(language);
   
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [recognitionType, setRecognitionType] = useState<'helpfulness' | 'respect' | 'teamwork' | 'excellence'>('helpfulness');
-  const [reason, setReason] = useState<string>('');
-  const [nominationCategory, setNominationCategory] = useState<string>('');
+  const [isNominateOpen, setIsNominateOpen] = useState(false);
   
   // Get top students for each category
   const topHelpfulStudents = [...students].sort((a, b) => (b.helpfulness || 0) - (a.helpfulness || 0)).slice(0, 2);
@@ -146,42 +146,10 @@ const StudentRecognition = () => {
   const topTeamworkStudents = [...students].sort((a, b) => (b.teamwork || 0) - (a.teamwork || 0)).slice(0, 2);
   const topExcellenceStudents = [...students].sort((a, b) => (b.excellence || 0) - (a.excellence || 0)).slice(0, 2);
   
-  const handleRecognition = () => {
-    if (!selectedStudent) return;
-    
-    addRecognition(selectedStudent.id, recognitionType, reason);
-    setSelectedStudent(null);
-    setReason('');
-    
-    // Safe version with null check for translation strings
-    const recognitionMessage = t.recognitionAdded || "Recognition added";
-    const receivedMessage = t.receivedRecognitionFor || "received recognition for";
-    const typeMessage = t[recognitionType] || recognitionType;
-    
-    toast.success(recognitionMessage, {
-      description: `${selectedStudent.name} ${receivedMessage} ${typeMessage}`
-    });
-  };
-  
-  const handleNomination = () => {
-    if (!selectedStudent || !user) return;
-    
-    nominateStudent(selectedStudent.id, nominationCategory, user.name);
-    setSelectedStudent(null);
-    setNominationCategory('');
-    
-    // Safe version with null check for translation strings
-    const nominationMessage = t.nominationSubmitted || "Nomination submitted";
-    const nominatedForMessage = t.nominatedFor || "nominated for";
-    
-    toast.success(nominationMessage, {
-      description: `${selectedStudent.name} ${nominatedForMessage} ${nominationCategory}`
-    });
-  };
-  
   const handleStudentClick = (student: Student, type: 'helpfulness' | 'respect' | 'teamwork' | 'excellence') => {
     setSelectedStudent(student);
     setRecognitionType(type);
+    navigate(`/student/${student.id}`);
   };
   
   return (
@@ -292,118 +260,17 @@ const StudentRecognition = () => {
         </div>
         
         <div className="flex justify-center mt-6">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="gap-2">
-                <Heart className="h-4 w-4 text-rose-500" />
-                {t.nominateStudent || "Nominate Student"}
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{t.nominateStudent || "Nominate Student"}</DialogTitle>
-                <DialogDescription>
-                  {t.nominateStudentDesc || "Nominate a student who has shown exceptional qualities"}
-                </DialogDescription>
-              </DialogHeader>
-              
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">{t.selectStudent || "Select Student"}</label>
-                  <select 
-                    className="w-full border border-gray-300 rounded-md p-2"
-                    value={selectedStudent?.id || ''}
-                    onChange={(e) => {
-                      const selected = students.find(s => s.id === e.target.value);
-                      setSelectedStudent(selected || null);
-                    }}
-                  >
-                    <option value="">{t.selectStudent || "Select Student"}</option>
-                    {students.map(student => (
-                      <option key={student.id} value={student.id}>
-                        {student.name} ({student.grade})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">{t.nominationCategory || "Nomination Category"}</label>
-                  <select 
-                    className="w-full border border-gray-300 rounded-md p-2"
-                    value={nominationCategory}
-                    onChange={(e) => setNominationCategory(e.target.value)}
-                  >
-                    <option value="">{t.selectCategory || "Select Category"}</option>
-                    <optgroup label={t.helpfulness || "Helpfulness"}>
-                      <option value="academic help">{t.academicHelp || "Academic Help"}</option>
-                      <option value="emotional support">{t.emotionalSupport || "Emotional Support"}</option>
-                    </optgroup>
-                    <optgroup label={t.respect || "Respect"}>
-                      <option value="cultural sensitivity">{t.culturalSensitivity || "Cultural Sensitivity"}</option>
-                      <option value="conflict resolution">{t.conflictResolution || "Conflict Resolution"}</option>
-                    </optgroup>
-                    <optgroup label={t.teamwork || "Teamwork"}>
-                      <option value="group contribution">{t.groupContribution || "Group Contribution"}</option>
-                      <option value="collaboration">{t.collaboration || "Collaboration"}</option>
-                    </optgroup>
-                    <optgroup label={t.excellence || "Excellence"}>
-                      <option value="academic excellence">{t.academicExcellence || "Academic Excellence"}</option>
-                      <option value="special talent">{t.specialTalent || "Special Talent"}</option>
-                    </optgroup>
-                  </select>
-                </div>
-              </div>
-              
-              <DialogFooter>
-                <Button onClick={handleNomination} disabled={!selectedStudent || !nominationCategory}>
-                  <MessageSquareHeart className="mr-2 h-4 w-4" />
-                  {t.submitNomination || "Submit Nomination"}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <Button variant="outline" onClick={() => setIsNominateOpen(true)} className="gap-2">
+            <Heart className="h-4 w-4 text-rose-500" />
+            {t.nominateStudent || "Nominate Student"}
+          </Button>
         </div>
       </div>
       
-      {/* Recognition Dialog */}
-      <Dialog open={!!selectedStudent} onOpenChange={(open) => !open && setSelectedStudent(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {recognitionType && (t[recognitionType] || recognitionType)} {t.recognition || "Recognition"}
-            </DialogTitle>
-            <DialogDescription>
-              {selectedStudent ? 
-                (t.addRecognitionFor ? 
-                  (t.addRecognitionFor || "").replace('{name}', selectedStudent.name) : 
-                  `Add recognition for ${selectedStudent.name}`
-                ) : ''}
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t.reason || "Reason"}</label>
-              <textarea 
-                className="w-full border border-gray-300 rounded-md p-2 min-h-[100px]"
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                placeholder={t.enterReason || "Enter reason for recognition"}
-              />
-            </div>
-          </div>
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setSelectedStudent(null)}>
-              {t.cancel || "Cancel"}
-            </Button>
-            <Button onClick={handleRecognition} disabled={!reason}>
-              {t.addRecognition || "Add Recognition"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <StudentNominationForm 
+        open={isNominateOpen} 
+        onOpenChange={setIsNominateOpen}
+      />
     </>
   );
 };

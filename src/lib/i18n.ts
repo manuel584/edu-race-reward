@@ -1,430 +1,373 @@
 
-// Base translations interface
-interface Translations {
-  dashboard: string;
-  students: string;
-  addStudent: string;
-  points: string;
-  attendance: string;
-  booksOwned: string;
-  engagementScore: string;
-  nationality: string;
-  grade: string;
-  subjects: string;
-  pointsHistory: string;
-  date: string;
-  change: string;
-  reason: string;
-  search: string;
-  import: string;
-  noStudents: string;
-  // Add missing navigation translations
-  main: string;
-  home: string;
-  studentGroups: string;
-  nationalStudents: string;
-  internationalStudents: string;
-  grades: string;
-  studentActions: string;
-  addPoints: string;
-  viewHistory: string;
-  exportData: string;
-  settings: string;
-  selectStudent: string;
-  selectCategory: string;
-  enterReason: string;
-  balancedAchievement: string;
-  balancedDesc: string;
-  balancedGrowth: string;
-  achievedOn: string;
-  needsAllCategories: string;
-  congratulations: string;
-  reachedGoal: string;
-  almost: string;
-  keepGoing: string;
-  needsImprovement: string;
-  progressToGoal: string;
-  profile: string;
-  recognition: string;
-  history: string;
-  recentRecognitions: string;
-  noRecognitionsYet: string;
-  totalRecognitions: string;
-  recognitionScores: string;
-  specialRecognitions: string;
-  clearFilters: string;
-  searchStudents: string;
-  byGrade: string;
-  noInternationalStudents: string;
-  noNationalStudents: string;
-  allStudents: string;
-  excellence: string;
-  teamwork: string;
-  respect: string;
-  helpfulness: string;
-  awards: string;
-  // Add new translations
-  studentName: string;
-  international: string;
-  national: string;
-  engagement: string;
-  save: string;
-  cancel: string;
-  selectGrade: string;
-  selectNationality: string;
-  studentUpdated: string;
-  studentAdded: string;
-  update: string;
-  overview: string;
-  achievements: string;
-  noAwardsYet: string;
-  recognitionAdded: string;
-  nominateStudent: string;
-  nominationCategory: string;
-  academicHelp: string;
-  emotionalSupport: string;
-  culturalSensitivity: string;
-  conflictResolution: string;
-  groupContribution: string;
-  collaboration: string;
-  academicExcellence: string;
-  specialTalent: string;
-  submitNomination: string;
-  addRecognitionFor: string;
-  nominationSubmitted: string;
-  nominatedFor: string;
-  receivedRecognitionFor: string;
-  books: string;
-  basicInfo: string;
-  academicInfo: string;
-  nominateStudentDesc: string;
-  studentRecognitions: string;
-  addRecognition: string;
-  noFileSelected: string;
-  studentsImported: string;
-  fileReadError: string;
-  upload: string;
-  highAttendance: string;
-  highEngagement: string;
-  fastImprovement: string;
-  strongIn: string;
-  recognitionLeader: string;
-  developingStrengths: string;
-  classComparison: string;
-  subjectComparison: string;
-  classStrengths: string;
-  totalPoints: string;
-  improvement: string;
-  noClassData: string;
-  noSubjectData: string;
-  subjectDescription: string;
-  strengths: string;
-  classUniqueMessage: string;
-  welcome: string;
-  description: string;
-  getStarted: string;
-  raceToGoal: string;
-  progressOverview: string;
-  studentProgress: string;
-  recognitionSystem: string;
-  back: string;
-  attendanceReason: string;
-  participationReason: string;
-  homeworkReason: string;
-  testResultReason: string;
-  absenceReason: string;
-  misbehaviorReason: string;
-  incompleteWorkReason: string;
-  lateSubmissionReason: string;
-  quickAdd: string;
-  quickDeduct: string;
-  selectReason: string;
-}
+import { createTranslations } from './studentData';
 
-export const translations: { en: Translations; ar: Translations } = {
-  en: {
-    dashboard: "Dashboard",
-    students: "Students",
-    addStudent: "Add Student",
-    points: "Points",
-    attendance: "Attendance",
-    booksOwned: "Books Owned",
-    engagementScore: "Engagement Score",
-    nationality: "Nationality",
-    grade: "Grade",
-    subjects: "Subjects",
-    pointsHistory: "Points History",
-    date: "Date",
-    change: "Change",
-    reason: "Reason",
-    search: "Search",
-    import: "Import",
-    noStudents: "No students found",
-    // Add new translations
-    main: "Main Menu",
-    home: "Home",
-    studentGroups: "Student Groups",
-    nationalStudents: "National Students",
-    internationalStudents: "International Students",
-    grades: "Grade Levels",
-    studentActions: "Student Actions",
-    addPoints: "Add Points",
-    viewHistory: "View History",
-    exportData: "Export Data",
-    settings: "Settings",
-    selectStudent: "Select Student",
-    selectCategory: "Select Category",
-    enterReason: "Enter Reason",
-    balancedAchievement: "Balanced Achievement",
-    balancedDesc: "Demonstrated excellence across all categories",
-    balancedGrowth: "Balanced Growth",
-    achievedOn: "Achieved",
-    needsAllCategories: "Needs 5 recognitions in each category",
-    congratulations: "Congratulations!",
-    reachedGoal: "has reached the goal!",
-    almost: "Almost there!",
-    keepGoing: "Keep going!",
-    needsImprovement: "Needs improvement",
-    progressToGoal: "Progress to Goal",
-    profile: "Profile",
-    recognition: "Recognition",
-    history: "History",
-    recentRecognitions: "Recent Recognitions",
-    noRecognitionsYet: "No recognitions yet",
-    totalRecognitions: "total recognitions",
-    recognitionScores: "Recognition Scores",
-    specialRecognitions: "Special Recognitions",
-    clearFilters: "Clear Filters",
-    searchStudents: "Search students...",
-    byGrade: "By Grade",
-    noInternationalStudents: "No international students found",
-    noNationalStudents: "No national students found",
-    allStudents: "All Students",
-    excellence: "Excellence",
-    teamwork: "Teamwork",
-    respect: "Respect",
-    helpfulness: "Helpfulness",
-    awards: "Awards",
-    // Additional translations for error fixing
-    studentName: "Student Name",
-    international: "International",
-    national: "National",
-    engagement: "Engagement",
-    save: "Save",
-    cancel: "Cancel",
-    selectGrade: "Select Grade",
-    selectNationality: "Select Nationality",
-    studentUpdated: "Student updated successfully",
-    studentAdded: "Student added successfully",
-    update: "Update",
-    overview: "Overview",
-    achievements: "Achievements",
-    noAwardsYet: "No awards yet",
-    recognitionAdded: "Recognition added successfully",
-    nominateStudent: "Nominate Student",
-    nominationCategory: "Nomination Category",
-    academicHelp: "Academic Help",
-    emotionalSupport: "Emotional Support",
-    culturalSensitivity: "Cultural Sensitivity",
-    conflictResolution: "Conflict Resolution",
-    groupContribution: "Group Contribution",
-    collaboration: "Collaboration",
-    academicExcellence: "Academic Excellence",
-    specialTalent: "Special Talent",
-    submitNomination: "Submit Nomination",
-    addRecognitionFor: "Add Recognition",
-    nominationSubmitted: "Nomination submitted successfully",
-    nominatedFor: "has been nominated for",
-    receivedRecognitionFor: "has received recognition for",
-    books: "Books",
-    basicInfo: "Basic Information",
-    academicInfo: "Academic Information",
-    nominateStudentDesc: "Recognize a student for their positive behavior or contributions",
-    studentRecognitions: "Student Recognitions",
-    addRecognition: "Add Recognition",
-    noFileSelected: "No file selected",
-    studentsImported: "Students imported successfully",
-    fileReadError: "Error reading file",
-    upload: "Upload",
-    highAttendance: "High Attendance",
-    highEngagement: "High Engagement",
-    fastImprovement: "Fast Improvement",
-    strongIn: "Strong in",
-    recognitionLeader: "Recognition Leader",
-    developingStrengths: "Developing Strengths",
-    classComparison: "Class Comparison",
-    subjectComparison: "Subject Comparison",
-    classStrengths: "Class Strengths",
-    totalPoints: "Total Points",
-    improvement: "Improvement",
-    noClassData: "No class data available",
-    noSubjectData: "No subject data available",
-    subjectDescription: "Subject Description",
-    strengths: "Strengths",
-    classUniqueMessage: "This class is unique in",
-    welcome: "Welcome to Student Recognition System",
-    description: "Track student progress, add recognitions, and view detailed reports",
-    getStarted: "Get Started",
-    raceToGoal: "Race to Goal",
-    progressOverview: "Progress Overview",
-    studentProgress: "Student Progress",
-    recognitionSystem: "Recognition System",
-    back: "Back",
-    attendanceReason: "Good attendance",
-    participationReason: "Active participation",
-    homeworkReason: "Completed homework",
-    testResultReason: "Good test result",
-    absenceReason: "Unexcused absence",
-    misbehaviorReason: "Classroom misbehavior",
-    incompleteWorkReason: "Incomplete work",
-    lateSubmissionReason: "Late submission",
-    quickAdd: "Quick Add",
-    quickDeduct: "Quick Deduct",
-    selectReason: "Select a reason"
-  },
-  ar: {
-    dashboard: "لوحة التحكم",
-    students: "الطلاب",
-    addStudent: "إضافة طالب",
-    points: "نقاط",
-    attendance: "الحضور",
-    booksOwned: "الكتب المملوكة",
-    engagementScore: "نقاط المشاركة",
-    nationality: "الجنسية",
-    grade: "الصف",
-    subjects: "المواد",
-    pointsHistory: "سجل النقاط",
-    date: "تاريخ",
-    change: "تغيير",
-    reason: "سبب",
-    search: "بحث",
-    import: "استيراد",
-    noStudents: "لا يوجد طلاب",
-    // Add Arabic translations
-    main: "القائمة الرئيسية",
-    home: "الرئيسية",
-    studentGroups: "مجموعات الطلاب",
-    nationalStudents: "الطلاب المحليون",
-    internationalStudents: "الطلاب الدوليون",
-    grades: "المستويات الدراسية",
-    studentActions: "إجراءات الطالب",
-    addPoints: "إضافة نقاط",
-    viewHistory: "عرض السجل",
-    exportData: "تصدير البيانات",
-    settings: "الإعدادات",
-    selectStudent: "اختر الطالب",
-    selectCategory: "اختر الفئة",
-    enterReason: "أدخل السبب",
-    balancedAchievement: "إنجاز متوازن",
-    balancedDesc: "أظهر التميز في جميع الفئات",
-    balancedGrowth: "نمو متوازن",
-    achievedOn: "تم تحقيقه",
-    needsAllCategories: "يحتاج إلى 5 اعترافات في كل فئة",
-    congratulations: "تهانينا!",
-    reachedGoal: "وصل إلى الهدف!",
-    almost: "اقترب من الهدف!",
-    keepGoing: "واصل التقدم!",
-    needsImprovement: "يحتاج إلى تحسين",
-    progressToGoal: "التقدم نحو الهدف",
-    profile: "الملف الشخصي",
-    recognition: "التقدير",
-    history: "السجل",
-    recentRecognitions: "آخر التقديرات",
-    noRecognitionsYet: "لا توجد تقديرات حتى الآن",
-    totalRecognitions: "إجمالي التقديرات",
-    recognitionScores: "درجات التقدير",
-    specialRecognitions: "تقديرات خاصة",
-    clearFilters: "مسح الفلاتر",
-    searchStudents: "البحث عن طلاب...",
-    byGrade: "حسب المستوى",
-    noInternationalStudents: "لا يوجد طلاب دوليين",
-    noNationalStudents: "لا يوجد طلاب محليين",
-    allStudents: "جميع الطلاب",
-    excellence: "التميز",
-    teamwork: "العمل الجماعي",
-    respect: "احترام",
-    helpfulness: "مساعدة",
-    awards: "الجوائز",
-    // Additional translations for error fixing
-    studentName: "اسم الطالب",
-    international: "دولي",
-    national: "محلي",
-    engagement: "المشاركة",
-    save: "حفظ",
-    cancel: "إلغاء",
-    selectGrade: "اختر الصف",
-    selectNationality: "اختر الجنسية",
-    studentUpdated: "تم تحديث الطالب بنجاح",
-    studentAdded: "تمت إضافة الطالب بنجاح",
-    update: "تحديث",
-    overview: "نظرة عامة",
-    achievements: "الإنجازات",
-    noAwardsYet: "لا توجد جوائز بعد",
-    recognitionAdded: "تمت إضافة التقدير بنجاح",
-    nominateStudent: "ترشيح طالب",
-    nominationCategory: "فئة الترشيح",
-    academicHelp: "مساعدة أكاديمية",
-    emotionalSupport: "دعم عاطفي",
-    culturalSensitivity: "حساسية ثقافية",
-    conflictResolution: "حل النزاعات",
-    groupContribution: "مساهمة جماعية",
-    collaboration: "تعاون",
-    academicExcellence: "تميز أكاديمي",
-    specialTalent: "موهبة خاصة",
-    submitNomination: "تقديم الترشيح",
-    addRecognitionFor: "إضافة تقدير",
-    nominationSubmitted: "تم تقديم الترشيح بنجاح",
-    nominatedFor: "تم ترشيحه لـ",
-    receivedRecognitionFor: "حصل على تقدير لـ",
-    books: "الكتب",
-    basicInfo: "معلومات أساسية",
-    academicInfo: "معلومات أكاديمية",
-    nominateStudentDesc: "تقدير طالب لسلوكه الإيجابي أو مساهماته",
-    studentRecognitions: "تقديرات الطالب",
-    addRecognition: "إضافة تقدير",
-    noFileSelected: "لم يتم اختيار ملف",
-    studentsImported: "تم استيراد الطلاب بنجاح",
-    fileReadError: "خطأ في قراءة الملف",
-    upload: "رفع",
-    highAttendance: "حضور مرتفع",
-    highEngagement: "مشاركة عالية",
-    fastImprovement: "تحسن سريع",
-    strongIn: "قوي في",
-    recognitionLeader: "رائد التقدير",
-    developingStrengths: "تطوير نقاط القوة",
-    classComparison: "مقارنة الصفوف",
-    subjectComparison: "مقارنة المواد",
-    classStrengths: "نقاط قوة الصف",
-    totalPoints: "إجمالي النقاط",
-    improvement: "التحسن",
-    noClassData: "لا توجد بيانات للصف",
-    noSubjectData: "لا توجد بيانات للمادة",
-    subjectDescription: "وصف المادة",
-    strengths: "نقاط القوة",
-    classUniqueMessage: "هذا الصف فريد في",
-    welcome: "مرحبًا بك في نظام تقدير الطلاب",
-    description: "تتبع تقدم الطالب، وإضافة تقديرات، وعرض تقارير مفصلة",
-    getStarted: "البدء",
-    raceToGoal: "السباق نحو الهدف",
-    progressOverview: "نظرة عامة على التقدم",
-    studentProgress: "تقدم الطالب",
-    recognitionSystem: "نظام التقدير",
-    back: "العودة",
-    attendanceReason: "حضور جيد",
-    participationReason: "مشاركة فعالة",
-    homeworkReason: "إكمال الواجب المنزلي",
-    testResultReason: "نتيجة اختبار جيدة",
-    absenceReason: "غياب بدون عذر",
-    misbehaviorReason: "سوء سلوك في الفصل",
-    incompleteWorkReason: "عمل غير مكتمل",
-    lateSubmissionReason: "تسليم متأخر",
-    quickAdd: "إضافة سريعة",
-    quickDeduct: "خصم سريع",
-    selectReason: "اختر سببًا"
-  },
+export type TranslationKey = 
+  | 'students'
+  | 'points'
+  | 'profile'
+  | 'search'
+  | 'addStudent'
+  | 'studentName'
+  | 'grade'
+  | 'nationality'
+  | 'addPoints'
+  | 'removePoints'
+  | 'importStudents'
+  | 'settingsAndOptions'
+  | 'attendance'
+  | 'books'
+  | 'engagement'
+  | 'subjects'
+  | 'home'
+  | 'dashboard'
+  | 'loading'
+  | 'save'
+  | 'cancel'
+  | 'delete'
+  | 'edit'
+  | 'view'
+  | 'welcome'
+  | 'progressToGoal'
+  | 'congratulations'
+  | 'reachedGoal'
+  | 'almost'
+  | 'keepGoing'
+  | 'needsImprovement'
+  | 'recognition'
+  | 'pointsHistory'
+  | 'date'
+  | 'change'
+  | 'reason'
+  | 'helpfulness'
+  | 'respect'
+  | 'teamwork'
+  | 'excellence'
+  | 'nominateStudent'
+  | 'nominateStudentDesc'
+  | 'selectStudent'
+  | 'nominationCategory'
+  | 'selectCategory'
+  | 'academicHelp'
+  | 'emotionalSupport'
+  | 'culturalSensitivity'
+  | 'conflictResolution'
+  | 'groupContribution'
+  | 'collaboration'
+  | 'academicExcellence'
+  | 'specialTalent'
+  | 'submitNomination'
+  | 'addRecognitionFor'
+  | 'addRecognition'
+  | 'enterReason'
+  | 'nominationSubmitted'
+  | 'nominatedFor'
+  | 'all'
+  | 'allStudents'
+  | 'internationalStudents'
+  | 'nationalStudents'
+  | 'byGrade'
+  | 'noStudents'
+  | 'noInternationalStudents'
+  | 'noNationalStudents'
+  | 'searchStudents'
+  | 'clearFilters'
+  | 'studentRecognitions'
+  | 'noRecognitionsYet'
+  | 'noPointsHistory'
+  | 'exceptional-helpfulness'
+  | 'outstanding-respect'
+  | 'remarkable-teamwork'
+  | 'academic-excellence'
+  | 'personal-growth'
+  | 'community-contribution'
+  | 'leadership'
+  | 'creativity'
+  | 'reasonForNomination'
+  | 'selectReason'
+  | 'selectReasonDescription'
+  | 'additionalComments'
+  | 'commentsPlaceholder'
+  | 'nominate'
+  | 'goalReached'
+  | 'toGoal'
+  | 'recentlyNominated'
+  | 'noStudentsFound'
+  | 'noRecentNominations'
+  | 'significantImprovement'
+  | 'improving'
+  | 'steady'
+  | 'needsAttention'
+  | 'noData'
+  | 'actions'
+  | 'viewStudents'
+  | 'addAchievement'
+  | 'generateReport'
+  | 'totalPoints'
+  | 'averageAttendance'
+  | 'engagement'
+  | 'achievements'
+  | 'noAchievementsYet'
+  | 'viewClass'
+  | 'generatingReportFor'
+  | 'reportNotImplemented'
+  | 'achievementAdded'
+  | 'addedTo'
+  | 'classes'
+  | 'addClassAchievement'
+  | 'addAchievementDescription'
+  | 'achievement'
+  | 'achievementPlaceholder'
+  | 'more'
+  | 'noStudentsName';
+
+export type Translations = {
+  [key in TranslationKey]?: string;
 };
 
-// Function to get translations based on locale
-export const getTranslations = (locale: 'en' | 'ar') => {
-  return translations[locale];
+// English translations
+const enTranslations: Translations = {
+  students: 'Students',
+  points: 'Points',
+  profile: 'Profile',
+  search: 'Search',
+  addStudent: 'Add Student',
+  studentName: 'Student Name',
+  grade: 'Grade',
+  nationality: 'Nationality',
+  addPoints: 'Add Points',
+  removePoints: 'Remove Points',
+  importStudents: 'Import Students',
+  settingsAndOptions: 'Settings & Options',
+  attendance: 'Attendance',
+  books: 'Books',
+  engagement: 'Engagement',
+  subjects: 'Subjects',
+  home: 'Home',
+  dashboard: 'Dashboard',
+  loading: 'Loading...',
+  save: 'Save',
+  cancel: 'Cancel',
+  delete: 'Delete',
+  edit: 'Edit',
+  view: 'View',
+  welcome: 'Welcome',
+  progressToGoal: 'Progress to Goal',
+  congratulations: 'Congratulations!',
+  reachedGoal: 'reached goal!',
+  almost: 'Almost there!',
+  keepGoing: 'Keep going!',
+  needsImprovement: 'Needs improvement',
+  recognition: 'Recognition',
+  pointsHistory: 'Points History',
+  date: 'Date',
+  change: 'Change',
+  reason: 'Reason',
+  helpfulness: 'Helpfulness',
+  respect: 'Respect',
+  teamwork: 'Teamwork',
+  excellence: 'Excellence',
+  nominateStudent: 'Nominate Student',
+  nominateStudentDesc: 'Nominate a student who has shown exceptional qualities',
+  selectStudent: 'Select Student',
+  nominationCategory: 'Nomination Category',
+  selectCategory: 'Select Category',
+  academicHelp: 'Academic Help',
+  emotionalSupport: 'Emotional Support',
+  culturalSensitivity: 'Cultural Sensitivity',
+  conflictResolution: 'Conflict Resolution',
+  groupContribution: 'Group Contribution',
+  collaboration: 'Collaboration',
+  academicExcellence: 'Academic Excellence',
+  specialTalent: 'Special Talent',
+  submitNomination: 'Submit Nomination',
+  addRecognitionFor: 'Add recognition for {name}',
+  addRecognition: 'Add Recognition',
+  enterReason: 'Enter reason for recognition',
+  nominationSubmitted: 'Nomination submitted',
+  nominatedFor: 'nominated for',
+  all: 'All',
+  allStudents: 'All Students',
+  internationalStudents: 'International Students',
+  nationalStudents: 'National Students',
+  byGrade: 'By Grade',
+  noStudents: 'No students found',
+  noInternationalStudents: 'No international students found',
+  noNationalStudents: 'No national students found',
+  searchStudents: 'Search students...',
+  clearFilters: 'Clear Filters',
+  studentRecognitions: 'Student Recognitions',
+  noRecognitionsYet: 'No recognitions yet',
+  noPointsHistory: 'No points history available',
+  'exceptional-helpfulness': 'Exceptional Helpfulness',
+  'outstanding-respect': 'Outstanding Respect',
+  'remarkable-teamwork': 'Remarkable Teamwork',
+  'academic-excellence': 'Academic Excellence',
+  'personal-growth': 'Personal Growth',
+  'community-contribution': 'Community Contribution',
+  'leadership': 'Leadership',
+  'creativity': 'Creativity',
+  reasonForNomination: 'Reason for Nomination',
+  selectReason: 'Select reason for nomination',
+  selectReasonDescription: 'Choose the primary reason for this nomination',
+  additionalComments: 'Additional Comments',
+  commentsPlaceholder: 'Add any additional details about this nomination...',
+  nominate: 'Nominate',
+  goalReached: 'Goal Reached!',
+  toGoal: 'to Goal',
+  recentlyNominated: 'Recently Nominated',
+  noStudentsFound: 'No students found',
+  noRecentNominations: 'No recent nominations',
+  significantImprovement: 'Significant improvement',
+  improving: 'Improving',
+  steady: 'Steady',
+  needsAttention: 'Needs attention',
+  noData: 'No data',
+  actions: 'Actions',
+  viewStudents: 'View Students',
+  addAchievement: 'Add Achievement',
+  generateReport: 'Generate Report',
+  totalPoints: 'Total Points',
+  averageAttendance: 'Avg. Attendance',
+  achievements: 'Achievements',
+  noAchievementsYet: 'No achievements yet',
+  viewClass: 'View Class',
+  generatingReportFor: 'Generating report for',
+  reportNotImplemented: 'This feature is not implemented yet',
+  achievementAdded: 'Achievement added',
+  addedTo: 'added to',
+  classes: 'Classes',
+  addClassAchievement: 'Add Class Achievement',
+  addAchievementDescription: 'Add a new achievement for this class',
+  achievement: 'Achievement',
+  achievementPlaceholder: 'Enter achievement description',
+  more: 'more',
+  noStudentsName: 'Unknown Student'
+};
+
+// Arabic translations
+const arTranslations: Translations = {
+  students: 'الطلاب',
+  points: 'النقاط',
+  profile: 'الملف الشخصي',
+  search: 'بحث',
+  addStudent: 'إضافة طالب',
+  studentName: 'اسم الطالب',
+  grade: 'الصف',
+  nationality: 'الجنسية',
+  addPoints: 'إضافة نقاط',
+  removePoints: 'إزالة نقاط',
+  importStudents: 'استيراد الطلاب',
+  settingsAndOptions: 'الإعدادات والخيارات',
+  attendance: 'الحضور',
+  books: 'الكتب',
+  engagement: 'المشاركة',
+  subjects: 'المواد',
+  home: 'الرئيسية',
+  dashboard: 'لوحة التحكم',
+  loading: 'جار التحميل...',
+  save: 'حفظ',
+  cancel: 'إلغاء',
+  delete: 'حذف',
+  edit: 'تعديل',
+  view: 'عرض',
+  welcome: 'مرحبا',
+  progressToGoal: 'التقدم نحو الهدف',
+  congratulations: 'تهانينا!',
+  reachedGoal: 'وصل إلى الهدف!',
+  almost: 'اقتربت!',
+  keepGoing: 'استمر!',
+  needsImprovement: 'يحتاج إلى تحسين',
+  recognition: 'التقدير',
+  pointsHistory: 'سجل النقاط',
+  date: 'التاريخ',
+  change: 'التغيير',
+  reason: 'السبب',
+  helpfulness: 'المساعدة',
+  respect: 'الاحترام',
+  teamwork: 'العمل الجماعي',
+  excellence: 'التميز',
+  nominateStudent: 'ترشيح طالب',
+  nominateStudentDesc: 'ترشيح طالب أظهر صفات استثنائية',
+  selectStudent: 'اختر طالب',
+  nominationCategory: 'فئة الترشيح',
+  selectCategory: 'اختر الفئة',
+  academicHelp: 'المساعدة الأكاديمية',
+  emotionalSupport: 'الدعم العاطفي',
+  culturalSensitivity: 'الحساسية الثقافية',
+  conflictResolution: 'حل النزاعات',
+  groupContribution: 'المساهمة الجماعية',
+  collaboration: 'التعاون',
+  academicExcellence: 'التفوق الأكاديمي',
+  specialTalent: 'موهبة خاصة',
+  submitNomination: 'إرسال الترشيح',
+  addRecognitionFor: 'إضافة تقدير لـ {name}',
+  addRecognition: 'إضافة تقدير',
+  enterReason: 'أدخل سبب التقدير',
+  nominationSubmitted: 'تم إرسال الترشيح',
+  nominatedFor: 'تم ترشيحه لـ',
+  all: 'الكل',
+  allStudents: 'جميع الطلاب',
+  internationalStudents: 'الطلاب الدوليين',
+  nationalStudents: 'الطلاب المحليين',
+  byGrade: 'حسب الصف',
+  noStudents: 'لم يتم العثور على طلاب',
+  noInternationalStudents: 'لم يتم العثور على طلاب دوليين',
+  noNationalStudents: 'لم يتم العثور على طلاب محليين',
+  searchStudents: 'البحث عن طلاب...',
+  clearFilters: 'مسح الفلاتر',
+  studentRecognitions: 'تقديرات الطلاب',
+  noRecognitionsYet: 'لا توجد تقديرات بعد',
+  noPointsHistory: 'لا يوجد سجل نقاط متاح',
+  'exceptional-helpfulness': 'مساعدة استثنائية',
+  'outstanding-respect': 'احترام متميز',
+  'remarkable-teamwork': 'عمل جماعي رائع',
+  'academic-excellence': 'تفوق أكاديمي',
+  'personal-growth': 'نمو شخصي',
+  'community-contribution': 'مساهمة مجتمعية',
+  'leadership': 'قيادة',
+  'creativity': 'إبداع',
+  reasonForNomination: 'سبب الترشيح',
+  selectReason: 'اختر سبب الترشيح',
+  selectReasonDescription: 'اختر السبب الرئيسي لهذا الترشيح',
+  additionalComments: 'تعليقات إضافية',
+  commentsPlaceholder: 'أضف أي تفاصيل إضافية حول هذا الترشيح...',
+  nominate: 'ترشيح',
+  goalReached: 'تم الوصول للهدف!',
+  toGoal: 'للهدف',
+  recentlyNominated: 'تم ترشيحهم مؤخرا',
+  noStudentsFound: 'لم يتم العثور على طلاب',
+  noRecentNominations: 'لا توجد ترشيحات حديثة',
+  significantImprovement: 'تحسن كبير',
+  improving: 'يتحسن',
+  steady: 'ثابت',
+  needsAttention: 'يحتاج اهتمام',
+  noData: 'لا توجد بيانات',
+  actions: 'إجراءات',
+  viewStudents: 'عرض الطلاب',
+  addAchievement: 'إضافة إنجاز',
+  generateReport: 'إنشاء تقرير',
+  totalPoints: 'إجمالي النقاط',
+  averageAttendance: 'متوسط الحضور',
+  achievements: 'الإنجازات',
+  noAchievementsYet: 'لا توجد إنجازات بعد',
+  viewClass: 'عرض الصف',
+  generatingReportFor: 'إنشاء تقرير لـ',
+  reportNotImplemented: 'هذه الميزة غير متوفرة بعد',
+  achievementAdded: 'تمت إضافة الإنجاز',
+  addedTo: 'تمت إضافته إلى',
+  classes: 'الصفوف',
+  addClassAchievement: 'إضافة إنجاز للصف',
+  addAchievementDescription: 'إضافة إنجاز جديد لهذا الصف',
+  achievement: 'إنجاز',
+  achievementPlaceholder: 'أدخل وصف الإنجاز',
+  more: 'المزيد',
+  noStudentsName: 'طالب غير معروف'
+};
+
+// Create and export translations
+const translations = createTranslations(enTranslations, arTranslations);
+
+// Helper function to get translations based on language
+export const getTranslations = (language: 'en' | 'ar'): Translations => {
+  return translations[language];
 };
