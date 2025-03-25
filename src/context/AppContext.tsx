@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Types
@@ -26,16 +27,6 @@ export type Student = {
     type: 'helpfulness' | 'respect' | 'teamwork' | 'excellence';
     description: string;
   }[];
-  examScores?: ExamScore[];
-};
-
-export type ExamScore = {
-  id: string;
-  examName: string;
-  score: number;
-  totalPossible: number;
-  date: string;
-  subject: string;
 };
 
 export type ClassMetrics = {
@@ -66,9 +57,6 @@ export type AppContextType = {
   addClassAchievement: (className: string, achievement: string) => void;
   getClassMetrics: () => ClassMetrics[];
   nominateStudent: (studentId: string, category: string, nominatorId: string) => void;
-  addExamScore: (studentId: string, examData: Omit<ExamScore, 'id'>) => void;
-  updateExamScore: (studentId: string, examId: string, examData: Partial<Omit<ExamScore, 'id'>>) => void;
-  deleteExamScore: (studentId: string, examId: string) => void;
 };
 
 const AppContext = createContext<AppContextType>({
@@ -89,9 +77,6 @@ const AppContext = createContext<AppContextType>({
   addClassAchievement: () => {},
   getClassMetrics: () => [],
   nominateStudent: () => {},
-  addExamScore: () => {},
-  updateExamScore: () => {},
-  deleteExamScore: () => {},
 });
 
 export const useAppContext = () => useContext(AppContext);
@@ -310,63 +295,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addRecognition(studentId, recognitionType, `Nominated for ${category}`);
   };
 
-  const addExamScore = (studentId: string, examData: Omit<ExamScore, 'id'>) => {
-    setStudents((prev) =>
-      prev.map((student) => {
-        if (student.id === studentId) {
-          const newExamScore: ExamScore = {
-            ...examData,
-            id: generateId(),
-          };
-          
-          return {
-            ...student,
-            examScores: [...(student.examScores || []), newExamScore],
-          };
-        }
-        return student;
-      })
-    );
-  };
-
-  const updateExamScore = (studentId: string, examId: string, examData: Partial<Omit<ExamScore, 'id'>>) => {
-    setStudents((prev) =>
-      prev.map((student) => {
-        if (student.id === studentId && student.examScores) {
-          const updatedExamScores = student.examScores.map((exam) => {
-            if (exam.id === examId) {
-              return {
-                ...exam,
-                ...examData,
-              };
-            }
-            return exam;
-          });
-          
-          return {
-            ...student,
-            examScores: updatedExamScores,
-          };
-        }
-        return student;
-      })
-    );
-  };
-
-  const deleteExamScore = (studentId: string, examId: string) => {
-    setStudents((prev) =>
-      prev.map((student) => {
-        if (student.id === studentId && student.examScores) {
-          return {
-            ...student,
-            examScores: student.examScores.filter((exam) => exam.id !== examId),
-          };
-        }
-        return student;
-      })
-    );
-  };
-
   const value = {
     students,
     setStudents,
@@ -385,9 +313,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addClassAchievement,
     getClassMetrics,
     nominateStudent,
-    addExamScore,
-    updateExamScore,
-    deleteExamScore,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

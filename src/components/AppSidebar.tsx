@@ -1,257 +1,536 @@
 
-import React, { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
-import { useMobile } from '@/hooks/use-mobile';
-import { Sidebar, SidebarHeader, SidebarContent, SidebarFooter } from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Separator } from '@/components/ui/separator';
-import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { 
-  Menu, 
-  Home, 
+  BookOpen, 
+  GraduationCap, 
+  Globe, 
   Users, 
-  Star, 
-  Settings, 
-  LogOut, 
-  FileUp,
-  FileText,
-  BookOpen
+  User, 
+  BarChart3, 
+  Settings,
+  PlusCircle,
+  FileDown,
+  ArrowUpDown,
+  ChevronsLeft,
+  ChevronsRight,
+  Menu,
+  HandHeart,
+  Shield,
+  Gem
 } from 'lucide-react';
-import LanguageToggle from './LanguageToggle';
-import { useAuth } from '@/hooks/useAuth';
+import { 
+  Sidebar, 
+  SidebarContent, 
+  SidebarFooter, 
+  SidebarHeader, 
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarProvider,
+  SidebarTrigger,
+  SidebarGroup,
+  SidebarGroupLabel
+} from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
+import { Drawer, DrawerContent, DrawerOverlay, DrawerTrigger } from "@/components/ui/drawer";
 
-interface NavItemProps {
-  to: string;
-  icon: React.ReactNode;
+interface AppSidebarProps {
   children: React.ReactNode;
 }
 
-const NavItem = ({ to, icon, children }: NavItemProps) => {
-  const location = useLocation();
-  const isActive = location.pathname === to || location.pathname.startsWith(`${to}/`);
-  
+export const AppSidebarProvider: React.FC<AppSidebarProps> = ({ children }) => {
+  const isMobile = useIsMobile();
+  const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
+
+  // Update sidebarOpen state when mobile status changes
+  useEffect(() => {
+    setSidebarOpen(!isMobile);
+  }, [isMobile]);
+
   return (
-    <NavLink 
-      to={to} 
-      className={({ isActive }) => cn(
-        "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-        isActive 
-          ? "bg-primary text-primary-foreground"
-          : "hover:bg-muted"
-      )}
-    >
-      {icon}
-      <span>{children}</span>
-    </NavLink>
+    <SidebarProvider defaultOpen={!isMobile}>
+      <div className="flex min-h-screen w-full bg-gray-50">
+        {isMobile ? (
+          <>
+            <DrawerTrigger asChild className="fixed top-4 left-4 z-50 md:hidden">
+              <Button variant="outline" size="icon">
+                <Menu className="h-4 w-4" />
+              </Button>
+            </DrawerTrigger>
+            <Drawer>
+              <DrawerContent className="max-h-[90vh]">
+                <div className="w-full max-w-none p-0 h-[80vh] overflow-auto">
+                  <MobileSidebar />
+                </div>
+              </DrawerContent>
+            </Drawer>
+            <div className="flex-1 pt-14">{children}</div>
+          </>
+        ) : (
+          <>
+            <AppSidebarContent open={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+            <div className="flex-1">{children}</div>
+          </>
+        )}
+      </div>
+    </SidebarProvider>
   );
 };
 
-export const AppSidebarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const isMobile = useMobile();
+const MobileSidebar: React.FC = () => {
+  const { language, students } = useAppContext();
+  const t = getTranslations(language);
+  const location = useLocation();
   
-  if (isMobile) {
-    return (
-      <div className="flex min-h-screen w-full">
-        <MobileNavbar />
-        <div className="flex-1 px-2 pt-2 pb-0 md:px-6 md:pt-6 md:pb-0">
-          {children}
+  // Count students by type
+  const nationalStudents = students.filter(s => s.nationality === 'national').length;
+  const internationalStudents = students.filter(s => s.nationality === 'international').length;
+  
+  // Group students by grade
+  const gradeGroups = students.reduce((acc, student) => {
+    const grade = student.grade || 'Unassigned';
+    if (!acc[grade]) {
+      acc[grade] = [];
+    }
+    acc[grade].push(student);
+    return acc;
+  }, {} as Record<string, typeof students>);
+  
+  const isStudentsPage = location.pathname.includes('/students');
+  const isStudentView = location.pathname.includes('/student/');
+  const isDashboard = location.pathname.includes('/dashboard');
+  const isGradePage = location.pathname.includes('/grade/');
+
+  // Get current grade for highlighting
+  const currentGrade = location.pathname.includes('/grade/') 
+    ? location.pathname.split('/grade/')[1] 
+    : location.pathname.includes('/students?grade=')
+      ? new URLSearchParams(location.search).get('grade')
+      : '';
+
+  return (
+    <div className="bg-sidebar p-4 min-h-full w-full">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center">
+          <GraduationCap className="h-6 w-6 text-blue-600 mr-2" />
+          <span className="font-display font-semibold text-xl">EduRace</span>
         </div>
       </div>
-    );
-  }
-  
-  return (
-    <div className="flex min-h-screen w-full">
-      <AppSidebar />
-      <div className="flex-1 px-2 pt-2 pb-0 md:px-6 md:pt-6 md:pb-0">
-        {children}
+      
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium text-muted-foreground">{t.navigation}</h3>
+          <div className="space-y-1">
+            <Button 
+              variant={isDashboard ? "secondary" : "ghost"} 
+              className="w-full justify-start" 
+              asChild
+            >
+              <Link to="/dashboard">
+                <BarChart3 className="h-4 w-4 mr-2" />
+                {t.dashboard}
+              </Link>
+            </Button>
+            
+            <Button 
+              variant={isStudentsPage ? "secondary" : "ghost"} 
+              className="w-full justify-start" 
+              asChild
+            >
+              <Link to="/students">
+                <Users className="h-4 w-4 mr-2" />
+                {t.students}
+              </Link>
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start" 
+              asChild
+            >
+              <Link to="/import">
+                <FileDown className="h-4 w-4 mr-2" />
+                {t.importText}
+              </Link>
+            </Button>
+          </div>
+        </div>
+        
+        {(isStudentsPage || isGradePage) && (
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-muted-foreground">{t.filters}</h3>
+            <div className="space-y-1">
+              <Button 
+                variant={location.search.includes('type=national') ? "secondary" : "ghost"} 
+                className="w-full justify-start" 
+                asChild
+              >
+                <Link to="/students?type=national">
+                  <Users className="h-4 w-4 mr-2" />
+                  {t.nationalStudents}
+                  <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
+                    {nationalStudents}
+                  </span>
+                </Link>
+              </Button>
+              
+              <Button 
+                variant={location.search.includes('type=international') ? "secondary" : "ghost"} 
+                className="w-full justify-start" 
+                asChild
+              >
+                <Link to="/students?type=international">
+                  <Globe className="h-4 w-4 mr-2" />
+                  {t.internationalStudents}
+                  <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
+                    {internationalStudents}
+                  </span>
+                </Link>
+              </Button>
+            </div>
+          </div>
+        )}
+        
+        {(isStudentsPage || isGradePage) && (
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-muted-foreground">{t.grades}</h3>
+            <div className="space-y-1">
+              {Object.entries(gradeGroups).sort().map(([grade, gradeStudents]) => (
+                <div key={grade} className="space-y-1">
+                  <Button 
+                    variant={grade === currentGrade ? "secondary" : "ghost"} 
+                    className="w-full justify-start" 
+                    asChild
+                  >
+                    <Link to={`/students?grade=${grade}`}>
+                      <GraduationCap className="h-4 w-4 mr-2" />
+                      {t.grade} {grade}
+                      <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
+                        {gradeStudents.length}
+                      </span>
+                    </Link>
+                  </Button>
+                  
+                  <Button 
+                    variant="ghost" 
+                    className="w-full justify-start pl-9" 
+                    asChild
+                  >
+                    <Link to={`/grade/${grade}`}>
+                      <BarChart3 className="h-4 w-4 mr-2" />
+                      {t.recognition} {t.dashboard}
+                    </Link>
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {isStudentView && (
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-muted-foreground">{t.studentOptions}</h3>
+            <div className="space-y-1">
+              <Button variant="ghost" className="w-full justify-start">
+                <PlusCircle className="h-4 w-4 mr-2" />
+                {t.addPoints}
+              </Button>
+              
+              <Button variant="ghost" className="w-full justify-start">
+                <BookOpen className="h-4 w-4 mr-2" />
+                {t.pointHistory}
+              </Button>
+              
+              <Button variant="ghost" className="w-full justify-start">
+                <FileDown className="h-4 w-4 mr-2" />
+                {t.exportData}
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      <div className="mt-6">
+        <Button variant="outline" className="w-full flex items-center justify-center">
+          <Settings className="h-4 w-4 mr-2" />
+          <span>{t.settings}</span>
+        </Button>
       </div>
     </div>
   );
 };
 
-const MobileNavbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const { language } = useAppContext();
-  const t = getTranslations(language);
-  const { logout } = useAuth();
-  
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
-  
-  return (
-    <>
-      <div className="sticky top-0 z-30 flex h-16 w-full items-center border-b bg-background px-4">
-        <Button
-          variant="outline"
-          size="icon"
-          className="mr-2"
-          onClick={toggleSidebar}
-        >
-          <Menu className="h-5 w-5" />
-          <span className="sr-only">Toggle Menu</span>
-        </Button>
-        <span className="font-semibold">
-          Student Recognition System
-        </span>
-      </div>
-      
-      {isOpen && (
-        <div 
-          className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm"
-          onClick={toggleSidebar}
-        >
-          <div 
-            className="fixed left-0 top-0 z-50 h-full w-3/4 max-w-xs bg-background p-4 shadow-lg"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex flex-col h-full">
-              <div className="flex items-center justify-between py-4">
-                <h2 className="text-lg font-semibold">Student Recognition</h2>
-                <Button variant="ghost" size="icon" onClick={toggleSidebar}>
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </div>
-              
-              <Separator className="my-4" />
-              
-              <div className="space-y-1">
-                <NavLink 
-                  to="/dashboard" 
-                  className={({ isActive }) => cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                    isActive 
-                      ? "bg-primary text-primary-foreground"
-                      : "hover:bg-muted"
-                  )}
-                  onClick={toggleSidebar}
-                >
-                  <Home className="h-4 w-4" />
-                  <span>{t.dashboard}</span>
-                </NavLink>
-                
-                <NavLink 
-                  to="/students" 
-                  className={({ isActive }) => cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                    isActive 
-                      ? "bg-primary text-primary-foreground"
-                      : "hover:bg-muted"
-                  )}
-                  onClick={toggleSidebar}
-                >
-                  <Users className="h-4 w-4" />
-                  <span>{t.students}</span>
-                </NavLink>
-                
-                <NavLink 
-                  to="/exam-scores" 
-                  className={({ isActive }) => cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                    isActive 
-                      ? "bg-primary text-primary-foreground"
-                      : "hover:bg-muted"
-                  )}
-                  onClick={toggleSidebar}
-                >
-                  <BookOpen className="h-4 w-4" />
-                  <span>{t.examScores}</span>
-                </NavLink>
-                
-                <NavLink 
-                  to="/import" 
-                  className={({ isActive }) => cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                    isActive 
-                      ? "bg-primary text-primary-foreground"
-                      : "hover:bg-muted"
-                  )}
-                  onClick={toggleSidebar}
-                >
-                  <FileUp className="h-4 w-4" />
-                  <span>{t.import}</span>
-                </NavLink>
-              </div>
-              
-              <div className="mt-auto space-y-4">
-                <div className="flex items-center gap-2">
-                  <LanguageToggle onClick={toggleSidebar} />
-                </div>
-                
-                <Button 
-                  variant="destructive" 
-                  className="w-full"
-                  onClick={logout}
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  {t.logout || "Logout"}
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
-};
-
-export const AppSidebar = () => {
-  const { language } = useAppContext();
+const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ open, onToggle }) => {
+  const { language, students } = useAppContext();
   const t = getTranslations(language);
   const location = useLocation();
-  const { logout } = useAuth();
   
+  // Count students by type
+  const nationalStudents = students.filter(s => s.nationality === 'national').length;
+  const internationalStudents = students.filter(s => s.nationality === 'international').length;
+  
+  // Group students by grade
+  const gradeGroups = students.reduce((acc, student) => {
+    const grade = student.grade || 'Unassigned';
+    if (!acc[grade]) {
+      acc[grade] = [];
+    }
+    acc[grade].push(student);
+    return acc;
+  }, {} as Record<string, typeof students>);
+  
+  const isStudentsPage = location.pathname.includes('/students');
+  const isStudentView = location.pathname.includes('/student/');
+  const isDashboard = location.pathname.includes('/dashboard');
+  const isGradePage = location.pathname.includes('/grade/');
+
+  // Get current grade for highlighting
+  const currentGrade = location.pathname.includes('/grade/') 
+    ? location.pathname.split('/grade/')[1] 
+    : location.pathname.includes('/students?grade=')
+      ? new URLSearchParams(location.search).get('grade')
+      : '';
+
+  // Get recognition category for highlighting
+  const recognitionCategory = location.hash ? location.hash.substring(1) : '';
+
   return (
-    <Sidebar defaultCollapsed={false}>
-      <SidebarHeader className="px-2">
-        <div className="flex flex-col space-y-1 px-2 py-2 text-center">
-          <h1 className="text-xl font-semibold tracking-tight">
-            Student Recognition
-          </h1>
-          <p className="text-xs text-muted-foreground">
-            Empowering Excellence
-          </p>
+    <Sidebar collapsible="icon" className="transition-all duration-300">
+      <SidebarHeader className="flex items-center py-4">
+        <div className="flex items-center px-2">
+          <GraduationCap className="h-6 w-6 text-blue-600 mr-2" />
+          <span className="font-display font-semibold text-xl">EduRace</span>
         </div>
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="ml-auto" 
+          onClick={onToggle}
+          aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
+        >
+          {open ? 
+            <ChevronsLeft className="h-4 w-4" /> : 
+            <ChevronsRight className="h-4 w-4" />
+          }
+        </Button>
       </SidebarHeader>
+      
       <SidebarContent>
-        <div className="px-1 py-2">
-          <h3 className="px-4 text-xs font-medium text-muted-foreground">
+        <SidebarGroup>
+          <SidebarGroupLabel>
             {t.navigation}
-          </h3>
-          <div className="mt-2 space-y-1 px-1">
-            <NavItem to="/dashboard" icon={<Home className="h-4 w-4" />}>
-              {t.dashboard}
-            </NavItem>
-            <NavItem to="/students" icon={<Users className="h-4 w-4" />}>
-              {t.students}
-            </NavItem>
-            <NavItem to="/exam-scores" icon={<BookOpen className="h-4 w-4" />}>
-              {t.examScores}
-            </NavItem>
-            <NavItem to="/import" icon={<FileUp className="h-4 w-4" />}>
-              {t.import}
-            </NavItem>
-          </div>
-        </div>
+          </SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={isDashboard} tooltip={t.dashboard}>
+                <Link to="/dashboard">
+                  <BarChart3 className="h-4 w-4" />
+                  <span>{t.dashboard}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={isStudentsPage && !currentGrade} tooltip={t.students}>
+                <Link to="/students">
+                  <Users className="h-4 w-4" />
+                  <span>{t.students}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild tooltip={t.importText}>
+                <Link to="/import">
+                  <FileDown className="h-4 w-4" />
+                  <span>{t.importText}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+        
+        {(isStudentsPage || isGradePage) && (
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              {t.filters}
+            </SidebarGroupLabel>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={location.search.includes('type=national')}
+                  tooltip={t.nationalStudents}
+                >
+                  <Link to="/students?type=national">
+                    <Users className="h-4 w-4" />
+                    <span>{t.nationalStudents}</span>
+                    <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
+                      {nationalStudents}
+                    </span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={location.search.includes('type=international')}
+                  tooltip={t.internationalStudents}
+                >
+                  <Link to="/students?type=international">
+                    <Globe className="h-4 w-4" />
+                    <span>{t.internationalStudents}</span>
+                    <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
+                      {internationalStudents}
+                    </span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
+        
+        {(isStudentsPage || isGradePage) && (
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              {t.grades}
+            </SidebarGroupLabel>
+            <SidebarMenu>
+              {Object.entries(gradeGroups).sort().map(([grade, gradeStudents]) => (
+                <SidebarMenuItem key={grade}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={currentGrade === grade && !isGradePage}
+                    tooltip={`${t.grade} ${grade}`}
+                  >
+                    <Link to={`/students?grade=${grade}`}>
+                      <GraduationCap className="h-4 w-4" />
+                      <span>{t.grade} {grade}</span>
+                      <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
+                        {gradeStudents.length}
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                  
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={currentGrade === grade && isGradePage}
+                    tooltip={`${t.grade} ${grade} ${t.recognition}`}
+                    className="pl-8"
+                  >
+                    <Link to={`/grade/${grade}`}>
+                      <BarChart3 className="h-4 w-4" />
+                      <span>{t.recognition}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
+        
+        {isGradePage && (
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              {t.recognitionCategories}
+            </SidebarGroupLabel>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={recognitionCategory === 'helpfulness'}
+                  tooltip={t.helpfulness}
+                >
+                  <Link to={`${location.pathname}#helpfulness`}>
+                    <HandHeart className="h-4 w-4 text-rose-600" />
+                    <span>{t.helpfulness}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={recognitionCategory === 'respect'}
+                  tooltip={t.respect}
+                >
+                  <Link to={`${location.pathname}#respect`}>
+                    <Shield className="h-4 w-4 text-blue-600" />
+                    <span>{t.respect}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={recognitionCategory === 'teamwork'}
+                  tooltip={t.teamwork}
+                >
+                  <Link to={`${location.pathname}#teamwork`}>
+                    <Users className="h-4 w-4 text-green-600" />
+                    <span>{t.teamwork}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={recognitionCategory === 'excellence'}
+                  tooltip={t.excellence}
+                >
+                  <Link to={`${location.pathname}#excellence`}>
+                    <Gem className="h-4 w-4 text-amber-600" />
+                    <span>{t.excellence}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
+        
+        {isStudentView && (
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              {t.studentOptions}
+            </SidebarGroupLabel>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip={t.addPoints}>
+                  <PlusCircle className="h-4 w-4" />
+                  <span>{t.addPoints}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip={t.pointHistory}>
+                  <BookOpen className="h-4 w-4" />
+                  <span>{t.pointHistory}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip={t.exportData}>
+                  <FileDown className="h-4 w-4" />
+                  <span>{t.exportData}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
       </SidebarContent>
-      <SidebarFooter className="px-4 py-4">
-        <div className="grid gap-4">
-          <div className="flex items-center space-x-2">
-            <LanguageToggle />
-          </div>
-          
-          <Button 
-            variant="destructive" 
-            className="w-full"
-            onClick={logout}
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            {t.logout || "Logout"}
+      
+      <SidebarFooter>
+        <div className="p-2">
+          <Button variant="outline" className="w-full flex items-center justify-center">
+            <Settings className="h-4 w-4 mr-2" />
+            <span>{t.settings}</span>
           </Button>
         </div>
       </SidebarFooter>
@@ -259,4 +538,4 @@ export const AppSidebar = () => {
   );
 };
 
-export default AppSidebar;
+export default AppSidebarProvider;

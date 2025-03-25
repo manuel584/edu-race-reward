@@ -8,7 +8,6 @@ import { formatDateFromIso } from '@/lib/studentData';
 import Header from '@/components/Header';
 import StudentProfile from '@/components/StudentProfile';
 import StudentRecognitionProfile from '@/components/StudentRecognitionProfile';
-import StudentExamScores from '@/components/StudentExamScores';
 import QuickPointAdjust from '@/components/QuickPointAdjust';
 import StudentStickyHeader from '@/components/StudentStickyHeader';
 import StudentNominationForm from '@/components/StudentNominationForm';
@@ -20,8 +19,7 @@ import {
   ArrowUp,
   Trophy,
   Award,
-  Heart,
-  BookOpen
+  Heart
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -147,10 +145,6 @@ const StudentView = () => {
                   <Award className="mr-2 h-4 w-4" />
                   {t.recognition || "Recognition"}
                 </TabsTrigger>
-                <TabsTrigger value="exams">
-                  <BookOpen className="mr-2 h-4 w-4" />
-                  {t.examScores || "Exam Scores"}
-                </TabsTrigger>
               </TabsList>
               
               <TabsContent value="profile">
@@ -160,16 +154,12 @@ const StudentView = () => {
               <TabsContent value="recognition">
                 <StudentRecognitionProfile student={student} />
               </TabsContent>
-              
-              <TabsContent value="exams">
-                <StudentExamScores student={student} />
-              </TabsContent>
             </Tabs>
           </div>
           
           <div className="border-t border-gray-100">
             <div className="p-8">
-              <h2 className="text-xl font-semibold mb-4">{t.pointHistory || "Points History"}</h2>
+              <h2 className="text-xl font-semibold mb-4">{t.pointsHistory || "Points History"}</h2>
               
               {student.pointsHistory && student.pointsHistory.length > 0 ? (
                 <div className="overflow-x-auto">
