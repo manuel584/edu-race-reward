@@ -34,7 +34,7 @@ const ExamScoreDialog: React.FC<ExamScoreDialogProps> = ({
         subject: data.subject,
       });
       
-      toast.success(`${t.examName} ${data.examName} ${t.edit} ${t.success}`);
+      toast.success(`${t.examName} ${data.examName} ${t.edit}`);
     } else {
       // Add new exam score
       addExamScore(studentId, {
@@ -45,7 +45,7 @@ const ExamScoreDialog: React.FC<ExamScoreDialogProps> = ({
         subject: data.subject,
       });
       
-      toast.success(`${t.examName} ${data.examName} ${t.addExamScore} ${t.success}`);
+      toast.success(`${t.examName} ${data.examName} ${t.addExamScore}`);
     }
     
     setOpen(false);
@@ -76,8 +76,8 @@ const ExamScoreDialog: React.FC<ExamScoreDialogProps> = ({
           </DialogTitle>
           <DialogDescription>
             {examToEdit 
-              ? `${t.edit} ${t.score} ${t.for} ${t.student}`
-              : `${t.add} ${t.new} ${t.score} ${t.for} ${t.student}`}
+              ? `${t.edit} ${t.score} ${t.student}`
+              : `${t.addExamScore} ${t.student}`}
           </DialogDescription>
         </DialogHeader>
         
