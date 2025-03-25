@@ -1,4 +1,3 @@
-
 // Define level thresholds and names with color coding
 export const RECOGNITION_LEVELS = [
   { threshold: 0, name: "Beginner", color: "#D3E4FD" }, // Pastel Blue

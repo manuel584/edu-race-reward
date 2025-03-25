@@ -17,7 +17,10 @@ import {
   ArrowUpDown,
   ChevronsLeft,
   ChevronsRight,
-  Menu
+  Menu,
+  HandHeart,
+  Shield,
+  Gem
 } from 'lucide-react';
 import { 
   Sidebar, 
@@ -100,6 +103,14 @@ const MobileSidebar: React.FC = () => {
   const isStudentsPage = location.pathname.includes('/students');
   const isStudentView = location.pathname.includes('/student/');
   const isDashboard = location.pathname.includes('/dashboard');
+  const isGradePage = location.pathname.includes('/grade/');
+
+  // Get current grade for highlighting
+  const currentGrade = location.pathname.includes('/grade/') 
+    ? location.pathname.split('/grade/')[1] 
+    : location.pathname.includes('/students?grade=')
+      ? new URLSearchParams(location.search).get('grade')
+      : '';
 
   return (
     <div className="bg-sidebar p-4 min-h-full w-full">
@@ -112,7 +123,7 @@ const MobileSidebar: React.FC = () => {
       
       <div className="space-y-6">
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-muted-foreground">{t.main}</h3>
+          <h3 className="text-sm font-medium text-muted-foreground">{t.navigation}</h3>
           <div className="space-y-1">
             <Button 
               variant={isDashboard ? "secondary" : "ghost"} 
@@ -143,18 +154,18 @@ const MobileSidebar: React.FC = () => {
             >
               <Link to="/import">
                 <FileDown className="h-4 w-4 mr-2" />
-                {t.import}
+                {t.importText}
               </Link>
             </Button>
           </div>
         </div>
         
-        {isStudentsPage && (
+        {(isStudentsPage || isGradePage) && (
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">{t.studentGroups}</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">{t.filters}</h3>
             <div className="space-y-1">
               <Button 
-                variant="ghost" 
+                variant={location.search.includes('type=national') ? "secondary" : "ghost"} 
                 className="w-full justify-start" 
                 asChild
               >
@@ -168,7 +179,7 @@ const MobileSidebar: React.FC = () => {
               </Button>
               
               <Button 
-                variant="ghost" 
+                variant={location.search.includes('type=international') ? "secondary" : "ghost"} 
                 className="w-full justify-start" 
                 asChild
               >
@@ -184,9 +195,45 @@ const MobileSidebar: React.FC = () => {
           </div>
         )}
         
+        {(isStudentsPage || isGradePage) && (
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium text-muted-foreground">{t.grades}</h3>
+            <div className="space-y-1">
+              {Object.entries(gradeGroups).sort().map(([grade, gradeStudents]) => (
+                <div key={grade} className="space-y-1">
+                  <Button 
+                    variant={grade === currentGrade ? "secondary" : "ghost"} 
+                    className="w-full justify-start" 
+                    asChild
+                  >
+                    <Link to={`/students?grade=${grade}`}>
+                      <GraduationCap className="h-4 w-4 mr-2" />
+                      {t.grade} {grade}
+                      <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
+                        {gradeStudents.length}
+                      </span>
+                    </Link>
+                  </Button>
+                  
+                  <Button 
+                    variant="ghost" 
+                    className="w-full justify-start pl-9" 
+                    asChild
+                  >
+                    <Link to={`/grade/${grade}`}>
+                      <BarChart3 className="h-4 w-4 mr-2" />
+                      {t.recognition} {t.dashboard}
+                    </Link>
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
         {isStudentView && (
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">{t.studentActions}</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">{t.studentOptions}</h3>
             <div className="space-y-1">
               <Button variant="ghost" className="w-full justify-start">
                 <PlusCircle className="h-4 w-4 mr-2" />
@@ -195,7 +242,7 @@ const MobileSidebar: React.FC = () => {
               
               <Button variant="ghost" className="w-full justify-start">
                 <BookOpen className="h-4 w-4 mr-2" />
-                {t.viewHistory}
+                {t.pointHistory}
               </Button>
               
               <Button variant="ghost" className="w-full justify-start">
@@ -239,6 +286,17 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
   const isStudentsPage = location.pathname.includes('/students');
   const isStudentView = location.pathname.includes('/student/');
   const isDashboard = location.pathname.includes('/dashboard');
+  const isGradePage = location.pathname.includes('/grade/');
+
+  // Get current grade for highlighting
+  const currentGrade = location.pathname.includes('/grade/') 
+    ? location.pathname.split('/grade/')[1] 
+    : location.pathname.includes('/students?grade=')
+      ? new URLSearchParams(location.search).get('grade')
+      : '';
+
+  // Get recognition category for highlighting
+  const recognitionCategory = location.hash ? location.hash.substring(1) : '';
 
   return (
     <Sidebar collapsible="icon" className="transition-all duration-300">
@@ -264,7 +322,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>
-            {t.main}
+            {t.navigation}
           </SidebarGroupLabel>
           <SidebarMenu>
             <SidebarMenuItem>
@@ -277,7 +335,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
             </SidebarMenuItem>
             
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isStudentsPage} tooltip={t.students}>
+              <SidebarMenuButton asChild isActive={isStudentsPage && !currentGrade} tooltip={t.students}>
                 <Link to="/students">
                   <Users className="h-4 w-4" />
                   <span>{t.students}</span>
@@ -286,24 +344,28 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
             </SidebarMenuItem>
             
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={t.import}>
+              <SidebarMenuButton asChild tooltip={t.importText}>
                 <Link to="/import">
                   <FileDown className="h-4 w-4" />
-                  <span>{t.import}</span>
+                  <span>{t.importText}</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
         
-        {isStudentsPage && (
+        {(isStudentsPage || isGradePage) && (
           <SidebarGroup>
             <SidebarGroupLabel>
-              {t.studentGroups}
+              {t.filters}
             </SidebarGroupLabel>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip={t.nationalStudents}>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={location.search.includes('type=national')}
+                  tooltip={t.nationalStudents}
+                >
                   <Link to="/students?type=national">
                     <Users className="h-4 w-4" />
                     <span>{t.nationalStudents}</span>
@@ -315,7 +377,11 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
               </SidebarMenuItem>
               
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip={t.internationalStudents}>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={location.search.includes('type=international')}
+                  tooltip={t.internationalStudents}
+                >
                   <Link to="/students?type=international">
                     <Globe className="h-4 w-4" />
                     <span>{t.internationalStudents}</span>
@@ -329,21 +395,37 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
           </SidebarGroup>
         )}
         
-        {isStudentsPage && (
+        {(isStudentsPage || isGradePage) && (
           <SidebarGroup>
             <SidebarGroupLabel>
               {t.grades}
             </SidebarGroupLabel>
             <SidebarMenu>
-              {Object.entries(gradeGroups).map(([grade, students]) => (
+              {Object.entries(gradeGroups).sort().map(([grade, gradeStudents]) => (
                 <SidebarMenuItem key={grade}>
-                  <SidebarMenuButton asChild tooltip={grade}>
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={currentGrade === grade && !isGradePage}
+                    tooltip={`${t.grade} ${grade}`}
+                  >
                     <Link to={`/students?grade=${grade}`}>
                       <GraduationCap className="h-4 w-4" />
-                      <span>{grade}</span>
+                      <span>{t.grade} {grade}</span>
                       <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
-                        {students.length}
+                        {gradeStudents.length}
                       </span>
+                    </Link>
+                  </SidebarMenuButton>
+                  
+                  <SidebarMenuButton 
+                    asChild 
+                    isActive={currentGrade === grade && isGradePage}
+                    tooltip={`${t.grade} ${grade} ${t.recognition}`}
+                    className="pl-8"
+                  >
+                    <Link to={`/grade/${grade}`}>
+                      <BarChart3 className="h-4 w-4" />
+                      <span>{t.recognition}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -352,10 +434,71 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
           </SidebarGroup>
         )}
         
+        {isGradePage && (
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              {t.recognitionCategories}
+            </SidebarGroupLabel>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={recognitionCategory === 'helpfulness'}
+                  tooltip={t.helpfulness}
+                >
+                  <Link to={`${location.pathname}#helpfulness`}>
+                    <HandHeart className="h-4 w-4 text-rose-600" />
+                    <span>{t.helpfulness}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={recognitionCategory === 'respect'}
+                  tooltip={t.respect}
+                >
+                  <Link to={`${location.pathname}#respect`}>
+                    <Shield className="h-4 w-4 text-blue-600" />
+                    <span>{t.respect}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={recognitionCategory === 'teamwork'}
+                  tooltip={t.teamwork}
+                >
+                  <Link to={`${location.pathname}#teamwork`}>
+                    <Users className="h-4 w-4 text-green-600" />
+                    <span>{t.teamwork}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={recognitionCategory === 'excellence'}
+                  tooltip={t.excellence}
+                >
+                  <Link to={`${location.pathname}#excellence`}>
+                    <Gem className="h-4 w-4 text-amber-600" />
+                    <span>{t.excellence}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        )}
+        
         {isStudentView && (
           <SidebarGroup>
             <SidebarGroupLabel>
-              {t.studentActions}
+              {t.studentOptions}
             </SidebarGroupLabel>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -366,9 +509,9 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
               </SidebarMenuItem>
               
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip={t.viewHistory}>
+                <SidebarMenuButton tooltip={t.pointHistory}>
                   <BookOpen className="h-4 w-4" />
-                  <span>{t.viewHistory}</span>
+                  <span>{t.pointHistory}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               

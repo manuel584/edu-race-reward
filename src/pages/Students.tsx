@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
@@ -17,17 +17,34 @@ import {
   GraduationCap,
   Home,
   Search,
-  X
+  X,
+  BarChart3
 } from 'lucide-react';
 
 const Students = () => {
   const { students, language } = useAppContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const t = getTranslations(language);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<'all' | 'international' | 'national'>('all');
+  
+  // Parse URL parameters
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const gradeParam = params.get('grade');
+    const typeParam = params.get('type') as 'international' | 'national' | null;
+    
+    if (gradeParam) {
+      setSelectedGrade(gradeParam);
+    }
+    
+    if (typeParam && (typeParam === 'international' || typeParam === 'national')) {
+      setSelectedTab(typeParam);
+    }
+  }, [location.search]);
   
   // Get unique grade levels
   const uniqueGrades = [...new Set(students.map(student => student.grade))].sort();
@@ -47,13 +64,22 @@ const Students = () => {
   
   // Handle grade selection
   const handleGradeChange = (grade: string) => {
-    setSelectedGrade(grade === selectedGrade ? null : grade);
+    if (grade === selectedGrade) {
+      // Clear grade filter
+      setSelectedGrade(null);
+      navigate('/students');
+    } else {
+      // Set grade filter
+      setSelectedGrade(grade);
+      navigate(`/students?grade=${grade}`);
+    }
   };
   
   // Clear all filters
   const handleClearFilters = () => {
     setSearchTerm('');
     setSelectedGrade(null);
+    navigate('/students');
   };
   
   // Navigate to student view
@@ -105,9 +131,22 @@ const Students = () => {
             {selectedTab === 'all' ? t.allStudents : 
              selectedTab === 'international' ? t.internationalStudents : 
              t.nationalStudents}
+             {selectedGrade ? ` - ${t.grade} ${selectedGrade}` : ''}
           </h1>
           
-          <AddStudentDialog />
+          <div className="flex gap-2">
+            {selectedGrade && (
+              <Button 
+                variant="outline"
+                className="flex items-center gap-2"
+                onClick={() => navigate(`/grade/${selectedGrade}`)}
+              >
+                <BarChart3 className="h-4 w-4" />
+                {t.viewRecognitionDashboard}
+              </Button>
+            )}
+            <AddStudentDialog />
+          </div>
         </div>
         
         <div className="bg-white p-6 rounded-2xl shadow-sm mb-8">
@@ -159,16 +198,28 @@ const Students = () => {
               <h3 className="text-sm font-medium text-gray-500 mb-3">{t.byGrade}</h3>
               <div className="flex flex-wrap gap-2">
                 {uniqueGrades.map((grade) => (
-                  <Button
-                    key={grade}
-                    variant={selectedGrade === grade ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleGradeChange(grade)}
-                    className="flex items-center"
-                  >
-                    <GraduationCap className="mr-2 h-4 w-4" />
-                    {grade}
-                  </Button>
+                  <div key={grade} className="flex flex-col sm:flex-row gap-1">
+                    <Button
+                      variant={selectedGrade === grade ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleGradeChange(grade)}
+                      className="flex items-center"
+                    >
+                      <GraduationCap className="mr-2 h-4 w-4" />
+                      {grade}
+                    </Button>
+                    {selectedGrade === grade && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate(`/grade/${grade}`)}
+                        className="flex items-center sm:ml-1"
+                      >
+                        <BarChart3 className="mr-2 h-4 w-4" />
+                        {t.recognition}
+                      </Button>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
