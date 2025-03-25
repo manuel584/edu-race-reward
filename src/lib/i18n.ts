@@ -67,7 +67,6 @@ type Translations = {
   addRecognition: string;
   addStudent: string;
   cancel: string;
-  categories: string;
   category: string;
   chooseRecognitionCategory: string;
   createStudent: string;
@@ -85,6 +84,27 @@ type Translations = {
   subjects: string;
   student: string;
   updateProfile: string;
+  
+  // Exam Scores
+  examScores: string;
+  addExamScore: string;
+  editExamScore: string;
+  deleteExamScore: string;
+  examName: string;
+  score: string;
+  totalPossible: string;
+  date: string;
+  subject: string;
+  noExamScores: string;
+  confirmDeleteExam: string;
+  exportToExcel: string;
+  scoreValidation: string;
+  totalScore: string;
+  averageExamScore: string;
+  examScoresManagement: string;
+  studentExamScores: string;
+  sortBy: string;
+  import: string;
 };
 
 const en: Translations = {
@@ -171,7 +191,28 @@ const en: Translations = {
   selectStudent: "Select Student",
   subjects: "Subjects",
   student: "Student",
-  updateProfile: "Update Profile"
+  updateProfile: "Update Profile",
+  
+  // Exam Scores
+  examScores: "Exam Scores",
+  addExamScore: "Add Exam Score",
+  editExamScore: "Edit Exam Score",
+  deleteExamScore: "Delete Exam Score",
+  examName: "Exam Name",
+  score: "Score",
+  totalPossible: "Total Possible",
+  date: "Date",
+  subject: "Subject",
+  noExamScores: "No exam scores found",
+  confirmDeleteExam: "Are you sure you want to delete this exam score?",
+  exportToExcel: "Export to Excel",
+  scoreValidation: "Score must be a number between 0 and total possible points",
+  totalScore: "Total Score",
+  averageExamScore: "Average Score",
+  examScoresManagement: "Exam Scores Management",
+  studentExamScores: "Student Exam Scores",
+  sortBy: "Sort By",
+  import: "Import"
 };
 
 // Arabic translations
@@ -259,7 +300,28 @@ const ar: Translations = {
   selectStudent: "اختر الطالب",
   subjects: "المواد الدراسية",
   student: "طالب",
-  updateProfile: "تحديث الملف الشخصي"
+  updateProfile: "تحديث الملف الشخصي",
+  
+  // Exam Scores
+  examScores: "درجات الامتحانات",
+  addExamScore: "إضافة درجة امتحان",
+  editExamScore: "تعديل درجة امتحان",
+  deleteExamScore: "حذف درجة امتحان",
+  examName: "اسم الامتحان",
+  score: "الدرجة",
+  totalPossible: "الدرجة الكاملة",
+  date: "التاريخ",
+  subject: "المادة",
+  noExamScores: "لم يتم العثور على درجات امتحانات",
+  confirmDeleteExam: "هل أنت متأكد أنك تريد حذف درجة هذا الامتحان؟",
+  exportToExcel: "تصدير إلى إكسل",
+  scoreValidation: "يجب أن تكون الدرجة رقمًا بين 0 والدرجة الكاملة",
+  totalScore: "مجموع الدرجات",
+  averageExamScore: "متوسط الدرجة",
+  examScoresManagement: "إدارة درجات الامتحانات",
+  studentExamScores: "درجات امتحانات الطالب",
+  sortBy: "ترتيب حسب",
+  import: "استيراد"
 };
 
 export const getTranslations = (language: 'en' | 'ar'): Translations => {

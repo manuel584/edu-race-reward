@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Students from "./pages/Students";
 import StudentView from "./pages/StudentView";
 import GradeRecognition from "./pages/GradeRecognition";
+import ExamScores from "./pages/ExamScores";
 import Import from "./pages/Import";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -103,6 +104,16 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <AppSidebarProvider>
               <GradeRecognition />
+            </AppSidebarProvider>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/exam-scores"
+        element={
+          <ProtectedRoute>
+            <AppSidebarProvider>
+              <ExamScores />
             </AppSidebarProvider>
           </ProtectedRoute>
         }
