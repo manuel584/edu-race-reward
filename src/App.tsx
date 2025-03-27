@@ -16,6 +16,8 @@ import GradeRecognition from "./pages/GradeRecognition";
 import Import from "./pages/Import";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import Scores from "./pages/Scores";
+import ExamCenter from "./pages/ExamCenter";
 import { useAuth } from "@/hooks/useAuth";
 
 const queryClient = new QueryClient();
@@ -113,6 +115,26 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <AppSidebarProvider>
               <Import />
+            </AppSidebarProvider>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/scores"
+        element={
+          <ProtectedRoute>
+            <AppSidebarProvider>
+              <Scores />
+            </AppSidebarProvider>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/exam-center"
+        element={
+          <ProtectedRoute>
+            <AppSidebarProvider>
+              <ExamCenter />
             </AppSidebarProvider>
           </ProtectedRoute>
         }

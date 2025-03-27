@@ -1,464 +1,408 @@
-
-import { createTranslations } from './studentData';
-
-export type Translations = {
-  dashboard: string;
-  students: string;
-  grades: string;
-  settings: string;
-  language: string;
-  english: string;
-  arabic: string;
-  home: string;
-  pointsGoal: string;
-  changePointsGoal: string;
-  changeGoalDesc: string;
-  save: string;
-  cancel: string;
-  goalUpdated: string;
-  allStudents: string;
-  internationalStudents: string;
-  nationalStudents: string;
-  importText: string;
-  byGrade: string;
-  searchStudents: string;
-  clearFilters: string;
-  noStudents: string;
-  noInternationalStudents: string;
-  noNationalStudents: string;
-  student: string;
-  recognition: string;
-  grade: string;
-  addStudent: string;
-  quickAddPoints: string;
-  quickDeductPoints: string;
-  points: string;
-  pointHistory: string;
-  goalReached: string;
-  view: string;
-  date: string;
-  reason: string;
-  profile: string;
-  import: string;
-  upload: string;
-  uploadFile: string;
-  uploading: string;
-  uploadSuccess: string;
-  uploadDescription: string;
-  errorParsingFile: string;
-  studentsImported: string;
-  nominate: string;
-  add: string;
-  remove: string;
-  toGoal: string;
-  welcome: string;
-  welcomeDescription: string;
-  export: string;
-  getStarted: string;
-  raceToGoal: string;
-  studentRecognition: string;
-  viewRecognitionDashboard: string;
-  recognizeTheseStudents: string;
-  noRecognitionsYet: string;
-  recognitionCategories: string;
-  selectACategory: string;
-  selectReason: string;
-  helpfulness: string;
-  respect: string;
-  teamwork: string;
-  excellence: string;
-  addAward: string;
-  recognitionNotFound: string;
-  helpfulnessTitle: string;
-  respectTitle: string;
-  teamworkTitle: string;
-  excellenceTitle: string;
-  notFound: string;
-  notFoundMessage: string;
-  backToDashboard: string;
-  back: string;
-  progressToGoal: string;
-  national: string;
-  international: string;
-  congratulations: string;
-  reachedGoal: string;
-  almost: string;
-  keepGoing: string;
-  needsImprovement: string;
-  attendance: string;
-  books: string;
-  studentName: string;
-  selectNationality: string;
-  updateStudent: string;
-  studentUpdated: string;
-  errorSubmittingForm: string;
-  nominateStudentDesc: string;
-  nominateStudent: string;
-  submitNomination: string;
-  commentsPlaceholder: string;
-  additionalComments: string;
-  selectReasonDescription: string;
-  reasonForNomination: string;
-  nominationSubmitted: string;
-  nominatedFor: string;
-  recentlyNominated: string;
-  noRecentNominations: string;
-  noStudentsFound: string;
-  totalRecognitions: string;
-  balancedGrowth: string;
-  achievedOn: string;
-  needsAllCategories: string;
-  awards: string;
-  specialRecognitions: string;
-  balancedAchievement: string;
-  balancedDesc: string;
-  noAwardsYet: string;
-  recentRecognitions: string;
-  history: string;
-  overview: string;
-  recognitionScores: string;
-  detailedBreakdownOfSubcategories: string;
-  helpfulnessDescription: string;
-  respectDescription: string;
-  teamworkDescription: string;
-  excellenceDescription: string;
-  studentRecognitions: string;
-  studentProgress: string;
-  classComparison: string;
-  recognitionSystem: string;
-  raceToGoalDescription: string;
-  progressOverview: string;
-  change: string;
-  average: string;
-  // New translations for scores feature
-  scores: string;
-  addScore: string;
-  editScore: string;
-  updateScore: string;
-  examName: string;
-  score: string;
-  actions: string;
-  confirmDelete: string;
-  scoreAdded: string;
-  scoreUpdated: string;
-  scoreDeleted: string;
-  studentScores: string;
-  exportSuccess: string;
-  enterStudentName: string;
-  enterExamName: string;
-  enterScore: string;
-  studentNameRequired: string;
-  examNameRequired: string;
-  validScoreRequired: string;
-  noScoresYet: string;
+type Translations = {
+  home?: string;
+  students?: string;
+  addStudent?: string;
+  importStudents?: string;
+  name?: string;
+  points?: string;
+  attendance?: string;
+  booksOwned?: string;
+  engagementScore?: string;
+  nationality?: string;
+  grade?: string;
+  subjects?: string;
+  actions?: string;
+  search?: string;
+  add?: string;
+  edit?: string;
+  delete?: string;
+  studentName?: string;
+  studentDetails?: string;
+  pointsHistory?: string;
+  date?: string;
+  change?: string;
+  reason?: string;
+  helpfulness?: string;
+  respect?: string;
+  teamwork?: string;
+  excellence?: string;
+  awards?: string;
+  recognitions?: string;
+  type?: string;
+  description?: string;
+  save?: string;
+  cancel?: string;
+  confirmDelete?: string;
+  studentDeleted?: string;
+  editStudent?: string;
+  updatePoints?: string;
+  enterPointsChange?: string;
+  reasonForChange?: string;
+  nominateStudent?: string;
+  category?: string;
+  nominator?: string;
+  submitNomination?: string;
+  nominationSubmitted?: string;
+  gradeRecognition?: string;
+  achievements?: string;
+  addClassAchievement?: string;
+  achievementDescription?: string;
+  classMetrics?: string;
+  totalPoints?: string;
+  averageAttendance?: string;
+  averageEngagement?: string;
+  weeklyImprovement?: string;
+  import?: string;
+  chooseFile?: string;
+  upload?: string;
+  fileUploaded?: string;
+  login?: string;
+  username?: string;
+  password?: string;
+  loginButton?: string;
+  logout?: string;
+  studentAdded?: string;
+  studentUpdated?: string;
+  examCenter?: string;
+  scores?: string;
+  createExam?: string;
+  allExams?: string;
+  upcoming?: string;
+  archived?: string;
+  noExamsYet?: string;
+  noExamsDescription?: string;
+  examTitle?: string;
+  enterExamTitle?: string;
+  titleRequired?: string;
+  description?: string;
+  enterDescription?: string;
+  examType?: string;
+  selectType?: string;
+  quiz?: string;
+  exam?: string;
+  test?: string;
+  duration?: string;
+  enterDuration?: string;
+  validDurationRequired?: string;
+  questions?: string;
+  addQuestion?: string;
+  addAtLeastOneQuestion?: string;
+  noQuestionsAdded?: string;
+  addYourFirstQuestion?: string;
+  updateExam?: string;
+  questionText?: string;
+  enterQuestionText?: string;
+  questionType?: string;
+  multipleChoice?: string;
+  trueFalse?: string;
+  shortAnswer?: string;
+  essay?: string;
+  points?: string;
+  options?: string;
+  allowMultipleAnswers?: string;
+  option?: string;
+  addOption?: string;
+  correctAnswer?: string;
+  forGrading?: string;
+  enterCorrectAnswer?: string;
+  essayNoCorrectAnswer?: string;
+  minutes?: string;
+  view?: string;
+  examDeleted?: string;
+  examUpdated?: string;
+  examAdded?: string;
+  addScore?: string;
+  editScore?: string;
+  examName?: string;
+  score?: string;
+  enterStudentName?: string;
+  enterExamName?: string;
+  enterScore?: string;
+  studentNameRequired?: string;
+  examNameRequired?: string;
+  validScoreRequired?: string;
+  updateScore?: string;
+  scoreAdded?: string;
+  scoreUpdated?: string;
+  scoreDeleted?: string;
+  noScoresYet?: string;
+  export?: string;
+  studentScores?: string;
+  average?: string;
+  exportSuccess?: string;
 };
 
-const englishTranslations: Translations = {
-  dashboard: 'Dashboard',
-  students: 'Students',
-  grades: 'Grades',
-  settings: 'Settings',
-  language: 'Language',
-  english: 'English',
-  arabic: 'Arabic',
-  home: 'Home',
-  pointsGoal: 'Points Goal',
-  changePointsGoal: 'Change Points Goal',
-  changeGoalDesc: 'Set the number of points students need to reach the goal',
-  save: 'Save',
-  cancel: 'Cancel',
-  goalUpdated: 'Goal updated successfully',
-  allStudents: 'All Students',
-  internationalStudents: 'International Students',
-  nationalStudents: 'National Students',
-  importText: 'Import',
-  byGrade: 'By Grade',
-  searchStudents: 'Search students...',
-  clearFilters: 'Clear Filters',
-  noStudents: 'No students found',
-  noInternationalStudents: 'No international students found',
-  noNationalStudents: 'No national students found',
-  student: 'Student',
-  recognition: 'Recognition',
-  grade: 'Grade',
-  addStudent: 'Add Student',
-  quickAddPoints: 'Quick Add Points',
-  quickDeductPoints: 'Quick Deduct Points',
-  points: 'Points',
-  pointHistory: 'Points History',
-  goalReached: 'Goal Reached!',
-  view: 'View',
-  date: 'Date',
-  reason: 'Reason',
-  profile: 'Profile',
-  import: 'Import',
-  upload: 'Upload',
-  uploadFile: 'Upload File',
-  uploading: 'Uploading...',
-  uploadSuccess: 'Upload Successful',
-  uploadDescription: 'Upload a CSV or Excel file containing student data to import them into the system.',
-  errorParsingFile: 'Error parsing file',
-  studentsImported: 'students imported',
-  nominate: 'Nominate',
-  add: 'Add',
-  remove: 'Remove',
-  toGoal: 'to goal',
-  welcome: 'Welcome to the Student Recognition System',
-  welcomeDescription: 'Track student progress, manage rewards, and recognize achievements',
-  export: 'Export',
-  getStarted: 'Get Started',
-  raceToGoal: 'Race to Goal',
-  studentRecognition: 'Student Recognition',
-  viewRecognitionDashboard: 'View Recognition Dashboard',
-  recognizeTheseStudents: 'Recognize These Students',
-  noRecognitionsYet: 'No recognitions yet',
-  recognitionCategories: 'Recognition Categories',
-  selectACategory: 'Select a category',
-  selectReason: 'Select reason',
-  helpfulness: 'Helpfulness',
-  respect: 'Respect',
-  teamwork: 'Teamwork',
-  excellence: 'Excellence',
-  addAward: 'Add Award',
-  recognitionNotFound: 'Recognition not found',
-  helpfulnessTitle: 'Helpfulness Star',
-  respectTitle: 'Respect Star',
-  teamworkTitle: 'Teamwork Star',
-  excellenceTitle: 'Excellence Star',
-  notFound: 'Page Not Found',
-  notFoundMessage: 'The page you are looking for does not exist or has been moved.',
-  backToDashboard: 'Back to Dashboard',
-  back: 'Back',
-  progressToGoal: 'Progress to Goal',
-  national: 'National',
-  international: 'International',
-  congratulations: 'Congratulations!',
-  reachedGoal: 'reached goal!',
-  almost: 'Almost there!',
-  keepGoing: 'Keep going!',
-  needsImprovement: 'Needs improvement',
-  attendance: 'Attendance',
-  books: 'Books',
-  studentName: 'Student Name',
-  selectNationality: 'Select Nationality',
-  updateStudent: 'Update Student',
-  studentUpdated: 'Student updated successfully',
-  errorSubmittingForm: 'Error submitting form',
-  nominateStudentDesc: 'Recognize a student who has demonstrated exceptional qualities',
-  nominateStudent: 'Nominate Student',
-  submitNomination: 'Submit Nomination',
-  commentsPlaceholder: 'Enter any additional details about why this student deserves recognition',
-  additionalComments: 'Additional Comments',
-  selectReasonDescription: 'Select a specific reason for this nomination',
-  reasonForNomination: 'Reason for Nomination',
-  nominationSubmitted: 'Nomination submitted successfully',
-  nominatedFor: 'nominated for',
-  recentlyNominated: 'Recently Nominated',
-  noRecentNominations: 'No recent nominations',
-  noStudentsFound: 'No students found',
-  totalRecognitions: 'Total Recognitions',
-  balancedGrowth: 'Balanced Growth',
-  achievedOn: 'Achieved on',
-  needsAllCategories: 'Needs recognition in all categories',
-  awards: 'Awards',
-  specialRecognitions: 'Special Recognitions',
-  balancedAchievement: 'Balanced Achievement',
-  balancedDesc: 'Awarded to students who show growth in all areas',
-  noAwardsYet: 'No awards earned yet',
-  recentRecognitions: 'Recent Recognitions',
-  history: 'History',
-  overview: 'Overview',
-  recognitionScores: 'Recognition Scores',
-  detailedBreakdownOfSubcategories: 'Detailed breakdown of recognition subcategories',
-  helpfulnessDescription: 'Recognizes students who assist others academically or emotionally',
-  respectDescription: 'Honors students who show respect for diversity and resolve conflicts',
-  teamworkDescription: 'Celebrates students who collaborate effectively in group settings',
-  excellenceDescription: 'Acknowledges students who consistently strive for high standards',
-  studentRecognitions: 'Student Recognitions',
-  studentProgress: 'Student Progress',
-  classComparison: 'Class Comparison',
-  recognitionSystem: 'Recognition System',
-  raceToGoalDescription: 'Monitor student progress as they race to reach the point goal',
-  progressOverview: 'Progress Overview',
-  change: 'Change',
-  average: 'Average',
-  // New translations for scores feature
-  scores: 'Scores',
-  addScore: 'Add Score',
-  editScore: 'Edit Score',
-  updateScore: 'Update Score',
-  examName: 'Exam Name',
-  score: 'Score',
-  actions: 'Actions',
-  confirmDelete: 'Are you sure you want to delete this score?',
-  scoreAdded: 'Score added successfully',
-  scoreUpdated: 'Score updated successfully',
-  scoreDeleted: 'Score deleted successfully',
-  studentScores: 'Student Scores',
-  exportSuccess: 'Exported successfully',
-  enterStudentName: 'Enter student name',
-  enterExamName: 'Enter exam name',
-  enterScore: 'Enter score (0-100)',
-  studentNameRequired: 'Student name is required',
-  examNameRequired: 'Exam name is required',
-  validScoreRequired: 'Please enter a valid score (0-100)',
-  noScoresYet: 'No scores added yet'
+const translations: { [key: string]: Translations } = {
+  en: {
+    home: 'Home',
+    students: 'Students',
+    addStudent: 'Add Student',
+    importStudents: 'Import Students',
+    name: 'Name',
+    points: 'Points',
+    attendance: 'Attendance',
+    booksOwned: 'Books Owned',
+    engagementScore: 'Engagement Score',
+    nationality: 'Nationality',
+    grade: 'Grade',
+    subjects: 'Subjects',
+    actions: 'Actions',
+    search: 'Search',
+    add: 'Add',
+    edit: 'Edit',
+    delete: 'Delete',
+    studentName: 'Student Name',
+    studentDetails: 'Student Details',
+    pointsHistory: 'Points History',
+    date: 'Date',
+    change: 'Change',
+    reason: 'Reason',
+    helpfulness: 'Helpfulness',
+    respect: 'Respect',
+    teamwork: 'Teamwork',
+    excellence: 'Excellence',
+    awards: 'Awards',
+    recognitions: 'Recognitions',
+    type: 'Type',
+    description: 'Description',
+    save: 'Save',
+    cancel: 'Cancel',
+    confirmDelete: 'Are you sure you want to delete this student?',
+    studentDeleted: 'Student deleted successfully',
+    editStudent: 'Edit Student',
+    updatePoints: 'Update Points',
+    enterPointsChange: 'Enter points change',
+    reasonForChange: 'Reason for change',
+    nominateStudent: 'Nominate Student',
+    category: 'Category',
+    nominator: 'Nominator',
+    submitNomination: 'Submit Nomination',
+    nominationSubmitted: 'Nomination submitted successfully',
+    gradeRecognition: 'Grade Recognition',
+    achievements: 'Achievements',
+    addClassAchievement: 'Add Class Achievement',
+    achievementDescription: 'Achievement Description',
+    classMetrics: 'Class Metrics',
+    totalPoints: 'Total Points',
+    averageAttendance: 'Average Attendance',
+    averageEngagement: 'Average Engagement',
+    weeklyImprovement: 'Weekly Improvement',
+    import: 'Import',
+    chooseFile: 'Choose File',
+    upload: 'Upload',
+    fileUploaded: 'File uploaded successfully',
+    login: 'Login',
+    username: 'Username',
+    password: 'Password',
+    loginButton: 'Login',
+    logout: 'Logout',
+    studentAdded: 'Student added successfully',
+    studentUpdated: 'Student updated successfully',
+    examCenter: 'Exam Center',
+    scores: 'Scores',
+    createExam: 'Create Exam',
+    allExams: 'All Exams',
+    upcoming: 'Upcoming',
+    archived: 'Archived',
+    noExamsYet: 'No exams created yet',
+    noExamsDescription: 'Start by creating your first exam to manage quizzes and track student performance.',
+    examTitle: 'Exam Title',
+    enterExamTitle: 'Enter exam title',
+    titleRequired: 'Title is required',
+    description: 'Description',
+    enterDescription: 'Enter exam description',
+    examType: 'Exam Type',
+    selectType: 'Select exam type',
+    quiz: 'Quiz',
+    exam: 'Exam',
+    test: 'Test',
+    duration: 'Duration (minutes)',
+    enterDuration: 'Enter duration in minutes',
+    validDurationRequired: 'Please enter a valid duration',
+    questions: 'Questions',
+    addQuestion: 'Add Question',
+    addAtLeastOneQuestion: 'Add at least one question',
+    noQuestionsAdded: 'No questions added yet',
+    addYourFirstQuestion: 'Add your first question',
+    updateExam: 'Update Exam',
+    questionText: 'Question Text',
+    enterQuestionText: 'Enter question text',
+    questionType: 'Question Type',
+    multipleChoice: 'Multiple Choice',
+    trueFalse: 'True/False',
+    shortAnswer: 'Short Answer',
+    essay: 'Essay',
+    points: 'Points',
+    options: 'Options',
+    allowMultipleAnswers: 'Allow multiple answers',
+    option: 'Option',
+    addOption: 'Add Option',
+    correctAnswer: 'Correct Answer',
+    forGrading: 'for grading',
+    enterCorrectAnswer: 'Enter correct answer',
+    essayNoCorrectAnswer: 'Essay questions require manual grading',
+    minutes: 'minutes',
+    view: 'View',
+    confirmDelete: 'Are you sure you want to delete this exam?',
+    examDeleted: 'Exam deleted successfully',
+    examUpdated: 'Exam updated successfully',
+    examAdded: 'Exam created successfully',
+    addScore: 'Add Score',
+    editScore: 'Edit Score',
+    examName: 'Exam Name',
+    score: 'Score',
+    enterStudentName: 'Enter student name',
+    enterExamName: 'Enter exam name',
+    enterScore: 'Enter score (0-100)',
+    studentNameRequired: 'Student name is required',
+    examNameRequired: 'Exam name is required',
+    validScoreRequired: 'Please enter a valid score (0-100)',
+    updateScore: 'Update Score',
+    scoreAdded: 'Score added successfully',
+    scoreUpdated: 'Score updated successfully',
+    scoreDeleted: 'Score deleted successfully',
+    noScoresYet: 'No scores added yet',
+    export: 'Export',
+    studentScores: 'Student Scores',
+    average: 'Average',
+    exportSuccess: 'Exported successfully',
+  },
+  ar: {
+    home: 'الرئيسية',
+    students: 'الطلاب',
+    addStudent: 'إضافة طالب',
+    importStudents: 'استيراد الطلاب',
+    name: 'الاسم',
+    points: 'النقاط',
+    attendance: 'الحضور',
+    booksOwned: 'الكتب المملوكة',
+    engagementScore: 'نقاط المشاركة',
+    nationality: 'الجنسية',
+    grade: 'الصف',
+    subjects: 'المواد',
+    actions: 'الإجراءات',
+    search: 'بحث',
+    add: 'إضافة',
+    edit: 'تعديل',
+    delete: 'حذف',
+    studentName: 'اسم الطالب',
+    studentDetails: 'تفاصيل الطالب',
+    pointsHistory: 'سجل النقاط',
+    date: 'التاريخ',
+    change: 'التغيير',
+    reason: 'السبب',
+    helpfulness: 'المساعدة',
+    respect: 'الاحترام',
+    teamwork: 'العمل الجماعي',
+    excellence: 'التميز',
+    awards: 'الجوائز',
+    recognitions: 'التقديرات',
+    type: 'النوع',
+    description: 'الوصف',
+    save: 'حفظ',
+    cancel: 'إلغاء',
+    confirmDelete: 'هل أنت متأكد أنك تريد حذف هذا الطالب؟',
+    studentDeleted: 'تم حذف الطالب بنجاح',
+    editStudent: 'تعديل الطالب',
+    updatePoints: 'تحديث النقاط',
+    enterPointsChange: 'أدخل تغيير النقاط',
+    reasonForChange: 'سبب التغيير',
+    nominateStudent: 'ترشيح الطالب',
+    category: 'الفئة',
+    nominator: 'المرشح',
+    submitNomination: 'إرسال الترشيح',
+    nominationSubmitted: 'تم إرسال الترشيح بنجاح',
+    gradeRecognition: 'تقدير الصف',
+    achievements: 'الإنجازات',
+    addClassAchievement: 'إضافة إنجاز للصف',
+    achievementDescription: 'وصف الإنجاز',
+    classMetrics: 'مقاييس الصف',
+    totalPoints: 'مجموع النقاط',
+    averageAttendance: 'متوسط الحضور',
+    averageEngagement: 'متوسط المشاركة',
+    weeklyImprovement: 'التحسن الأسبوعي',
+    import: 'استيراد',
+    chooseFile: 'اختر ملفا',
+    upload: 'رفع',
+    fileUploaded: 'تم رفع الملف بنجاح',
+    login: 'تسجيل الدخول',
+    username: 'اسم المستخدم',
+    password: 'كلمة المرور',
+    loginButton: 'تسجيل الدخول',
+    logout: 'تسجيل الخروج',
+    studentAdded: 'تمت إضافة الطالب بنجاح',
+    studentUpdated: 'تم تحديث الطالب بنجاح',
+    examCenter: 'مركز الاختبارات',
+    scores: 'النتائج',
+    createExam: 'إنشاء اختبار',
+    allExams: 'جميع الاختبارات',
+    upcoming: 'القادمة',
+    archived: 'المؤرشفة',
+    noExamsYet: 'لا توجد اختبارات تم إنشاؤها حتى الآن',
+    noExamsDescription: 'ابدأ بإنشاء الاختبار الأول لإدارة الاختبارات القصيرة وتتبع أداء الطلاب.',
+    examTitle: 'عنوان الاختبار',
+    enterExamTitle: 'أدخل عنوان الاختبار',
+    titleRequired: 'العنوان مطلوب',
+    description: 'الوصف',
+    enterDescription: 'أدخل وصف الاختبار',
+    examType: 'نوع الاختبار',
+    selectType: 'اختر نوع الاختبار',
+    quiz: 'اختبار قصير',
+    exam: 'امتحان',
+    test: 'اختبار',
+    duration: 'المدة (بالدقائق)',
+    enterDuration: 'أدخل المدة بالدقائق',
+    validDurationRequired: 'الرجاء إدخال مدة صحيحة',
+    questions: 'الأسئلة',
+    addQuestion: 'إضافة سؤال',
+    addAtLeastOneQuestion: 'أضف سؤال واحد على الأقل',
+    noQuestionsAdded: 'لم يتم إضافة أسئلة بعد',
+    addYourFirstQuestion: 'أضف سؤالك الأول',
+    updateExam: 'تحديث الاختبار',
+    questionText: 'نص السؤال',
+    enterQuestionText: 'أدخل نص السؤال',
+    questionType: 'نوع السؤال',
+    multipleChoice: 'اختيار من متعدد',
+    trueFalse: 'صواب / خطأ',
+    shortAnswer: 'إجابة قصيرة',
+    essay: 'مقال',
+    points: 'النقاط',
+    options: 'خيارات',
+    allowMultipleAnswers: 'السماح بإجابات متعددة',
+    option: 'خيار',
+    addOption: 'إضافة خيار',
+    correctAnswer: 'الإجابة الصحيحة',
+    forGrading: 'للتصحيح',
+    enterCorrectAnswer: 'أدخل الإجابة الصحيحة',
+    essayNoCorrectAnswer: 'تتطلب أسئلة المقال تصحيحًا يدويًا',
+    minutes: 'دقائق',
+    view: 'عرض',
+    confirmDelete: 'هل أنت متأكد أنك تريد حذف هذا الاختبار؟',
+    examDeleted: 'تم حذف الاختبار بنجاح',
+    examUpdated: 'تم تحديث الاختبار بنجاح',
+    examAdded: 'تم إنشاء الاختبار بنجاح',
+    addScore: 'إضافة نتيجة',
+    editScore: 'تعديل النتيجة',
+    examName: 'اسم الاختبار',
+    score: 'النتيجة',
+    enterStudentName: 'أدخل اسم الطالب',
+    enterExamName: 'أدخل اسم الاختبار',
+    enterScore: 'أدخل النتيجة (0-100)',
+    studentNameRequired: 'اسم الطالب مطلوب',
+    examNameRequired: 'اسم الاختبار مطلوب',
+    validScoreRequired: 'الرجاء إدخال نتيجة صحيحة (0-100)',
+    updateScore: 'تحديث النتيجة',
+    scoreAdded: 'تمت إضافة النتيجة بنجاح',
+    scoreUpdated: 'تم تحديث النتيجة بنجاح',
+    scoreDeleted: 'تم حذف النتيجة بنجاح',
+    noScoresYet: 'لم يتم إضافة نتائج بعد',
+    export: 'تصدير',
+    studentScores: 'نتائج الطلاب',
+    average: 'المعدل',
+    exportSuccess: 'تم التصدير بنجاح',
+  },
 };
 
-const arabicTranslations: Translations = {
-  dashboard: 'لوحة التحكم',
-  students: 'الطلاب',
-  grades: 'الصفوف',
-  settings: 'الإعدادات',
-  language: 'اللغة',
-  english: 'الإنجليزية',
-  arabic: 'العربية',
-  home: 'الرئيسية',
-  pointsGoal: 'هدف النقاط',
-  changePointsGoal: 'تغيير هدف النقاط',
-  changeGoalDesc: 'حدد عدد النقاط التي يحتاجها الطلاب للوصول إلى الهدف',
-  save: 'حفظ',
-  cancel: 'إلغاء',
-  goalUpdated: 'تم تحديث الهدف بنجاح',
-  allStudents: 'جميع الطلاب',
-  internationalStudents: 'الطلاب الدوليون',
-  nationalStudents: 'الطلاب الوطنيون',
-  importText: 'استيراد',
-  byGrade: 'حسب الصف',
-  searchStudents: 'البحث عن الطلاب...',
-  clearFilters: 'مسح الفلاتر',
-  noStudents: 'لم يتم العثور على طلاب',
-  noInternationalStudents: 'لم يتم العثور على طلاب دوليين',
-  noNationalStudents: 'لم يتم العثور على طلاب وطنيين',
-  student: 'الطالب',
-  recognition: 'التقدير',
-  grade: 'الصف',
-  addStudent: 'إضافة طالب',
-  quickAddPoints: 'إضافة نقاط سريعة',
-  quickDeductPoints: 'خصم نقاط سريع',
-  points: 'نقاط',
-  pointHistory: 'سجل النقاط',
-  goalReached: 'تم الوصول للهدف!',
-  view: 'عرض',
-  date: 'التاريخ',
-  reason: 'السبب',
-  profile: 'الملف الشخصي',
-  import: 'استيراد',
-  upload: 'رفع',
-  uploadFile: 'رفع ملف',
-  uploading: 'جاري الرفع...',
-  uploadSuccess: 'تم الرفع بنجاح',
-  uploadDescription: 'قم برفع ملف CSV أو Excel يحتوي على بيانات الطلاب لاستيرادهم إلى النظام.',
-  errorParsingFile: 'خطأ في تحليل الملف',
-  studentsImported: 'تم استيراد الطلاب',
-  nominate: 'ترشيح',
-  add: 'إضافة',
-  remove: 'إزالة',
-  toGoal: 'للهدف',
-  welcome: 'مرحبا بك في نظام تقدير الطلاب',
-  welcomeDescription: 'تتبع تقدم الطلاب، وإدارة المكافآت، والاعتراف بالإنجازات',
-  export: 'تصدير',
-  getStarted: 'ابدأ الآن',
-  raceToGoal: 'السباق إلى الهدف',
-  studentRecognition: 'تقدير الطلاب',
-  viewRecognitionDashboard: 'عرض لوحة تحكم التقدير',
-  recognizeTheseStudents: 'تقدير هؤلاء الطلاب',
-  noRecognitionsYet: 'لا توجد تقديرات بعد',
-  recognitionCategories: 'فئات التقدير',
-  selectACategory: 'اختر فئة',
-  selectReason: 'اختر السبب',
-  helpfulness: 'المساعدة',
-  respect: 'الاحترام',
-  teamwork: 'العمل الجماعي',
-  excellence: 'التميز',
-  addAward: 'إضافة جائزة',
-  recognitionNotFound: 'لم يتم العثور على التقدير',
-  helpfulnessTitle: 'نجمة المساعدة',
-  respectTitle: 'نجمة الاحترام',
-  teamworkTitle: 'نجمة العمل الجماعي',
-  excellenceTitle: 'نجمة التميز',
-  notFound: 'الصفحة غير موجودة',
-  notFoundMessage: 'الصفحة التي تبحث عنها غير موجودة أو تم نقلها.',
-  backToDashboard: 'العودة إلى لوحة التحكم',
-  back: 'رجوع',
-  progressToGoal: 'التقدم نحو الهدف',
-  national: 'وطني',
-  international: 'دولي',
-  congratulations: 'تهانينا!',
-  reachedGoal: 'وصل للهدف!',
-  almost: 'اقترب من الهدف!',
-  keepGoing: 'استمر!',
-  needsImprovement: 'يحتاج إلى تحسين',
-  attendance: 'الحضور',
-  books: 'الكتب',
-  studentName: 'اسم الطالب',
-  selectNationality: 'اختر الجنسية',
-  updateStudent: 'تحديث الطالب',
-  studentUpdated: 'تم تحديث الطالب بنجاح',
-  errorSubmittingForm: 'خطأ في تقديم النموذج',
-  nominateStudentDesc: 'تقدير طالب أظهر صفات استثنائية',
-  nominateStudent: 'ترشيح طالب',
-  submitNomination: 'تقديم الترشيح',
-  commentsPlaceholder: 'أدخل أي تفاصيل إضافية حول سبب استحقاق هذا الطالب للتقدير',
-  additionalComments: 'تعليقات إضافية',
-  selectReasonDescription: 'اختر سببًا محددًا لهذا الترشيح',
-  reasonForNomination: 'سبب الترشيح',
-  nominationSubmitted: 'تم تقديم الترشيح بنجاح',
-  nominatedFor: 'تم ترشيحه لـ',
-  recentlyNominated: 'تم ترشيحهم مؤخرًا',
-  noRecentNominations: 'لا توجد ترشيحات حديثة',
-  noStudentsFound: 'لم يتم العثور على طلاب',
-  totalRecognitions: 'إجمالي التقديرات',
-  balancedGrowth: 'النمو المتوازن',
-  achievedOn: 'تم تحقيقه في',
-  needsAllCategories: 'يحتاج إلى تقدير في جميع الفئات',
-  awards: 'الجوائز',
-  specialRecognitions: 'تقديرات خاصة',
-  balancedAchievement: 'الإنجاز المتوازن',
-  balancedDesc: 'تُمنح للطلاب الذين يُظهرون نموًا في جميع المجالات',
-  noAwardsYet: 'لم يتم الحصول على جوائز بعد',
-  recentRecognitions: 'التقديرات الأخيرة',
-  history: 'السجل',
-  overview: 'نظرة عامة',
-  recognitionScores: 'درجات التقدير',
-  detailedBreakdownOfSubcategories: 'تقسيم مفصل للفئات الفرعية للتقدير',
-  helpfulnessDescription: 'يقدر الطلاب الذين يساعدون الآخرين أكاديميًا أو عاطفيًا',
-  respectDescription: 'يكرم الطلاب الذين يظهرون احترامًا للتنوع ويحلون النزاعات',
-  teamworkDescription: 'يحتفي بالطلاب الذين يتعاونون بفعالية في إعدادات المجموعة',
-  excellenceDescription: 'يعترف بالطلاب الذين يسعون باستمرار لتحقيق معايير عالية',
-  studentRecognitions: 'تقديرات الطلاب',
-  studentProgress: 'تقدم الطلاب',
-  classComparison: 'مقارنة الصفوف',
-  recognitionSystem: 'نظام التقدير',
-  raceToGoalDescription: 'مراقبة تقدم الطلاب أثناء سباقهم للوصول إلى هدف النقاط',
-  progressOverview: 'نظرة عامة على التقدم',
-  change: 'التغيير',
-  average: 'المتوسط',
-  // New translations for scores feature
-  scores: 'الدرجات',
-  addScore: 'إضافة درجة',
-  editScore: 'تعديل الدرجة',
-  updateScore: 'تحديث الدرجة',
-  examName: 'اسم الامتحان',
-  score: 'الدرجة',
-  actions: 'الإجراءات',
-  confirmDelete: 'هل أنت متأكد أنك تريد حذف هذه الدرجة؟',
-  scoreAdded: 'تمت إضافة الدرجة بنجاح',
-  scoreUpdated: 'تم تحديث الدرجة بنجاح',
-  scoreDeleted: 'تم حذف الدرجة بنجاح',
-  studentScores: 'درجات الطلاب',
-  exportSuccess: 'تم التصدير بنجاح',
-  enterStudentName: 'أدخل اسم الطالب',
-  enterExamName: 'أدخل اسم الامتحان',
-  enterScore: 'أدخل الدرجة (0-100)',
-  studentNameRequired: 'اسم الطالب مطلوب',
-  examNameRequired: 'اسم الامتحان مطلوب',
-  validScoreRequired: 'الرجاء إدخال درجة صالحة (0-100)',
-  noScoresYet: 'لم يتم إضافة درجات بعد'
-};
-
-export const translations = createTranslations(englishTranslations, arabicTranslations);
-
-export const getTranslations = (lang: 'en' | 'ar') => {
-  return translations[lang];
+export const getTranslations = (language: string = 'en'): Translations => {
+  return translations[language] || translations.en;
 };

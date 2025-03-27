@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { StudentScore } from '@/types/student-score';
+import { StudentScore, Exam, Question } from '@/types/student-score';
 
 // Types
 export type Student = {
@@ -61,6 +61,10 @@ export type AppContextType = {
   addScore: (score: Omit<StudentScore, 'id'>) => void;
   updateScore: (id: string, scoreData: Omit<StudentScore, 'id'>) => void;
   deleteScore: (id: string) => void;
+  exams: Exam[];
+  addExam: (exam: Omit<Exam, 'id' | 'createdAt'>) => void;
+  updateExam: (id: string, examData: Omit<Exam, 'id' | 'createdAt'>) => void;
+  deleteExam: (id: string) => void;
 };
 
 const AppContext = createContext<AppContextType>({
@@ -85,6 +89,10 @@ const AppContext = createContext<AppContextType>({
   addScore: () => {},
   updateScore: () => {},
   deleteScore: () => {},
+  exams: [],
+  addExam: () => {},
+  updateExam: () => {},
+  deleteExam: () => {},
 });
 
 export const useAppContext = () => useContext(AppContext);
@@ -96,12 +104,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [classAchievements, setClassAchievements] = useState<{[className: string]: string[]}>({});
   const [scores, setScores] = useState<StudentScore[]>([]);
+  const [exams, setExams] = useState<Exam[]>([]);
 
   useEffect(() => {
     const savedStudents = localStorage.getItem('students');
     const savedLanguage = localStorage.getItem('language');
     const savedGoalPoints = localStorage.getItem('goalPoints');
     const savedScores = localStorage.getItem('studentScores');
+    const savedExams = localStorage.getItem('exams');
 
     if (savedStudents) {
       setStudents(JSON.parse(savedStudents));
@@ -117,6 +127,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     
     if (savedScores) {
       setScores(JSON.parse(savedScores));
+    }
+    
+    if (savedExams) {
+      setExams(JSON.parse(savedExams));
     }
   }, []);
 
@@ -137,6 +151,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     localStorage.setItem('studentScores', JSON.stringify(scores));
   }, [scores]);
+  
+  useEffect(() => {
+    localStorage.setItem('exams', JSON.stringify(exams));
+  }, [exams]);
 
   const generateId = () => {
     return Date.now().toString(36) + Math.random().toString(36).substring(2);
@@ -337,6 +355,34 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setScores(prev => prev.filter(score => score.id !== id));
   };
 
+  const addExam = (examData: Omit<Exam, 'id' | 'createdAt'>) => {
+    const newExam: Exam = {
+      ...examData,
+      id: generateId(),
+      createdAt: new Date().toISOString()
+    };
+    
+    setExams(prev => [...prev, newExam]);
+  };
+  
+  const updateExam = (id: string, examData: Omit<Exam, 'id' | 'createdAt'>) => {
+    setExams(prev => 
+      prev.map(exam => {
+        if (exam.id === id) {
+          return { 
+            ...exam, 
+            ...examData,
+          };
+        }
+        return exam;
+      })
+    );
+  };
+  
+  const deleteExam = (id: string) => {
+    setExams(prev => prev.filter(exam => exam.id !== id));
+  };
+
   const value = {
     students,
     setStudents,
@@ -359,6 +405,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addScore,
     updateScore,
     deleteScore,
+    exams,
+    addExam,
+    updateExam,
+    deleteExam,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
