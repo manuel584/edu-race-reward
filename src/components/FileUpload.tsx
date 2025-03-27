@@ -4,6 +4,8 @@ import * as XLSX from 'xlsx';
 import { useAppContext } from '@/context/AppContext';
 import { toast } from 'sonner';
 import { getTranslations } from '@/lib/i18n';
+import { Button } from "@/components/ui/button";
+import { Upload } from 'lucide-react';
 
 interface FileUploadProps {
   onUploadComplete?: () => void;
@@ -13,6 +15,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
   const [isUploading, setIsUploading] = useState(false);
   const { importStudents, language } = useAppContext();
   const t = getTranslations(language);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -27,7 +30,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
       const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
       if (jsonData.length === 0) {
-        toast.error(t.noStudentsFound);
+        toast.error(t.noStudents || "No students found");
         setIsUploading(false);
         return;
       }
@@ -71,27 +74,46 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
       // Import students
       importStudents(students);
       
-      toast.success(`${students.length} ${t.studentsImported}`);
+      toast.success(`${students.length} ${t.studentsImported || "students imported"}`);
       
       if (onUploadComplete) {
         onUploadComplete();
       }
     } catch (error) {
       console.error('Error parsing file:', error);
-      toast.error(t.errorParsingFile);
+      toast.error(t.errorParsingFile || "Error parsing file");
     } finally {
       setIsUploading(false);
+      // Reset the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
-    <input
-      type="file"
-      accept=".xlsx,.xls,.csv"
-      onChange={handleFileUpload}
-      disabled={isUploading}
-      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border file:border-solid file:border-gray-300 file:text-sm file:font-semibold file:bg-white file:text-gray-700 hover:file:bg-gray-50"
-    />
+    <div className="flex flex-col items-center">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".xlsx,.xls,.csv"
+        onChange={handleFileUpload}
+        disabled={isUploading}
+        className="hidden"
+      />
+      <Button 
+        onClick={triggerFileInput} 
+        disabled={isUploading}
+        className="w-full flex items-center justify-center gap-2"
+      >
+        <Upload className="h-4 w-4" />
+        {isUploading ? (t.uploading || "Uploading...") : (t.uploadFile || "Upload File")}
+      </Button>
+    </div>
   );
 };
 

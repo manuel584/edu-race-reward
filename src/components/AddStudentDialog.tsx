@@ -32,15 +32,15 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ children }) => {
         {children || (
           <Button className="flex items-center gap-2">
             <UserPlus className="h-4 w-4" />
-            {t.addStudent}
+            {t.addStudent || "Add Student"}
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t.addStudent}</DialogTitle>
+          <DialogTitle>{t.addStudent || "Add Student"}</DialogTitle>
         </DialogHeader>
-        <StudentForm onSuccess={handleSuccess} />
+        <StudentForm />
       </DialogContent>
     </Dialog>
   );

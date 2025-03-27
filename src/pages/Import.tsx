@@ -7,16 +7,25 @@ import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
 import { Home, Upload } from 'lucide-react';
 import FileUpload from '@/components/FileUpload';
+import { useNavigate } from 'react-router-dom';
 
 const Import = () => {
   const { language } = useAppContext();
+  const navigate = useNavigate();
   const t = getTranslations(language);
 
   // Generate breadcrumb items
   const breadcrumbItems = [
     { label: t.home, path: '/', icon: <Home className="h-4 w-4" /> },
-    { label: t.importText },
+    { label: t.importText || "Import" },
   ];
+  
+  const handleUploadComplete = () => {
+    // Navigate to students page after successful import
+    setTimeout(() => {
+      navigate('/students');
+    }, 1500);
+  };
 
   return (
     <div className="min-h-screen">
@@ -32,7 +41,7 @@ const Import = () => {
           <Breadcrumb items={breadcrumbItems} />
           
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-            <h1 className="text-3xl font-display font-bold">{t.importText}</h1>
+            <h1 className="text-3xl font-display font-bold">{t.importText || "Import"}</h1>
           </div>
           
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
@@ -43,13 +52,15 @@ const Import = () => {
                 </div>
               </div>
               
-              <h2 className="text-xl font-semibold text-center mb-6">{t.importText} {t.students}</h2>
+              <h2 className="text-xl font-semibold text-center mb-6">
+                {t.importText || "Import"} {t.students || "Students"}
+              </h2>
               
               <p className="text-gray-500 text-center mb-8">
-                Upload a CSV or Excel file containing student data to import them into the system.
+                {t.uploadDescription || "Upload a CSV or Excel file containing student data to import them into the system."}
               </p>
               
-              <FileUpload onUploadComplete={() => {}} />
+              <FileUpload onUploadComplete={handleUploadComplete} />
             </div>
           </div>
         </motion.div>
