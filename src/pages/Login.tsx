@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
@@ -7,20 +7,16 @@ import { getTranslations } from '@/lib/i18n';
 import { useAppContext } from '@/context/AppContext';
 import LanguageToggle from '@/components/LanguageToggle';
 
-// Extended type for google accounts
-interface GoogleAccountsType {
-  id: {
-    initialize: (config: any) => void;
-    renderButton: (element: HTMLElement, options: any) => void;
-    prompt: () => void;
-  };
-}
-
-// Google global type
 declare global {
   interface Window {
-    google: {
-      accounts: GoogleAccountsType;
+    google?: {
+      accounts?: {
+        id: {
+          initialize: (config: any) => void;
+          renderButton: (element: HTMLElement, options: any) => void;
+          prompt: () => void;
+        };
+      };
     };
   }
 }
@@ -31,7 +27,7 @@ const Login = () => {
   const { language } = useAppContext();
   const t = getTranslations(language);
   
-  useEffect(() => {
+  React.useEffect(() => {
     if (isAuthenticated) {
       navigate('/dashboard');
     }
@@ -44,8 +40,6 @@ const Login = () => {
       email: 'demo@school.edu',
       role: 'teacher'
     });
-    
-    navigate('/dashboard');
   };
   
   return (
@@ -96,7 +90,7 @@ const Login = () => {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-4 bg-white text-gray-500">
-                  {t.or || "or"}
+                  {t.or}
                 </span>
               </div>
             </div>
@@ -114,18 +108,18 @@ const Login = () => {
                 <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
                 <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
               </svg>
-              <span>{t.signInWithGoogle || "Sign in with Google"}</span>
+              <span>{t.signInWithGoogle}</span>
             </motion.button>
           </div>
           
           <p className="text-sm text-gray-500 text-center mt-8">
-            {t.demoLoginNote || "Note: This is a demo. Actual authentication will be implemented in production."}
+            {t.demoLoginNote}
           </p>
         </motion.div>
       </div>
       
       <footer className="py-4 text-center text-gray-500 text-sm">
-        &copy; 2023 Learning Track. {t.allRightsReserved || "All rights reserved."}
+        &copy; 2023 Learning Track. {t.allRightsReserved}
       </footer>
     </div>
   );

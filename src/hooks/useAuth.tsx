@@ -14,7 +14,9 @@ type UserProfile = {
 };
 
 type User = {
+  id: string;
   name: string;
+  email?: string;
   role: string;
   profile?: UserProfile;
   authToken?: string;
@@ -22,7 +24,7 @@ type User = {
 
 type AuthContextType = {
   user: User;
-  login: (name: string, role: string, profile?: UserProfile) => void;
+  login: (userData: User) => void;
   logout: () => void;
   isAuthenticated: boolean;
   updateProfile: (profileData: Partial<UserProfile>) => void;
@@ -34,7 +36,7 @@ interface GoogleAccountsType {
     initialize: (config: any) => void;
     renderButton: (element: HTMLElement, options: any) => void;
     prompt: () => void;
-    // Don't include revoke if it might not exist
+    revoke?: (tokenId: string, callback: () => void) => void;
   }
 }
 
@@ -86,26 +88,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => clearInterval(tokenInterval);
   }, []);
 
-  const login = (name: string, role: string, profile?: UserProfile) => {
+  const login = (userData: User) => {
     // Generate a simulated auth token (in a real app, this would come from the backend)
-    const authToken = `auth_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
-    
-    const userData = { 
-      name, 
-      role,
-      profile,
-      authToken
-    };
+    if (userData && !userData.authToken) {
+      userData.authToken = `auth_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+    }
     
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
     
     // Auth logging for security tracking
-    console.log(`User authenticated: ${name}, Method: ${profile?.authMethod || 'standard'}`);
+    console.log(`User authenticated: ${userData?.name}, Method: ${userData?.profile?.authMethod || 'standard'}`);
     
     toast({
       title: "Login successful",
-      description: `Welcome, ${name}!`,
+      description: `Welcome, ${userData?.name}!`,
     });
   };
 
@@ -138,15 +135,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const googleId = window.google.accounts.id;
         
         // Since TypeScript doesn't know about the revoke method, we'll use a safer approach
-        // to avoid TypeScript errors
-        if (typeof (googleId as any).revoke === 'function') {
-          (googleId as any).revoke(user?.profile?.googleId || '', () => {
+        if (googleId.revoke && user?.profile?.googleId) {
+          googleId.revoke(user.profile.googleId, () => {
             console.log('Google ID token revoked');
           });
         }
-        
-        // Note: We're not calling disableAutoSelect since it might not exist
-        // and was causing TypeScript errors
       } catch (error) {
         console.error('Error during Google sign-out:', error);
       }

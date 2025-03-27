@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
-import { useAppContext, Student } from '@/context/AppContext';
+import { useAppContext } from '@/context/AppContext';
 import { toast } from 'sonner';
 import { getTranslations } from '@/lib/i18n';
 
@@ -27,7 +27,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
       const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
       if (jsonData.length === 0) {
-        toast.error(t.noStudentsFound || "No students found in the file");
+        toast.error(t.noStudentsFound);
         setIsUploading(false);
         return;
       }
@@ -71,14 +71,14 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadComplete }) => {
       // Import students
       importStudents(students);
       
-      toast.success(`${students.length} ${t.studentsImported || "students imported successfully"}`);
+      toast.success(`${students.length} ${t.studentsImported}`);
       
       if (onUploadComplete) {
         onUploadComplete();
       }
     } catch (error) {
       console.error('Error parsing file:', error);
-      toast.error(t.errorParsingFile || "Error parsing file");
+      toast.error(t.errorParsingFile);
     } finally {
       setIsUploading(false);
     }

@@ -15,7 +15,7 @@ const Import = () => {
   // Generate breadcrumb items
   const breadcrumbItems = [
     { label: t.home, path: '/', icon: <Home className="h-4 w-4" /> },
-    { label: t.import },
+    { label: t.importText },
   ];
 
   return (
@@ -32,7 +32,7 @@ const Import = () => {
           <Breadcrumb items={breadcrumbItems} />
           
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-            <h1 className="text-3xl font-display font-bold">{t.import}</h1>
+            <h1 className="text-3xl font-display font-bold">{t.importText}</h1>
           </div>
           
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
@@ -43,13 +43,13 @@ const Import = () => {
                 </div>
               </div>
               
-              <h2 className="text-xl font-semibold text-center mb-6">{t.import} {t.students}</h2>
+              <h2 className="text-xl font-semibold text-center mb-6">{t.importText} {t.students}</h2>
               
               <p className="text-gray-500 text-center mb-8">
                 Upload a CSV or Excel file containing student data to import them into the system.
               </p>
               
-              <FileUpload onClose={() => {}} />
+              <FileUpload onUploadComplete={() => {}} />
             </div>
           </div>
         </motion.div>

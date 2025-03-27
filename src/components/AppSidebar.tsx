@@ -4,39 +4,26 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/hooks/useAuth';
 import { 
   BookOpen, 
   GraduationCap, 
   Globe, 
   Users, 
-  User, 
   BarChart3, 
   Settings,
   PlusCircle,
   FileDown,
-  ArrowUpDown,
   ChevronsLeft,
   ChevronsRight,
   Menu,
   HandHeart,
   Shield,
-  Gem
+  Gem,
+  LogOut
 } from 'lucide-react';
-import { 
-  Sidebar, 
-  SidebarContent, 
-  SidebarFooter, 
-  SidebarHeader, 
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarProvider,
-  SidebarTrigger,
-  SidebarGroup,
-  SidebarGroupLabel
-} from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { Drawer, DrawerContent, DrawerOverlay, DrawerTrigger } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 
 interface AppSidebarProps {
   children: React.ReactNode;
@@ -52,32 +39,30 @@ export const AppSidebarProvider: React.FC<AppSidebarProps> = ({ children }) => {
   }, [isMobile]);
 
   return (
-    <SidebarProvider defaultOpen={!isMobile}>
-      <div className="flex min-h-screen w-full bg-gray-50">
-        {isMobile ? (
-          <>
-            <DrawerTrigger asChild className="fixed top-4 left-4 z-50 md:hidden">
-              <Button variant="outline" size="icon">
-                <Menu className="h-4 w-4" />
-              </Button>
-            </DrawerTrigger>
-            <Drawer>
-              <DrawerContent className="max-h-[90vh]">
-                <div className="w-full max-w-none p-0 h-[80vh] overflow-auto">
-                  <MobileSidebar />
-                </div>
-              </DrawerContent>
-            </Drawer>
-            <div className="flex-1 pt-14">{children}</div>
-          </>
-        ) : (
-          <>
-            <AppSidebarContent open={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
-            <div className="flex-1">{children}</div>
-          </>
-        )}
-      </div>
-    </SidebarProvider>
+    <div className="flex min-h-screen w-full bg-gray-50">
+      {isMobile ? (
+        <>
+          <DrawerTrigger asChild className="fixed top-4 left-4 z-50 md:hidden">
+            <Button variant="outline" size="icon">
+              <Menu className="h-4 w-4" />
+            </Button>
+          </DrawerTrigger>
+          <Drawer>
+            <DrawerContent className="max-h-[90vh]">
+              <div className="w-full max-w-none p-0 h-[80vh] overflow-auto">
+                <MobileSidebar />
+              </div>
+            </DrawerContent>
+          </Drawer>
+          <div className="flex-1 pt-14">{children}</div>
+        </>
+      ) : (
+        <>
+          <AppSidebarContent open={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+          <div className="flex-1">{children}</div>
+        </>
+      )}
+    </div>
   );
 };
 
@@ -85,6 +70,7 @@ const MobileSidebar: React.FC = () => {
   const { language, students } = useAppContext();
   const t = getTranslations(language);
   const location = useLocation();
+  const { logout } = useAuth();
   
   // Count students by type
   const nationalStudents = students.filter(s => s.nationality === 'national').length;
@@ -254,10 +240,19 @@ const MobileSidebar: React.FC = () => {
         )}
       </div>
       
-      <div className="mt-6">
+      <div className="mt-6 space-y-2">
         <Button variant="outline" className="w-full flex items-center justify-center">
           <Settings className="h-4 w-4 mr-2" />
           <span>{t.settings}</span>
+        </Button>
+        
+        <Button 
+          variant="outline" 
+          className="w-full flex items-center justify-center text-red-500 hover:text-red-600"
+          onClick={() => logout()}
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          <span>{t.logout}</span>
         </Button>
       </div>
     </div>
@@ -268,6 +263,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
   const { language, students } = useAppContext();
   const t = getTranslations(language);
   const location = useLocation();
+  const { logout } = useAuth();
   
   // Count students by type
   const nationalStudents = students.filter(s => s.nationality === 'national').length;
@@ -295,246 +291,251 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
       ? new URLSearchParams(location.search).get('grade')
       : '';
 
-  // Get recognition category for highlighting
-  const recognitionCategory = location.hash ? location.hash.substring(1) : '';
-
   return (
-    <Sidebar collapsible="icon" className="transition-all duration-300">
-      <SidebarHeader className="flex items-center py-4">
-        <div className="flex items-center px-2">
-          <GraduationCap className="h-6 w-6 text-blue-600 mr-2" />
-          <span className="font-display font-semibold text-xl">EduRace</span>
+    <div className={`h-screen ${open ? 'w-64' : 'w-20'} bg-white border-r border-gray-200 transition-all duration-300 flex flex-col`}>
+      <div className="border-b border-gray-200 p-4 flex items-center justify-between">
+        <div className="flex items-center overflow-hidden">
+          <GraduationCap className="h-6 w-6 flex-shrink-0 text-blue-600" />
+          {open && <span className="ml-2 font-display font-semibold text-lg whitespace-nowrap">EduRace</span>}
         </div>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="ml-auto" 
-          onClick={onToggle}
-          aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
-        >
-          {open ? 
-            <ChevronsLeft className="h-4 w-4" /> : 
-            <ChevronsRight className="h-4 w-4" />
-          }
+        <Button variant="ghost" size="icon" onClick={onToggle} className="ml-auto">
+          {open ? <ChevronsLeft className="h-4 w-4" /> : <ChevronsRight className="h-4 w-4" />}
         </Button>
-      </SidebarHeader>
+      </div>
       
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>
-            {t.navigation}
-          </SidebarGroupLabel>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isDashboard} tooltip={t.dashboard}>
+      <div className="flex-1 py-4 overflow-y-auto">
+        <div className="px-3 space-y-6">
+          <div>
+            {!open && <div className="text-xs font-medium text-gray-500 mb-2 text-center">{t.navigation.charAt(0)}</div>}
+            {open && <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.navigation}</div>}
+            
+            <div className="space-y-1">
+              <Button 
+                variant={isDashboard ? "secondary" : "ghost"} 
+                size={open ? "default" : "icon"}
+                className={`w-full ${!open ? 'justify-center' : 'justify-start'}`} 
+                asChild
+              >
                 <Link to="/dashboard">
                   <BarChart3 className="h-4 w-4" />
-                  <span>{t.dashboard}</span>
+                  {open && <span className="ml-2">{t.dashboard}</span>}
                 </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={isStudentsPage && !currentGrade} tooltip={t.students}>
+              </Button>
+              
+              <Button 
+                variant={isStudentsPage ? "secondary" : "ghost"} 
+                size={open ? "default" : "icon"}
+                className={`w-full ${!open ? 'justify-center' : 'justify-start'}`}
+                asChild
+              >
                 <Link to="/students">
                   <Users className="h-4 w-4" />
-                  <span>{t.students}</span>
+                  {open && <span className="ml-2">{t.students}</span>}
                 </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={t.importText}>
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                size={open ? "default" : "icon"}
+                className={`w-full ${!open ? 'justify-center' : 'justify-start'}`}
+                asChild
+              >
                 <Link to="/import">
                   <FileDown className="h-4 w-4" />
-                  <span>{t.importText}</span>
+                  {open && <span className="ml-2">{t.importText}</span>}
                 </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-        
-        {(isStudentsPage || isGradePage) && (
-          <SidebarGroup>
-            <SidebarGroupLabel>
-              {t.filters}
-            </SidebarGroupLabel>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  asChild 
-                  isActive={location.search.includes('type=national')}
-                  tooltip={t.nationalStudents}
+              </Button>
+            </div>
+          </div>
+          
+          {(isStudentsPage || isGradePage) && (
+            <div>
+              {!open && <div className="text-xs font-medium text-gray-500 mb-2 text-center">{t.filters.charAt(0)}</div>}
+              {open && <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.filters}</div>}
+              
+              <div className="space-y-1">
+                <Button 
+                  variant={location.search.includes('type=national') ? "secondary" : "ghost"} 
+                  size={open ? "default" : "icon"}
+                  className={`w-full ${!open ? 'justify-center' : 'justify-start'}`}
+                  asChild
                 >
                   <Link to="/students?type=national">
                     <Users className="h-4 w-4" />
-                    <span>{t.nationalStudents}</span>
-                    <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
-                      {nationalStudents}
-                    </span>
+                    {open && (
+                      <>
+                        <span className="ml-2">{t.nationalStudents}</span>
+                        <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
+                          {nationalStudents}
+                        </span>
+                      </>
+                    )}
                   </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  asChild 
-                  isActive={location.search.includes('type=international')}
-                  tooltip={t.internationalStudents}
+                </Button>
+                
+                <Button 
+                  variant={location.search.includes('type=international') ? "secondary" : "ghost"} 
+                  size={open ? "default" : "icon"}
+                  className={`w-full ${!open ? 'justify-center' : 'justify-start'}`}
+                  asChild
                 >
                   <Link to="/students?type=international">
                     <Globe className="h-4 w-4" />
-                    <span>{t.internationalStudents}</span>
-                    <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
-                      {internationalStudents}
-                    </span>
+                    {open && (
+                      <>
+                        <span className="ml-2">{t.internationalStudents}</span>
+                        <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
+                          {internationalStudents}
+                        </span>
+                      </>
+                    )}
                   </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroup>
-        )}
-        
-        {(isStudentsPage || isGradePage) && (
-          <SidebarGroup>
-            <SidebarGroupLabel>
-              {t.grades}
-            </SidebarGroupLabel>
-            <SidebarMenu>
-              {Object.entries(gradeGroups).sort().map(([grade, gradeStudents]) => (
-                <SidebarMenuItem key={grade}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={currentGrade === grade && !isGradePage}
-                    tooltip={`${t.grade} ${grade}`}
-                  >
-                    <Link to={`/students?grade=${grade}`}>
-                      <GraduationCap className="h-4 w-4" />
-                      <span>{t.grade} {grade}</span>
-                      <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
-                        {gradeStudents.length}
-                      </span>
-                    </Link>
-                  </SidebarMenuButton>
-                  
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={currentGrade === grade && isGradePage}
-                    tooltip={`${t.grade} ${grade} ${t.recognition}`}
-                    className="pl-8"
-                  >
-                    <Link to={`/grade/${grade}`}>
-                      <BarChart3 className="h-4 w-4" />
-                      <span>{t.recognition}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
-        )}
-        
-        {isGradePage && (
-          <SidebarGroup>
-            <SidebarGroupLabel>
-              {t.recognitionCategories}
-            </SidebarGroupLabel>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  asChild 
-                  isActive={recognitionCategory === 'helpfulness'}
-                  tooltip={t.helpfulness}
-                >
+                </Button>
+              </div>
+            </div>
+          )}
+          
+          {(isStudentsPage || isGradePage) && (
+            <div>
+              {!open && <div className="text-xs font-medium text-gray-500 mb-2 text-center">{t.grades.charAt(0)}</div>}
+              {open && <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.grades}</div>}
+              
+              <div className="space-y-1">
+                {Object.entries(gradeGroups).sort().map(([grade, gradeStudents]) => (
+                  <div key={grade} className="space-y-1">
+                    <Button 
+                      variant={grade === currentGrade && !isGradePage ? "secondary" : "ghost"} 
+                      size={open ? "default" : "icon"}
+                      className={`w-full ${!open ? 'justify-center' : 'justify-start'}`}
+                      asChild
+                    >
+                      <Link to={`/students?grade=${grade}`}>
+                        <GraduationCap className="h-4 w-4" />
+                        {open && (
+                          <>
+                            <span className="ml-2">{t.grade} {grade}</span>
+                            <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
+                              {gradeStudents.length}
+                            </span>
+                          </>
+                        )}
+                      </Link>
+                    </Button>
+                    
+                    <Button 
+                      variant={grade === currentGrade && isGradePage ? "secondary" : "ghost"} 
+                      size={open ? "default" : "icon"}
+                      className={`w-full ${!open ? 'justify-center pl-0' : 'justify-start pl-9'}`}
+                      asChild
+                    >
+                      <Link to={`/grade/${grade}`}>
+                        <BarChart3 className="h-4 w-4" />
+                        {open && <span className="ml-2">{t.recognition}</span>}
+                      </Link>
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {isGradePage && open && (
+            <div>
+              <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.recognitionCategories}</div>
+              
+              <div className="space-y-1">
+                <Button variant="ghost" className="w-full justify-start" asChild>
                   <Link to={`${location.pathname}#helpfulness`}>
                     <HandHeart className="h-4 w-4 text-rose-600" />
-                    <span>{t.helpfulness}</span>
+                    <span className="ml-2">{t.helpfulness}</span>
                   </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  asChild 
-                  isActive={recognitionCategory === 'respect'}
-                  tooltip={t.respect}
-                >
+                </Button>
+                
+                <Button variant="ghost" className="w-full justify-start" asChild>
                   <Link to={`${location.pathname}#respect`}>
                     <Shield className="h-4 w-4 text-blue-600" />
-                    <span>{t.respect}</span>
+                    <span className="ml-2">{t.respect}</span>
                   </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  asChild 
-                  isActive={recognitionCategory === 'teamwork'}
-                  tooltip={t.teamwork}
-                >
+                </Button>
+                
+                <Button variant="ghost" className="w-full justify-start" asChild>
                   <Link to={`${location.pathname}#teamwork`}>
                     <Users className="h-4 w-4 text-green-600" />
-                    <span>{t.teamwork}</span>
+                    <span className="ml-2">{t.teamwork}</span>
                   </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  asChild 
-                  isActive={recognitionCategory === 'excellence'}
-                  tooltip={t.excellence}
-                >
+                </Button>
+                
+                <Button variant="ghost" className="w-full justify-start" asChild>
                   <Link to={`${location.pathname}#excellence`}>
                     <Gem className="h-4 w-4 text-amber-600" />
-                    <span>{t.excellence}</span>
+                    <span className="ml-2">{t.excellence}</span>
                   </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroup>
-        )}
-        
-        {isStudentView && (
-          <SidebarGroup>
-            <SidebarGroupLabel>
-              {t.studentOptions}
-            </SidebarGroupLabel>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton tooltip={t.addPoints}>
+                </Button>
+              </div>
+            </div>
+          )}
+          
+          {isStudentView && (
+            <div>
+              {!open && <div className="text-xs font-medium text-gray-500 mb-2 text-center">{t.studentOptions.charAt(0)}</div>}
+              {open && <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.studentOptions}</div>}
+              
+              <div className="space-y-1">
+                <Button 
+                  variant="ghost" 
+                  size={open ? "default" : "icon"}
+                  className={`w-full ${!open ? 'justify-center' : 'justify-start'}`}
+                >
                   <PlusCircle className="h-4 w-4" />
-                  <span>{t.addPoints}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton tooltip={t.pointHistory}>
+                  {open && <span className="ml-2">{t.addPoints}</span>}
+                </Button>
+                
+                <Button 
+                  variant="ghost" 
+                  size={open ? "default" : "icon"}
+                  className={`w-full ${!open ? 'justify-center' : 'justify-start'}`}
+                >
                   <BookOpen className="h-4 w-4" />
-                  <span>{t.pointHistory}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              <SidebarMenuItem>
-                <SidebarMenuButton tooltip={t.exportData}>
+                  {open && <span className="ml-2">{t.pointHistory}</span>}
+                </Button>
+                
+                <Button 
+                  variant="ghost" 
+                  size={open ? "default" : "icon"}
+                  className={`w-full ${!open ? 'justify-center' : 'justify-start'}`}
+                >
                   <FileDown className="h-4 w-4" />
-                  <span>{t.exportData}</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroup>
-        )}
-      </SidebarContent>
+                  {open && <span className="ml-2">{t.exportData}</span>}
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
       
-      <SidebarFooter>
-        <div className="p-2">
-          <Button variant="outline" className="w-full flex items-center justify-center">
-            <Settings className="h-4 w-4 mr-2" />
-            <span>{t.settings}</span>
+      <div className="border-t border-gray-200 p-4">
+        <div className="space-y-2">
+          <Button 
+            variant="outline" 
+            size={open ? "default" : "icon"}
+            className={`w-full ${!open ? 'justify-center' : 'justify-start'}`}
+          >
+            <Settings className="h-4 w-4" />
+            {open && <span className="ml-2">{t.settings}</span>}
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            size={open ? "default" : "icon"}
+            className={`w-full ${!open ? 'justify-center' : 'justify-start'} text-red-500 hover:text-red-600`}
+            onClick={() => logout()}
+          >
+            <LogOut className="h-4 w-4" />
+            {open && <span className="ml-2">{t.logout}</span>}
           </Button>
         </div>
-      </SidebarFooter>
-    </Sidebar>
+      </div>
+    </div>
   );
 };
 
