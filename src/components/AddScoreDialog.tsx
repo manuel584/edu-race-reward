@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -8,16 +8,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { UserPlus } from "lucide-react";
-import { StudentForm } from "@/components/StudentForm";
+import { Plus } from "lucide-react";
 import { getTranslations } from '@/lib/i18n';
 import { useAppContext } from '@/context/AppContext';
+import { ScoreForm } from '@/components/ScoreForm';
 
-interface AddStudentDialogProps {
+interface AddScoreDialogProps {
   children?: React.ReactNode;
 }
 
-const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ children }) => {
+const AddScoreDialog: React.FC<AddScoreDialogProps> = ({ children }) => {
   const [open, setOpen] = React.useState(false);
   const { language } = useAppContext();
   const t = getTranslations(language);
@@ -31,19 +31,19 @@ const AddStudentDialog: React.FC<AddStudentDialogProps> = ({ children }) => {
       <DialogTrigger asChild>
         {children || (
           <Button className="flex items-center gap-2">
-            <UserPlus className="h-4 w-4" />
-            {t.addStudent || "Add Student"}
+            <Plus className="h-4 w-4" />
+            {t.addScore || "Add Score"}
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t.addStudent || "Add Student"}</DialogTitle>
+          <DialogTitle>{t.addScore || "Add Score"}</DialogTitle>
         </DialogHeader>
-        <StudentForm onSubmit={handleSuccess} />
+        <ScoreForm onSuccess={handleSuccess} />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default AddStudentDialog;
+export default AddScoreDialog;

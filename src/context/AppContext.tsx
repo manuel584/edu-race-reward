@@ -1,5 +1,5 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { StudentScore } from '@/types/student-score';
 
 // Types
 export type Student = {
@@ -57,6 +57,10 @@ export type AppContextType = {
   addClassAchievement: (className: string, achievement: string) => void;
   getClassMetrics: () => ClassMetrics[];
   nominateStudent: (studentId: string, category: string, nominatorId: string) => void;
+  scores: StudentScore[];
+  addScore: (score: Omit<StudentScore, 'id'>) => void;
+  updateScore: (id: string, scoreData: Omit<StudentScore, 'id'>) => void;
+  deleteScore: (id: string) => void;
 };
 
 const AppContext = createContext<AppContextType>({
@@ -77,6 +81,10 @@ const AppContext = createContext<AppContextType>({
   addClassAchievement: () => {},
   getClassMetrics: () => [],
   nominateStudent: () => {},
+  scores: [],
+  addScore: () => {},
+  updateScore: () => {},
+  deleteScore: () => {},
 });
 
 export const useAppContext = () => useContext(AppContext);
@@ -87,11 +95,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [goalPoints, setGoalPoints] = useState<number>(100);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [classAchievements, setClassAchievements] = useState<{[className: string]: string[]}>({});
+  const [scores, setScores] = useState<StudentScore[]>([]);
 
   useEffect(() => {
     const savedStudents = localStorage.getItem('students');
     const savedLanguage = localStorage.getItem('language');
     const savedGoalPoints = localStorage.getItem('goalPoints');
+    const savedScores = localStorage.getItem('studentScores');
 
     if (savedStudents) {
       setStudents(JSON.parse(savedStudents));
@@ -103,6 +113,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     
     if (savedGoalPoints) {
       setGoalPoints(Number(savedGoalPoints));
+    }
+    
+    if (savedScores) {
+      setScores(JSON.parse(savedScores));
     }
   }, []);
 
@@ -119,6 +133,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     localStorage.setItem('goalPoints', goalPoints.toString());
   }, [goalPoints]);
+  
+  useEffect(() => {
+    localStorage.setItem('studentScores', JSON.stringify(scores));
+  }, [scores]);
 
   const generateId = () => {
     return Date.now().toString(36) + Math.random().toString(36).substring(2);
@@ -295,6 +313,30 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addRecognition(studentId, recognitionType, `Nominated for ${category}`);
   };
 
+  const addScore = (scoreData: Omit<StudentScore, 'id'>) => {
+    const newScore: StudentScore = {
+      ...scoreData,
+      id: generateId()
+    };
+    
+    setScores(prev => [...prev, newScore]);
+  };
+  
+  const updateScore = (id: string, scoreData: Omit<StudentScore, 'id'>) => {
+    setScores(prev => 
+      prev.map(score => {
+        if (score.id === id) {
+          return { ...scoreData, id };
+        }
+        return score;
+      })
+    );
+  };
+  
+  const deleteScore = (id: string) => {
+    setScores(prev => prev.filter(score => score.id !== id));
+  };
+
   const value = {
     students,
     setStudents,
@@ -313,6 +355,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addClassAchievement,
     getClassMetrics,
     nominateStudent,
+    scores,
+    addScore,
+    updateScore,
+    deleteScore,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
