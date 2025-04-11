@@ -52,7 +52,7 @@ const CreateExamDialog: React.FC<CreateExamDialogProps> = ({
     <Dialog>
       <DialogTrigger asChild>
         {trigger || (
-          <Button className="gap-2">
+          <Button className="gap-2" data-create-exam>
             <PlusCircle className="h-4 w-4" />
             {t.createExam || "Create Exam"}
           </Button>

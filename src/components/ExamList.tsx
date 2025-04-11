@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +8,7 @@ import { Clock, Edit, Trash2, Users, FileText } from 'lucide-react';
 import { Exam } from '@/types/student-score';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import CreateExamDialog from './CreateExamDialog';
 
 interface ExamListProps {
   filter: 'all' | 'upcoming' | 'archived';
@@ -17,6 +18,7 @@ const ExamList: React.FC<ExamListProps> = ({ filter }) => {
   const { language, exams = [], deleteExam } = useAppContext();
   const t = getTranslations(language);
   const navigate = useNavigate();
+  const [isCreateExamDialogOpen, setIsCreateExamDialogOpen] = useState(false);
   
   // Filter exams based on the selected tab
   const filteredExams = exams;
@@ -34,9 +36,13 @@ const ExamList: React.FC<ExamListProps> = ({ filter }) => {
         <FileText className="h-12 w-12 mx-auto text-gray-300 mb-4" />
         <h3 className="text-lg font-semibold text-gray-700 mb-2">{t.noExamsYet || "No exams created yet"}</h3>
         <p className="text-gray-500 max-w-md mx-auto mb-6">{t.noExamsDescription || "Start by creating your first exam to manage quizzes and track student performance."}</p>
-        <Button onClick={() => document.querySelector('[data-create-exam]')?.click()}>
+        <Button onClick={() => setIsCreateExamDialogOpen(true)}>
           {t.createExam || "Create Exam"}
         </Button>
+        <CreateExamDialog
+          open={isCreateExamDialogOpen}
+          onOpenChange={setIsCreateExamDialogOpen}
+        />
       </div>
     );
   }

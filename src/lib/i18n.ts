@@ -139,6 +139,7 @@ type Translations = {
   exportDt?: string;
   sett?: string;
   recogCats?: string;
+  enterDescription?: string;
 };
 
 const translations: { [key: string]: Translations } = {
@@ -218,7 +219,6 @@ const translations: { [key: string]: Translations } = {
     examTitle: 'Exam Title',
     enterExamTitle: 'Enter exam title',
     titleRequired: 'Title is required',
-    description: 'Description',
     enterDescription: 'Enter exam description',
     examType: 'Exam Type',
     selectType: 'Select exam type',
@@ -425,7 +425,8 @@ const translations: { [key: string]: Translations } = {
     addPts: 'إضافة نقاط',
     exportDt: 'تصدير البيانات',
     sett: 'الإعدادات',
-    recogCats: 'فئات التقدير'
+    recogCats: 'فئات التقدير',
+    enterDescription: 'أدخل وصف الاختبار'
   },
 };
 
