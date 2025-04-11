@@ -7,7 +7,6 @@ import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
 import { Home, Book, File, FilePlus, Calendar } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import ExamList from '@/components/ExamList';
 import CreateExamDialog from '@/components/CreateExamDialog';
@@ -19,7 +18,7 @@ const ExamCenter = () => {
   
   // Generate breadcrumb items
   const breadcrumbItems = [
-    { label: t.home, path: '/', icon: <Home className="h-4 w-4" /> },
+    { label: t.home || "Home", path: '/', icon: <Home className="h-4 w-4" /> },
     { label: t.examCenter || "Exam Center" },
   ];
   

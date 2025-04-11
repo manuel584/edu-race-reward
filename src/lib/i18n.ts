@@ -1,4 +1,3 @@
-
 type Translations = {
   home?: string;
   students?: string;
@@ -128,7 +127,6 @@ type Translations = {
   studentScores?: string;
   average?: string;
   exportSuccess?: string;
-  // Additional keys for AppSidebar
   nav?: string;
   dash?: string;
   filter?: string;
@@ -273,7 +271,6 @@ const translations: { [key: string]: Translations } = {
     studentScores: 'Student Scores',
     average: 'Average',
     exportSuccess: 'Exported successfully',
-    // Additional keys for sidebar
     nav: 'Navigation',
     dash: 'Dashboard',
     filter: 'Filters',
@@ -283,7 +280,8 @@ const translations: { [key: string]: Translations } = {
     addPts: 'Add Points',
     exportDt: 'Export Data',
     sett: 'Settings',
-    recogCats: 'Recognition Categories'
+    recogCats: 'Recognition Categories',
+    enterDescription: 'Enter exam description'
   },
   ar: {
     home: 'الرئيسية',
@@ -415,7 +413,6 @@ const translations: { [key: string]: Translations } = {
     studentScores: 'نتائج الطلاب',
     average: 'المعدل',
     exportSuccess: 'تم التصدير بنجاح',
-    // Additional keys for sidebar
     nav: 'التنقل',
     dash: 'لوحة التحكم',
     filter: 'التصفية',
