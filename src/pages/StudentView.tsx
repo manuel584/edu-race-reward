@@ -11,6 +11,7 @@ import StudentRecognitionProfile from '@/components/StudentRecognitionProfile';
 import QuickPointAdjust from '@/components/QuickPointAdjust';
 import StudentStickyHeader from '@/components/StudentStickyHeader';
 import StudentNominationForm from '@/components/StudentNominationForm';
+import ExportDataDialog from '@/components/ExportDataDialog';
 import BackToTopButton from '@/components/BackToTopButton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
@@ -19,7 +20,8 @@ import {
   ArrowUp,
   Trophy,
   Award,
-  Heart
+  Heart,
+  FileDown
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -107,6 +109,15 @@ const StudentView = () => {
               </div>
               
               <div className="mt-4 md:mt-0 flex gap-2">
+                <ExportDataDialog studentId={student.id}>
+                  <Button 
+                    variant="outline" 
+                    className="flex items-center gap-2"
+                  >
+                    <FileDown className="h-4 w-4" />
+                    {t.exportData || "Export Data"}
+                  </Button>
+                </ExportDataDialog>
                 <Button 
                   variant="outline" 
                   onClick={() => setNominateOpen(true)}

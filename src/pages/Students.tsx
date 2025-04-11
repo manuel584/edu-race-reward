@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import AddStudentDialog from '@/components/AddStudentDialog';
 import StudentCard from '@/components/StudentCard';
 import CustomBreadcrumb from '@/components/CustomBreadcrumb';
+import ExportDataDialog from '@/components/ExportDataDialog';
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from '@/components/ui/button';
@@ -18,7 +19,8 @@ import {
   Home,
   Search,
   X,
-  BarChart3
+  BarChart3,
+  FileDown
 } from 'lucide-react';
 
 const Students = () => {
@@ -104,7 +106,7 @@ const Students = () => {
   // Add nationality item if selected
   if (selectedTab !== 'all') {
     breadcrumbItems.push({
-      label: selectedTab === 'international' ? t.internationalStudents : t.nationalStudents,
+      label: selectedTab === 'international' ? t.internationalStuds : t.nationalStuds,
       icon: <Flag className="h-4 w-4" />,
       current: !selectedGrade
     });
@@ -128,9 +130,9 @@ const Students = () => {
         
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
           <h1 className="text-3xl font-display font-semibold">
-            {selectedTab === 'all' ? t.allStudents : 
-             selectedTab === 'international' ? t.internationalStudents : 
-             t.nationalStudents}
+            {selectedTab === 'all' ? t.students : 
+             selectedTab === 'international' ? t.internationalStuds : 
+             t.nationalStuds}
              {selectedGrade ? ` - ${t.grade} ${selectedGrade}` : ''}
           </h1>
           
@@ -142,9 +144,18 @@ const Students = () => {
                 onClick={() => navigate(`/grade/${selectedGrade}`)}
               >
                 <BarChart3 className="h-4 w-4" />
-                {t.viewRecognitionDashboard}
+                {t.gradeRecognition}
               </Button>
             )}
+            <ExportDataDialog gradeLevel={selectedGrade || undefined}>
+              <Button 
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <FileDown className="h-4 w-4" />
+                {t.exportData || "Export Data"}
+              </Button>
+            </ExportDataDialog>
             <AddStudentDialog />
           </div>
         </div>
@@ -154,7 +165,7 @@ const Students = () => {
             <div className="relative flex-grow">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
-                placeholder={t.searchStudents}
+                placeholder={t.search}
                 className="pl-10"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -173,7 +184,7 @@ const Students = () => {
             
             {(searchTerm || selectedGrade) && (
               <Button variant="outline" onClick={handleClearFilters}>
-                {t.clearFilters}
+                {t.clearFilters || "Clear Filters"}
               </Button>
             )}
           </div>
@@ -182,20 +193,20 @@ const Students = () => {
             <TabsList className="mb-6">
               <TabsTrigger value="all" className="flex items-center">
                 <Users className="mr-2 h-4 w-4" />
-                {t.allStudents}
+                {t.students}
               </TabsTrigger>
               <TabsTrigger value="international" className="flex items-center">
                 <Flag className="mr-2 h-4 w-4" />
-                {t.internationalStudents}
+                {t.internationalStuds}
               </TabsTrigger>
               <TabsTrigger value="national" className="flex items-center">
                 <Flag className="mr-2 h-4 w-4" />
-                {t.nationalStudents}
+                {t.nationalStuds}
               </TabsTrigger>
             </TabsList>
             
             <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-500 mb-3">{t.byGrade}</h3>
+              <h3 className="text-sm font-medium text-gray-500 mb-3">{t.grade}</h3>
               <div className="flex flex-wrap gap-2">
                 {uniqueGrades.map((grade) => (
                   <div key={grade} className="flex flex-col sm:flex-row gap-1">
@@ -216,7 +227,7 @@ const Students = () => {
                         className="flex items-center sm:ml-1"
                       >
                         <BarChart3 className="mr-2 h-4 w-4" />
-                        {t.recognition}
+                        {t.recognitions}
                       </Button>
                     )}
                   </div>
@@ -242,7 +253,7 @@ const Students = () => {
                 </motion.div>
               ) : (
                 <div className="text-center py-12 text-gray-500">
-                  {t.noStudents}
+                  {t.noStudents || "No students found"}
                 </div>
               )}
             </TabsContent>
@@ -265,7 +276,7 @@ const Students = () => {
                 </motion.div>
               ) : (
                 <div className="text-center py-12 text-gray-500">
-                  {t.noInternationalStudents}
+                  {t.noStudents || "No international students found"}
                 </div>
               )}
             </TabsContent>
@@ -288,7 +299,7 @@ const Students = () => {
                 </motion.div>
               ) : (
                 <div className="text-center py-12 text-gray-500">
-                  {t.noNationalStudents}
+                  {t.noStudents || "No national students found"}
                 </div>
               )}
             </TabsContent>

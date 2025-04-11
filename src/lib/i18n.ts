@@ -1,3 +1,4 @@
+
 type Translations = {
   home?: string;
   students?: string;
@@ -138,6 +139,25 @@ type Translations = {
   sett?: string;
   recogCats?: string;
   enterDescription?: string;
+  // Export related translations
+  exportData?: string;
+  exportOptions?: string;
+  exportFormat?: string;
+  selectDataType?: string;
+  selectExportScope?: string;
+  individualStudent?: string;
+  entireGrade?: string;
+  allStudents?: string;
+  raceToGoalData?: string;
+  nominationData?: string;
+  recognitionData?: string;
+  allData?: string;
+  selectStudent?: string;
+  selectGrade?: string;
+  downloadExport?: string;
+  exportingData?: string;
+  noDataToExport?: string;
+  exportCompleted?: string;
 };
 
 const translations: { [key: string]: Translations } = {
@@ -281,7 +301,25 @@ const translations: { [key: string]: Translations } = {
     exportDt: 'Export Data',
     sett: 'Settings',
     recogCats: 'Recognition Categories',
-    enterDescription: 'Enter exam description'
+    // Export related translations
+    exportData: 'Export Data',
+    exportOptions: 'Export Options',
+    exportFormat: 'Export Format',
+    selectDataType: 'Select Data Type',
+    selectExportScope: 'Select Export Scope',
+    individualStudent: 'Individual Student',
+    entireGrade: 'Entire Grade',
+    allStudents: 'All Students',
+    raceToGoalData: 'Race to Goal Data',
+    nominationData: 'Nomination Data',
+    recognitionData: 'Recognition Data',
+    allData: 'All Data',
+    selectStudent: 'Select Student',
+    selectGrade: 'Select Grade',
+    downloadExport: 'Download Export',
+    exportingData: 'Exporting Data...',
+    noDataToExport: 'No data available to export',
+    exportCompleted: 'Export completed successfully'
   },
   ar: {
     home: 'الرئيسية',
@@ -423,7 +461,25 @@ const translations: { [key: string]: Translations } = {
     exportDt: 'تصدير البيانات',
     sett: 'الإعدادات',
     recogCats: 'فئات التقدير',
-    enterDescription: 'أدخل وصف الاختبار'
+    // Export related translations in Arabic
+    exportData: 'تصدير البيانات',
+    exportOptions: 'خيارات التصدير',
+    exportFormat: 'تنسيق التصدير',
+    selectDataType: 'اختر نوع البيانات',
+    selectExportScope: 'اختر نطاق التصدير',
+    individualStudent: 'طالب فردي',
+    entireGrade: 'الصف بأكمله',
+    allStudents: 'جميع الطلاب',
+    raceToGoalData: 'بيانات سباق الهدف',
+    nominationData: 'بيانات الترشيح',
+    recognitionData: 'بيانات التقدير',
+    allData: 'كل البيانات',
+    selectStudent: 'اختر الطالب',
+    selectGrade: 'اختر الصف',
+    downloadExport: 'تنزيل التصدير',
+    exportingData: 'جاري تصدير البيانات...',
+    noDataToExport: 'لا توجد بيانات متاحة للتصدير',
+    exportCompleted: 'اكتمل التصدير بنجاح'
   },
 };
 
