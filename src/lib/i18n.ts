@@ -1,3 +1,4 @@
+
 type Translations = {
   home?: string;
   students?: string;
@@ -74,8 +75,6 @@ type Translations = {
   examTitle?: string;
   enterExamTitle?: string;
   titleRequired?: string;
-  description?: string;
-  enterDescription?: string;
   examType?: string;
   selectType?: string;
   quiz?: string;
@@ -97,7 +96,6 @@ type Translations = {
   trueFalse?: string;
   shortAnswer?: string;
   essay?: string;
-  points?: string;
   options?: string;
   allowMultipleAnswers?: string;
   option?: string;
@@ -130,6 +128,17 @@ type Translations = {
   studentScores?: string;
   average?: string;
   exportSuccess?: string;
+  // Additional keys for AppSidebar
+  nav?: string;
+  dash?: string;
+  filter?: string;
+  nationalStuds?: string;
+  internationalStuds?: string;
+  studentOpts?: string;
+  addPts?: string;
+  exportDt?: string;
+  sett?: string;
+  recogCats?: string;
 };
 
 const translations: { [key: string]: Translations } = {
@@ -232,7 +241,6 @@ const translations: { [key: string]: Translations } = {
     trueFalse: 'True/False',
     shortAnswer: 'Short Answer',
     essay: 'Essay',
-    points: 'Points',
     options: 'Options',
     allowMultipleAnswers: 'Allow multiple answers',
     option: 'Option',
@@ -243,7 +251,6 @@ const translations: { [key: string]: Translations } = {
     essayNoCorrectAnswer: 'Essay questions require manual grading',
     minutes: 'minutes',
     view: 'View',
-    confirmDelete: 'Are you sure you want to delete this exam?',
     examDeleted: 'Exam deleted successfully',
     examUpdated: 'Exam updated successfully',
     examAdded: 'Exam created successfully',
@@ -266,6 +273,17 @@ const translations: { [key: string]: Translations } = {
     studentScores: 'Student Scores',
     average: 'Average',
     exportSuccess: 'Exported successfully',
+    // Additional keys for sidebar
+    nav: 'Navigation',
+    dash: 'Dashboard',
+    filter: 'Filters',
+    nationalStuds: 'National Students',
+    internationalStuds: 'International Students',
+    studentOpts: 'Student Options',
+    addPts: 'Add Points',
+    exportDt: 'Export Data',
+    sett: 'Settings',
+    recogCats: 'Recognition Categories'
   },
   ar: {
     home: 'الرئيسية',
@@ -343,7 +361,6 @@ const translations: { [key: string]: Translations } = {
     examTitle: 'عنوان الاختبار',
     enterExamTitle: 'أدخل عنوان الاختبار',
     titleRequired: 'العنوان مطلوب',
-    description: 'الوصف',
     enterDescription: 'أدخل وصف الاختبار',
     examType: 'نوع الاختبار',
     selectType: 'اختر نوع الاختبار',
@@ -366,7 +383,6 @@ const translations: { [key: string]: Translations } = {
     trueFalse: 'صواب / خطأ',
     shortAnswer: 'إجابة قصيرة',
     essay: 'مقال',
-    points: 'النقاط',
     options: 'خيارات',
     allowMultipleAnswers: 'السماح بإجابات متعددة',
     option: 'خيار',
@@ -377,7 +393,6 @@ const translations: { [key: string]: Translations } = {
     essayNoCorrectAnswer: 'تتطلب أسئلة المقال تصحيحًا يدويًا',
     minutes: 'دقائق',
     view: 'عرض',
-    confirmDelete: 'هل أنت متأكد أنك تريد حذف هذا الاختبار؟',
     examDeleted: 'تم حذف الاختبار بنجاح',
     examUpdated: 'تم تحديث الاختبار بنجاح',
     examAdded: 'تم إنشاء الاختبار بنجاح',
@@ -400,6 +415,17 @@ const translations: { [key: string]: Translations } = {
     studentScores: 'نتائج الطلاب',
     average: 'المعدل',
     exportSuccess: 'تم التصدير بنجاح',
+    // Additional keys for sidebar
+    nav: 'التنقل',
+    dash: 'لوحة التحكم',
+    filter: 'التصفية',
+    nationalStuds: 'الطلاب الوطنيون',
+    internationalStuds: 'الطلاب الدوليون',
+    studentOpts: 'خيارات الطالب',
+    addPts: 'إضافة نقاط',
+    exportDt: 'تصدير البيانات',
+    sett: 'الإعدادات',
+    recogCats: 'فئات التقدير'
   },
 };
 

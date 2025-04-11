@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface AppSidebarProps {
   children: React.ReactNode;
@@ -42,18 +43,18 @@ export const AppSidebarProvider: React.FC<AppSidebarProps> = ({ children }) => {
     <div className="flex min-h-screen w-full bg-gray-50">
       {isMobile ? (
         <>
-          <DrawerTrigger asChild className="fixed top-4 left-4 z-50 md:hidden">
-            <Button variant="outline" size="icon">
-              <Menu className="h-4 w-4" />
-            </Button>
-          </DrawerTrigger>
-          <Drawer>
-            <DrawerContent className="max-h-[90vh]">
+          <Sheet>
+            <SheetTrigger asChild className="fixed top-4 left-4 z-50 md:hidden">
+              <Button variant="outline" size="icon">
+                <Menu className="h-4 w-4" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="max-h-[90vh]">
               <div className="w-full max-w-none p-0 h-[80vh] overflow-auto">
                 <MobileSidebar />
               </div>
-            </DrawerContent>
-          </Drawer>
+            </SheetContent>
+          </Sheet>
           <div className="flex-1 pt-14">{children}</div>
         </>
       ) : (
@@ -109,7 +110,7 @@ const MobileSidebar: React.FC = () => {
       
       <div className="space-y-6">
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-muted-foreground">{t.navigation}</h3>
+          <h3 className="text-sm font-medium text-muted-foreground">{t.nav || "Navigation"}</h3>
           <div className="space-y-1">
             <Button 
               variant={isDashboard ? "secondary" : "ghost"} 
@@ -118,7 +119,7 @@ const MobileSidebar: React.FC = () => {
             >
               <Link to="/dashboard">
                 <BarChart3 className="h-4 w-4 mr-2" />
-                {t.dashboard}
+                {t.dash || "Dashboard"}
               </Link>
             </Button>
             
@@ -129,7 +130,7 @@ const MobileSidebar: React.FC = () => {
             >
               <Link to="/students">
                 <Users className="h-4 w-4 mr-2" />
-                {t.students}
+                {t.students || "Students"}
               </Link>
             </Button>
             
@@ -140,7 +141,7 @@ const MobileSidebar: React.FC = () => {
             >
               <Link to="/import">
                 <FileDown className="h-4 w-4 mr-2" />
-                {t.importText}
+                {t.import || "Import"}
               </Link>
             </Button>
           </div>
@@ -148,7 +149,7 @@ const MobileSidebar: React.FC = () => {
         
         {(isStudentsPage || isGradePage) && (
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">{t.filters}</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">{t.filter || "Filters"}</h3>
             <div className="space-y-1">
               <Button 
                 variant={location.search.includes('type=national') ? "secondary" : "ghost"} 
@@ -157,7 +158,7 @@ const MobileSidebar: React.FC = () => {
               >
                 <Link to="/students?type=national">
                   <Users className="h-4 w-4 mr-2" />
-                  {t.nationalStudents}
+                  {t.nationalStuds || "National Students"}
                   <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
                     {nationalStudents}
                   </span>
@@ -171,7 +172,7 @@ const MobileSidebar: React.FC = () => {
               >
                 <Link to="/students?type=international">
                   <Globe className="h-4 w-4 mr-2" />
-                  {t.internationalStudents}
+                  {t.internationalStuds || "International Students"}
                   <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
                     {internationalStudents}
                   </span>
@@ -183,7 +184,7 @@ const MobileSidebar: React.FC = () => {
         
         {(isStudentsPage || isGradePage) && (
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">{t.grades}</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">{t.grade || "Grade"}</h3>
             <div className="space-y-1">
               {Object.entries(gradeGroups).sort().map(([grade, gradeStudents]) => (
                 <div key={grade} className="space-y-1">
@@ -208,7 +209,7 @@ const MobileSidebar: React.FC = () => {
                   >
                     <Link to={`/grade/${grade}`}>
                       <BarChart3 className="h-4 w-4 mr-2" />
-                      {t.recognition} {t.dashboard}
+                      {t.recognitions || "Recognition"} {t.dash || "Dashboard"}
                     </Link>
                   </Button>
                 </div>
@@ -219,21 +220,21 @@ const MobileSidebar: React.FC = () => {
         
         {isStudentView && (
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">{t.studentOptions}</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">{t.studentOpts || "Student Options"}</h3>
             <div className="space-y-1">
               <Button variant="ghost" className="w-full justify-start">
                 <PlusCircle className="h-4 w-4 mr-2" />
-                {t.addPoints}
+                {t.addPts || "Add Points"}
               </Button>
               
               <Button variant="ghost" className="w-full justify-start">
                 <BookOpen className="h-4 w-4 mr-2" />
-                {t.pointHistory}
+                {t.pointsHistory || "Point History"}
               </Button>
               
               <Button variant="ghost" className="w-full justify-start">
                 <FileDown className="h-4 w-4 mr-2" />
-                {t.exportData}
+                {t.exportDt || "Export Data"}
               </Button>
             </div>
           </div>
@@ -243,7 +244,7 @@ const MobileSidebar: React.FC = () => {
       <div className="mt-6 space-y-2">
         <Button variant="outline" className="w-full flex items-center justify-center">
           <Settings className="h-4 w-4 mr-2" />
-          <span>{t.settings}</span>
+          <span>{t.sett || "Settings"}</span>
         </Button>
         
         <Button 
@@ -252,7 +253,7 @@ const MobileSidebar: React.FC = () => {
           onClick={() => logout()}
         >
           <LogOut className="h-4 w-4 mr-2" />
-          <span>{t.logout}</span>
+          <span>{t.logout || "Logout"}</span>
         </Button>
       </div>
     </div>
@@ -306,8 +307,8 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
       <div className="flex-1 py-4 overflow-y-auto">
         <div className="px-3 space-y-6">
           <div>
-            {!open && <div className="text-xs font-medium text-gray-500 mb-2 text-center">{t.navigation.charAt(0)}</div>}
-            {open && <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.navigation}</div>}
+            {!open && <div className="text-xs font-medium text-gray-500 mb-2 text-center">{t.nav ? t.nav.charAt(0) : "N"}</div>}
+            {open && <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.nav || "Navigation"}</div>}
             
             <div className="space-y-1">
               <Button 
@@ -318,7 +319,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
               >
                 <Link to="/dashboard">
                   <BarChart3 className="h-4 w-4" />
-                  {open && <span className="ml-2">{t.dashboard}</span>}
+                  {open && <span className="ml-2">{t.dash || "Dashboard"}</span>}
                 </Link>
               </Button>
               
@@ -330,7 +331,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
               >
                 <Link to="/students">
                   <Users className="h-4 w-4" />
-                  {open && <span className="ml-2">{t.students}</span>}
+                  {open && <span className="ml-2">{t.students || "Students"}</span>}
                 </Link>
               </Button>
               
@@ -342,7 +343,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
               >
                 <Link to="/import">
                   <FileDown className="h-4 w-4" />
-                  {open && <span className="ml-2">{t.importText}</span>}
+                  {open && <span className="ml-2">{t.import || "Import"}</span>}
                 </Link>
               </Button>
             </div>
@@ -350,8 +351,8 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
           
           {(isStudentsPage || isGradePage) && (
             <div>
-              {!open && <div className="text-xs font-medium text-gray-500 mb-2 text-center">{t.filters.charAt(0)}</div>}
-              {open && <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.filters}</div>}
+              {!open && <div className="text-xs font-medium text-gray-500 mb-2 text-center">{t.filter ? t.filter.charAt(0) : "F"}</div>}
+              {open && <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.filter || "Filters"}</div>}
               
               <div className="space-y-1">
                 <Button 
@@ -364,7 +365,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
                     <Users className="h-4 w-4" />
                     {open && (
                       <>
-                        <span className="ml-2">{t.nationalStudents}</span>
+                        <span className="ml-2">{t.nationalStuds || "National Students"}</span>
                         <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
                           {nationalStudents}
                         </span>
@@ -383,7 +384,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
                     <Globe className="h-4 w-4" />
                     {open && (
                       <>
-                        <span className="ml-2">{t.internationalStudents}</span>
+                        <span className="ml-2">{t.internationalStuds || "International Students"}</span>
                         <span className="ml-auto bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
                           {internationalStudents}
                         </span>
@@ -397,8 +398,8 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
           
           {(isStudentsPage || isGradePage) && (
             <div>
-              {!open && <div className="text-xs font-medium text-gray-500 mb-2 text-center">{t.grades.charAt(0)}</div>}
-              {open && <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.grades}</div>}
+              {!open && <div className="text-xs font-medium text-gray-500 mb-2 text-center">{t.grade ? t.grade.charAt(0) : "G"}</div>}
+              {open && <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.grade || "Grade"}</div>}
               
               <div className="space-y-1">
                 {Object.entries(gradeGroups).sort().map(([grade, gradeStudents]) => (
@@ -430,7 +431,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
                     >
                       <Link to={`/grade/${grade}`}>
                         <BarChart3 className="h-4 w-4" />
-                        {open && <span className="ml-2">{t.recognition}</span>}
+                        {open && <span className="ml-2">{t.recognitions || "Recognition"}</span>}
                       </Link>
                     </Button>
                   </div>
@@ -441,34 +442,34 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
           
           {isGradePage && open && (
             <div>
-              <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.recognitionCategories}</div>
+              <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.recogCats || "Recognition Categories"}</div>
               
               <div className="space-y-1">
                 <Button variant="ghost" className="w-full justify-start" asChild>
                   <Link to={`${location.pathname}#helpfulness`}>
                     <HandHeart className="h-4 w-4 text-rose-600" />
-                    <span className="ml-2">{t.helpfulness}</span>
+                    <span className="ml-2">{t.helpfulness || "Helpfulness"}</span>
                   </Link>
                 </Button>
                 
                 <Button variant="ghost" className="w-full justify-start" asChild>
                   <Link to={`${location.pathname}#respect`}>
                     <Shield className="h-4 w-4 text-blue-600" />
-                    <span className="ml-2">{t.respect}</span>
+                    <span className="ml-2">{t.respect || "Respect"}</span>
                   </Link>
                 </Button>
                 
                 <Button variant="ghost" className="w-full justify-start" asChild>
                   <Link to={`${location.pathname}#teamwork`}>
                     <Users className="h-4 w-4 text-green-600" />
-                    <span className="ml-2">{t.teamwork}</span>
+                    <span className="ml-2">{t.teamwork || "Teamwork"}</span>
                   </Link>
                 </Button>
                 
                 <Button variant="ghost" className="w-full justify-start" asChild>
                   <Link to={`${location.pathname}#excellence`}>
                     <Gem className="h-4 w-4 text-amber-600" />
-                    <span className="ml-2">{t.excellence}</span>
+                    <span className="ml-2">{t.excellence || "Excellence"}</span>
                   </Link>
                 </Button>
               </div>
@@ -477,8 +478,8 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
           
           {isStudentView && (
             <div>
-              {!open && <div className="text-xs font-medium text-gray-500 mb-2 text-center">{t.studentOptions.charAt(0)}</div>}
-              {open && <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.studentOptions}</div>}
+              {!open && <div className="text-xs font-medium text-gray-500 mb-2 text-center">{t.studentOpts ? t.studentOpts.charAt(0) : "S"}</div>}
+              {open && <div className="text-xs font-medium text-gray-500 mb-2 px-2">{t.studentOpts || "Student Options"}</div>}
               
               <div className="space-y-1">
                 <Button 
@@ -487,7 +488,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
                   className={`w-full ${!open ? 'justify-center' : 'justify-start'}`}
                 >
                   <PlusCircle className="h-4 w-4" />
-                  {open && <span className="ml-2">{t.addPoints}</span>}
+                  {open && <span className="ml-2">{t.addPts || "Add Points"}</span>}
                 </Button>
                 
                 <Button 
@@ -496,7 +497,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
                   className={`w-full ${!open ? 'justify-center' : 'justify-start'}`}
                 >
                   <BookOpen className="h-4 w-4" />
-                  {open && <span className="ml-2">{t.pointHistory}</span>}
+                  {open && <span className="ml-2">{t.pointsHistory || "Point History"}</span>}
                 </Button>
                 
                 <Button 
@@ -505,7 +506,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
                   className={`w-full ${!open ? 'justify-center' : 'justify-start'}`}
                 >
                   <FileDown className="h-4 w-4" />
-                  {open && <span className="ml-2">{t.exportData}</span>}
+                  {open && <span className="ml-2">{t.exportDt || "Export Data"}</span>}
                 </Button>
               </div>
             </div>
@@ -521,7 +522,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
             className={`w-full ${!open ? 'justify-center' : 'justify-start'}`}
           >
             <Settings className="h-4 w-4" />
-            {open && <span className="ml-2">{t.settings}</span>}
+            {open && <span className="ml-2">{t.sett || "Settings"}</span>}
           </Button>
           
           <Button 
@@ -531,7 +532,7 @@ const AppSidebarContent: React.FC<{ open: boolean; onToggle: () => void }> = ({ 
             onClick={() => logout()}
           >
             <LogOut className="h-4 w-4" />
-            {open && <span className="ml-2">{t.logout}</span>}
+            {open && <span className="ml-2">{t.logout || "Logout"}</span>}
           </Button>
         </div>
       </div>
