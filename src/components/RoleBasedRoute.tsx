@@ -18,6 +18,33 @@ const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({
   const { user, isAuthenticated, hasPermission } = useAuth();
   const { toast } = useToast();
 
+  // Always call useEffect, but conditionally perform actions inside
+  useEffect(() => {
+    // Handle role-based access
+    if (user && !allowedRoles.includes(user.role)) {
+      toast({
+        title: "Access denied",
+        description: "You don't have permission to access this page.",
+        variant: "destructive"
+      });
+    }
+    
+    // Handle permission-based access
+    if (requiredPermissions.length > 0 && user) {
+      const hasAllPermissions = requiredPermissions.every(permission => 
+        hasPermission(permission)
+      );
+      
+      if (!hasAllPermissions) {
+        toast({
+          title: "Permission denied",
+          description: "You don't have the necessary permissions to access this feature.",
+          variant: "destructive"
+        });
+      }
+    }
+  }, [user, allowedRoles, requiredPermissions, hasPermission, toast]);
+
   // Handle authentication check
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -25,15 +52,6 @@ const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({
 
   // Check if user has the allowed role
   if (user && !allowedRoles.includes(user.role)) {
-    // Using useEffect to avoid state updates during render
-    useEffect(() => {
-      toast({
-        title: "Access denied",
-        description: "You don't have permission to access this page.",
-        variant: "destructive"
-      });
-    }, []);
-    
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -44,15 +62,6 @@ const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({
     );
 
     if (!hasAllPermissions) {
-      // Using useEffect to avoid state updates during render
-      useEffect(() => {
-        toast({
-          title: "Permission denied",
-          description: "You don't have the necessary permissions to access this feature.",
-          variant: "destructive"
-        });
-      }, []);
-      
       return <Navigate to="/dashboard" replace />;
     }
   }
