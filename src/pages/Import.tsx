@@ -1,18 +1,26 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
-import { Home, Upload } from 'lucide-react';
+import { Home, Upload, HelpCircle } from 'lucide-react';
 import FileUpload from '@/components/FileUpload';
 import { useNavigate } from 'react-router-dom';
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from "@/components/ui/accordion";
 
 const Import = () => {
   const { language } = useAppContext();
   const navigate = useNavigate();
   const t = getTranslations(language);
+  const [defaultGrade, setDefaultGrade] = useState<string>('');
+  const [defaultNationality, setDefaultNationality] = useState<'international' | 'national'>('national');
 
   // Generate breadcrumb items
   const breadcrumbItems = [
@@ -60,7 +68,36 @@ const Import = () => {
                 {t.uploadDescription || "Upload a CSV or Excel file containing student data to import them into the system."}
               </p>
               
-              <FileUpload onUploadComplete={handleUploadComplete} />
+              <FileUpload 
+                onUploadComplete={handleUploadComplete} 
+                defaultGrade={defaultGrade}
+                defaultNationality={defaultNationality}
+              />
+              
+              <Accordion type="single" collapsible className="mt-8">
+                <AccordionItem value="file-format">
+                  <AccordionTrigger>
+                    <div className="flex items-center gap-2">
+                      <HelpCircle className="h-4 w-4" />
+                      <span>{t.fileFormat || "File Format Information"}</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="text-sm space-y-2 text-gray-600">
+                      <p>{t.fileFormatDescription || "Your file should have the following columns:"}</p>
+                      <ul className="list-disc ml-5 space-y-1">
+                        <li><strong>name</strong> - {t.studentName || "Student name"}</li>
+                        <li><strong>grade</strong> - {t.gradeLevel || "Grade level (optional if selected above)"}</li>
+                        <li><strong>nationality</strong> - {t.studentNationality || "Student nationality (optional if selected above)"}</li>
+                        <li><strong>points</strong> - {t.initialPoints || "Initial points"}</li>
+                        <li><strong>attendance</strong> - {t.attendance || "Attendance score"}</li>
+                        <li><strong>subjects</strong> - {t.subjects || "Subjects (comma separated)"}</li>
+                      </ul>
+                      <p className="mt-4">{t.arabicSupport || "Arabic names are fully supported in the import file."}</p>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           </div>
         </motion.div>
