@@ -46,89 +46,120 @@ const FileUpload: React.FC<FileUploadProps> = ({
       const workbook = XLSX.read(data, { 
         type: 'array',
         codepage: 65001, // UTF-8 encoding
-        cellStyles: true,
+        cellStyles: false,
         cellDates: true,
-        cellNF: true,
-        cellText: true,
-        raw: false
+        cellNF: false,
+        cellText: false,
+        raw: true
       });
       
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
       
-      // Force text format for all cells to preserve Arabic characters
+      // Convert to JSON with proper headers
       const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-        header: "A",
-        defval: "",
-        raw: false
+        raw: true,
+        defval: ""
       });
       
-      // Skip the header row if present
-      const dataRows = jsonData.length > 1 ? jsonData.slice(1) : jsonData;
-
-      if (dataRows.length === 0) {
+      console.log("Raw imported data:", jsonData);
+      
+      if (jsonData.length === 0) {
         toast.error(t.noStudents || "No students found");
         setIsUploading(false);
         return;
       }
-
-      console.log("Imported rows:", dataRows);
       
       // Map Excel columns to student properties
-      const students = dataRows.map((row: any) => {
-        const studentName = row.A || ""; // First column should be name
+      const students = jsonData.map((row: any, index: number) => {
+        console.log(`Processing row ${index}:`, row);
         
-        console.log("Processing student:", studentName);
+        // Check if this row has a student name (first column)
+        // Get name from first column whatever it's named
+        const firstKey = Object.keys(row)[0];
+        const studentName = row[firstKey] || "";
         
-        // Use the selected nationality if the row doesn't specify one
-        let nationality: 'international' | 'national' = selectedNationality;
-        if (row.C && 
-            (row.C.toLowerCase() === 'international' || 
-             row.C.toLowerCase() === 'international student')) {
-          nationality = 'international';
-        } else if (row.C && 
-                  (row.C.toLowerCase() === 'national' || 
-                   row.C.toLowerCase() === 'national student')) {
-          nationality = 'national';
+        console.log(`Student name: "${studentName}"`);
+        
+        if (!studentName || typeof studentName !== 'string' || studentName.trim() === '') {
+          console.log("Skipping row with no name");
+          return null;
         }
-
-        // Process subjects if they exist
-        let subjects: string[] = [];
-        if (row.F) {
-          if (Array.isArray(row.F)) {
-            subjects = row.F;
-          } else if (typeof row.F === 'string') {
-            subjects = row.F.split(',').map((s: string) => s.trim());
+        
+        // Use the selected nationality if the third column doesn't specify one
+        let nationality: 'international' | 'national' = selectedNationality;
+        const thirdKey = Object.keys(row)[2];
+        if (row[thirdKey]) {
+          const nationalityValue = String(row[thirdKey]).toLowerCase();
+          if (nationalityValue.includes('international')) {
+            nationality = 'international';
+          } else if (nationalityValue.includes('national')) {
+            nationality = 'national';
           }
         }
 
-        // Use the selected grade if the row doesn't specify one
-        const grade = row.B || selectedGrade || "Unknown Grade";
+        // Process subjects from the 6th column if it exists
+        const sixthKey = Object.keys(row)[5];
+        let subjects: string[] = [];
+        if (sixthKey && row[sixthKey]) {
+          if (Array.isArray(row[sixthKey])) {
+            subjects = row[sixthKey];
+          } else if (typeof row[sixthKey] === 'string') {
+            subjects = row[sixthKey].split(',').map((s: string) => s.trim());
+          }
+        }
+
+        // Use the selected grade if the second column doesn't specify one
+        const secondKey = Object.keys(row)[1];
+        const grade = row[secondKey] || selectedGrade || "Unknown Grade";
         
-        // Convert string values to numbers safely
-        const points = parseInt(row.D, 10) || 0;
-        const attendance = parseInt(row.E, 10) || 0;
+        // Get points from 4th column
+        const fourthKey = Object.keys(row)[3];
+        const points = parseInt(row[fourthKey], 10) || 0;
+        
+        // Get attendance from 5th column
+        const fifthKey = Object.keys(row)[4];
+        const attendance = parseInt(row[fifthKey], 10) || 0;
+        
+        // Get other values if they exist
+        const seventhKey = Object.keys(row)[6];
+        const booksOwned = seventhKey ? parseInt(row[seventhKey], 10) || 0 : 0;
+        
+        const eighthKey = Object.keys(row)[7];
+        const engagementScore = eighthKey ? parseInt(row[eighthKey], 10) || 0 : 0;
+        
+        const ninthKey = Object.keys(row)[8];
+        const helpfulness = ninthKey ? parseInt(row[ninthKey], 10) || 0 : 0;
+        
+        const tenthKey = Object.keys(row)[9];
+        const respect = tenthKey ? parseInt(row[tenthKey], 10) || 0 : 0;
+        
+        const eleventhKey = Object.keys(row)[10];
+        const teamwork = eleventhKey ? parseInt(row[eleventhKey], 10) || 0 : 0;
+        
+        const twelfthKey = Object.keys(row)[11];
+        const excellence = twelfthKey ? parseInt(row[twelfthKey], 10) || 0 : 0;
 
         return {
-          name: studentName || "Unknown Student",
+          name: studentName.trim(),
           points: points,
           attendance: attendance,
-          booksOwned: parseInt(row.G, 10) || 0,
-          engagementScore: parseInt(row.H, 10) || 0,
+          booksOwned: booksOwned,
+          engagementScore: engagementScore,
           nationality: nationality,
           grade: grade,
           subjects: subjects,
-          helpfulness: parseInt(row.I, 10) || 0,
-          respect: parseInt(row.J, 10) || 0,
-          teamwork: parseInt(row.K, 10) || 0,
-          excellence: parseInt(row.L, 10) || 0
+          helpfulness: helpfulness,
+          respect: respect,
+          teamwork: teamwork,
+          excellence: excellence
         };
-      });
+      }).filter(student => student !== null);
 
       // Filter out empty rows
-      const validStudents = students.filter(student => student.name && student.name !== "Unknown Student");
+      const validStudents = students.filter(Boolean);
       
       if (validStudents.length === 0) {
-        toast.error(t.noValidStudents || "No valid student data found");
+        toast.error(t.noStudents || "No valid student data found");
         setIsUploading(false);
         return;
       }

@@ -5,7 +5,7 @@ import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
-import { Home, Upload, HelpCircle } from 'lucide-react';
+import { Home, Upload, HelpCircle, Download } from 'lucide-react';
 import FileUpload from '@/components/FileUpload';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -14,6 +14,8 @@ import {
   AccordionItem,
   AccordionTrigger
 } from "@/components/ui/accordion";
+import { Button } from '@/components/ui/button';
+import * as XLSX from 'xlsx';
 
 const Import = () => {
   const { language } = useAppContext();
@@ -33,6 +35,39 @@ const Import = () => {
     setTimeout(() => {
       navigate('/students');
     }, 1500);
+  };
+
+  // Function to generate and download a template Excel file
+  const downloadTemplate = () => {
+    // Create sample data
+    const data = [
+      ['Student Name', 'Grade', 'Nationality', 'Points', 'Attendance', 'Subjects'],
+      ['محمد أحمد', 'Grade 3', 'National', 100, 95, 'Math,Science,Arabic'],
+      ['سارة خالد', 'Grade 4', 'International', 85, 90, 'English,Art,PE'],
+      ['Ahmed Mohamed', 'Grade 5', 'National', 75, 88, 'Science,Social Studies'],
+    ];
+
+    // Create a new workbook
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    
+    // Set column widths
+    const colWidths = [
+      { wch: 25 }, // Student Name
+      { wch: 15 }, // Grade
+      { wch: 15 }, // Nationality
+      { wch: 10 }, // Points
+      { wch: 10 }, // Attendance
+      { wch: 30 }, // Subjects
+    ];
+    
+    ws['!cols'] = colWidths;
+    
+    // Add the worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Students Template');
+    
+    // Generate and download the file
+    XLSX.writeFile(wb, 'student_import_template.xlsx');
   };
 
   return (
@@ -68,6 +103,13 @@ const Import = () => {
                 {t.uploadDescription || "Upload a CSV or Excel file containing student data to import them into the system."}
               </p>
               
+              <div className="flex justify-center mb-6">
+                <Button variant="outline" onClick={downloadTemplate} className="flex items-center gap-2">
+                  <Download className="h-4 w-4" />
+                  {t.downloadTemplate || "Download Template"}
+                </Button>
+              </div>
+              
               <FileUpload 
                 onUploadComplete={handleUploadComplete} 
                 defaultGrade={defaultGrade}
@@ -86,14 +128,24 @@ const Import = () => {
                     <div className="text-sm space-y-2 text-gray-600">
                       <p>{t.fileFormatDescription || "Your file should have the following columns:"}</p>
                       <ul className="list-disc ml-5 space-y-1">
-                        <li><strong>A: name</strong> - {t.studentName || "Student name"}</li>
-                        <li><strong>B: grade</strong> - {t.gradeLevel || "Grade level (optional if selected above)"}</li>
-                        <li><strong>C: nationality</strong> - {t.studentNationality || "Student nationality (optional if selected above)"}</li>
-                        <li><strong>D: points</strong> - {t.initialPoints || "Initial points"}</li>
-                        <li><strong>E: attendance</strong> - {t.attendance || "Attendance score"}</li>
-                        <li><strong>F: subjects</strong> - {t.subjects || "Subjects (comma separated)"}</li>
+                        <li><strong>Column 1:</strong> {t.studentName || "Student name"}</li>
+                        <li><strong>Column 2:</strong> {t.grade || "Grade level"} {t.optional || "(optional if selected above)"}</li>
+                        <li><strong>Column 3:</strong> {t.nationality || "Nationality"} {t.optional || "(optional if selected above)"}</li>
+                        <li><strong>Column 4:</strong> {t.points || "Points"}</li>
+                        <li><strong>Column 5:</strong> {t.attendance || "Attendance score"}</li>
+                        <li><strong>Column 6:</strong> {t.subjects || "Subjects"} {t.commaList || "(comma separated)"}</li>
+                        <li><strong>Column 7:</strong> {t.booksOwned || "Books owned"} {t.optional || "(optional)"}</li>
+                        <li><strong>Column 8:</strong> {t.engagementScore || "Engagement score"} {t.optional || "(optional)"}</li>
+                        <li><strong>Column 9:</strong> {t.helpfulness || "Helpfulness"} {t.optional || "(optional)"}</li>
+                        <li><strong>Column 10:</strong> {t.respect || "Respect"} {t.optional || "(optional)"}</li>
+                        <li><strong>Column 11:</strong> {t.teamwork || "Teamwork"} {t.optional || "(optional)"}</li>
+                        <li><strong>Column 12:</strong> {t.excellence || "Excellence"} {t.optional || "(optional)"}</li>
                       </ul>
-                      <p className="mt-4">{t.arabicSupport || "Arabic names are fully supported in the import file."}</p>
+                      <p className="mt-4 font-medium">{t.arabicSupportMessage || "Arabic names are fully supported and correctly processed."}</p>
+                      <div className="mt-2 p-3 bg-blue-50 rounded-md">
+                        <p className="text-blue-800 font-medium">{t.tip || "Tip"}:</p>
+                        <p className="text-blue-700">{t.templateUseMessage || "Use the template button above to download a sample Excel file with the correct format."}</p>
+                      </div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
