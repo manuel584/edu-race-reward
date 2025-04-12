@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth, UserRole } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -18,17 +18,21 @@ const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({
   const { user, isAuthenticated, hasPermission } = useAuth();
   const { toast } = useToast();
 
+  // Handle authentication check
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
   // Check if user has the allowed role
   if (user && !allowedRoles.includes(user.role)) {
-    toast({
-      title: "Access denied",
-      description: "You don't have permission to access this page.",
-      variant: "destructive"
-    });
+    // Using useEffect to avoid state updates during render
+    useEffect(() => {
+      toast({
+        title: "Access denied",
+        description: "You don't have permission to access this page.",
+        variant: "destructive"
+      });
+    }, []);
     
     return <Navigate to="/dashboard" replace />;
   }
@@ -40,11 +44,14 @@ const RoleBasedRoute: React.FC<RoleBasedRouteProps> = ({
     );
 
     if (!hasAllPermissions) {
-      toast({
-        title: "Permission denied",
-        description: "You don't have the necessary permissions to access this feature.",
-        variant: "destructive"
-      });
+      // Using useEffect to avoid state updates during render
+      useEffect(() => {
+        toast({
+          title: "Permission denied",
+          description: "You don't have the necessary permissions to access this feature.",
+          variant: "destructive"
+        });
+      }, []);
       
       return <Navigate to="/dashboard" replace />;
     }
