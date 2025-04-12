@@ -39,65 +39,106 @@ const FileUpload: React.FC<FileUploadProps> = ({
     setIsUploading(true);
 
     try {
-      // Set proper encoding options for Excel to handle Arabic characters
+      // Read the file as an array buffer to preserve all characters
       const data = await file.arrayBuffer();
-      const workbook = XLSX.read(data, { type: 'array', codepage: 65001 }); // UTF-8 encoding
+      
+      // Ensure proper encoding for Arabic characters
+      const workbook = XLSX.read(data, { 
+        type: 'array',
+        codepage: 65001, // UTF-8 encoding
+        cellStyles: true,
+        cellDates: true,
+        cellNF: true,
+        cellText: true,
+        raw: false
+      });
+      
       const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+      
+      // Force text format for all cells to preserve Arabic characters
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+        header: "A",
+        defval: "",
+        raw: false
+      });
+      
+      // Skip the header row if present
+      const dataRows = jsonData.length > 1 ? jsonData.slice(1) : jsonData;
 
-      if (jsonData.length === 0) {
+      if (dataRows.length === 0) {
         toast.error(t.noStudents || "No students found");
         setIsUploading(false);
         return;
       }
 
-      // Transform data to match Student type
-      const students = jsonData.map((row: any) => {
+      console.log("Imported rows:", dataRows);
+      
+      // Map Excel columns to student properties
+      const students = dataRows.map((row: any) => {
+        const studentName = row.A || ""; // First column should be name
+        
+        console.log("Processing student:", studentName);
+        
         // Use the selected nationality if the row doesn't specify one
         let nationality: 'international' | 'national' = selectedNationality;
-        if (row.nationality && 
-            (row.nationality.toLowerCase() === 'international' || 
-             row.nationality.toLowerCase() === 'international student')) {
+        if (row.C && 
+            (row.C.toLowerCase() === 'international' || 
+             row.C.toLowerCase() === 'international student')) {
           nationality = 'international';
-        } else if (row.nationality && 
-                  (row.nationality.toLowerCase() === 'national' || 
-                   row.nationality.toLowerCase() === 'national student')) {
+        } else if (row.C && 
+                  (row.C.toLowerCase() === 'national' || 
+                   row.C.toLowerCase() === 'national student')) {
           nationality = 'national';
         }
 
         // Process subjects if they exist
         let subjects: string[] = [];
-        if (row.subjects) {
-          if (Array.isArray(row.subjects)) {
-            subjects = row.subjects;
-          } else if (typeof row.subjects === 'string') {
-            subjects = row.subjects.split(',').map((s: string) => s.trim());
+        if (row.F) {
+          if (Array.isArray(row.F)) {
+            subjects = row.F;
+          } else if (typeof row.F === 'string') {
+            subjects = row.F.split(',').map((s: string) => s.trim());
           }
         }
 
         // Use the selected grade if the row doesn't specify one
-        const grade = row.grade || selectedGrade || "Unknown Grade";
+        const grade = row.B || selectedGrade || "Unknown Grade";
+        
+        // Convert string values to numbers safely
+        const points = parseInt(row.D, 10) || 0;
+        const attendance = parseInt(row.E, 10) || 0;
 
         return {
-          name: row.name || "Unknown Student",
-          points: parseInt(row.points, 10) || 0,
-          attendance: parseInt(row.attendance, 10) || 0,
-          booksOwned: parseInt(row.booksOwned, 10) || 0,
-          engagementScore: parseInt(row.engagementScore, 10) || 0,
+          name: studentName || "Unknown Student",
+          points: points,
+          attendance: attendance,
+          booksOwned: parseInt(row.G, 10) || 0,
+          engagementScore: parseInt(row.H, 10) || 0,
           nationality: nationality,
           grade: grade,
           subjects: subjects,
-          helpfulness: parseInt(row.helpfulness, 10) || 0,
-          respect: parseInt(row.respect, 10) || 0,
-          teamwork: parseInt(row.teamwork, 10) || 0,
-          excellence: parseInt(row.excellence, 10) || 0
+          helpfulness: parseInt(row.I, 10) || 0,
+          respect: parseInt(row.J, 10) || 0,
+          teamwork: parseInt(row.K, 10) || 0,
+          excellence: parseInt(row.L, 10) || 0
         };
       });
 
-      // Import students
-      importStudents(students);
+      // Filter out empty rows
+      const validStudents = students.filter(student => student.name && student.name !== "Unknown Student");
       
-      toast.success(`${students.length} ${t.studentsImported || "students imported"}`);
+      if (validStudents.length === 0) {
+        toast.error(t.noValidStudents || "No valid student data found");
+        setIsUploading(false);
+        return;
+      }
+      
+      console.log("Importing students:", validStudents);
+      
+      // Import students
+      importStudents(validStudents);
+      
+      toast.success(`${validStudents.length} ${t.studentsImported || "students imported"}`);
       
       if (onUploadComplete) {
         onUploadComplete();

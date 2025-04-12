@@ -86,12 +86,12 @@ const Import = () => {
                     <div className="text-sm space-y-2 text-gray-600">
                       <p>{t.fileFormatDescription || "Your file should have the following columns:"}</p>
                       <ul className="list-disc ml-5 space-y-1">
-                        <li><strong>name</strong> - {t.studentName || "Student name"}</li>
-                        <li><strong>grade</strong> - {t.gradeLevel || "Grade level (optional if selected above)"}</li>
-                        <li><strong>nationality</strong> - {t.studentNationality || "Student nationality (optional if selected above)"}</li>
-                        <li><strong>points</strong> - {t.initialPoints || "Initial points"}</li>
-                        <li><strong>attendance</strong> - {t.attendance || "Attendance score"}</li>
-                        <li><strong>subjects</strong> - {t.subjects || "Subjects (comma separated)"}</li>
+                        <li><strong>A: name</strong> - {t.studentName || "Student name"}</li>
+                        <li><strong>B: grade</strong> - {t.gradeLevel || "Grade level (optional if selected above)"}</li>
+                        <li><strong>C: nationality</strong> - {t.studentNationality || "Student nationality (optional if selected above)"}</li>
+                        <li><strong>D: points</strong> - {t.initialPoints || "Initial points"}</li>
+                        <li><strong>E: attendance</strong> - {t.attendance || "Attendance score"}</li>
+                        <li><strong>F: subjects</strong> - {t.subjects || "Subjects (comma separated)"}</li>
                       </ul>
                       <p className="mt-4">{t.arabicSupport || "Arabic names are fully supported in the import file."}</p>
                     </div>
