@@ -3,21 +3,27 @@ import { useState, useEffect, createContext, useContext, ReactNode } from 'react
 import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
 
-type UserProfile = {
+export type UserRole = 'admin' | 'supervisor' | 'counselor' | 'teacher';
+
+export type UserProfile = {
   subject?: string;
   gradeLevel?: string;
   email?: string;
   picture?: string;
   authMethod?: string;
   googleId?: string;
+  departments?: string[];
+  assignedGrades?: string[];
+  assignedSections?: string[];
+  subjects?: string[];
   [key: string]: any;
 };
 
-type User = {
+export type User = {
   id: string;
   name: string;
   email?: string;
-  role: string;
+  role: UserRole;
   profile?: UserProfile;
   authToken?: string;
 } | null;
@@ -28,6 +34,7 @@ type AuthContextType = {
   logout: () => void;
   isAuthenticated: boolean;
   updateProfile: (profileData: Partial<UserProfile>) => void;
+  hasPermission: (permission: string) => boolean;
 };
 
 // Define the GoogleAccountsType interface to match what's available in the window object
@@ -50,6 +57,31 @@ declare global {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Permission mapping for different roles
+const rolePermissions = {
+  admin: [
+    'manage_users', 'view_all_students', 'edit_all_students', 'delete_students',
+    'view_all_classes', 'edit_all_classes', 'create_classes', 'delete_classes',
+    'view_all_exams', 'create_exams', 'edit_exams', 'delete_exams',
+    'view_all_reports', 'view_system_settings', 'edit_system_settings',
+    'import_data', 'export_data', 'manage_sections', 'assign_teachers'
+  ],
+  supervisor: [
+    'view_department_students', 'view_department_classes', 'view_department_exams',
+    'view_department_reports', 'create_exams', 'edit_exams', 'view_teacher_performance',
+    'view_curriculum', 'export_data'
+  ],
+  counselor: [
+    'view_all_students', 'view_student_behavior', 'view_student_academics', 
+    'view_recognitions', 'create_interventions', 'parent_communication',
+    'export_data'
+  ],
+  teacher: [
+    'view_assigned_students', 'view_assigned_classes', 'create_exams', 
+    'edit_own_exams', 'grade_exams', 'create_recognitions', 'export_own_data'
+  ]
+};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User>(null);
@@ -98,7 +130,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('user', JSON.stringify(userData));
     
     // Auth logging for security tracking
-    console.log(`User authenticated: ${userData?.name}, Method: ${userData?.profile?.authMethod || 'standard'}`);
+    console.log(`User authenticated: ${userData?.name}, Role: ${userData?.role}, Method: ${userData?.profile?.authMethod || 'standard'}`);
     
     toast({
       title: "Login successful",
@@ -124,6 +156,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       title: "Profile updated",
       description: "Your profile information has been updated.",
     });
+  };
+
+  const hasPermission = (permission: string): boolean => {
+    if (!user) return false;
+    
+    // If user is admin, they have all permissions
+    if (user.role === 'admin') return true;
+    
+    // Check if the user's role has the specified permission
+    return rolePermissions[user.role].includes(permission);
   };
 
   const logout = () => {
@@ -168,6 +210,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logout,
     isAuthenticated: !!user,
     updateProfile,
+    hasPermission,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

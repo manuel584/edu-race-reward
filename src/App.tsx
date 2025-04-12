@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AppProvider } from "@/context/AppContext";
 import { AppSidebarProvider } from "@/components/AppSidebar";
 import { AuthProvider } from "@/hooks/useAuth";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Students from "./pages/Students";
@@ -18,20 +19,12 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Scores from "./pages/Scores";
 import ExamCenter from "./pages/ExamCenter";
-import { useAuth } from "@/hooks/useAuth";
+import RoleBasedRoute from "./components/RoleBasedRoute";
+import UserManagement from "./pages/UserManagement";
+import ReportsPage from "./pages/ReportsPage";
+import ClassSections from "./pages/ClassSections";
 
 const queryClient = new QueryClient();
-
-// Protected route component
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAuth();
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  return <>{children}</>;
-};
 
 // Component that redirects authenticated users away from login page
 const RedirectIfAuthenticated = ({ children }: { children: React.ReactNode }) => {
@@ -61,84 +54,123 @@ const AppRoutes = () => {
       {/* Redirect root path to login or dashboard based on auth status */}
       <Route 
         path="/" 
-        element={
-          <ProtectedRoute>
-            <Navigate to="/dashboard" replace />
-          </ProtectedRoute>
-        } 
+        element={<Navigate to="/dashboard" replace />}
       />
       
-      {/* Protected routes */}
+      {/* Protected routes - accessible by all authenticated users */}
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute>
+          <RoleBasedRoute>
             <AppSidebarProvider>
               <Dashboard />
             </AppSidebarProvider>
-          </ProtectedRoute>
+          </RoleBasedRoute>
         }
       />
+      
+      {/* Student routes - accessible based on roles */}
       <Route
         path="/students"
         element={
-          <ProtectedRoute>
+          <RoleBasedRoute requiredPermissions={['view_assigned_students']}>
             <AppSidebarProvider>
               <Students />
             </AppSidebarProvider>
-          </ProtectedRoute>
+          </RoleBasedRoute>
         }
       />
       <Route
         path="/student/:id"
         element={
-          <ProtectedRoute>
+          <RoleBasedRoute requiredPermissions={['view_assigned_students']}>
             <AppSidebarProvider>
               <StudentView />
             </AppSidebarProvider>
-          </ProtectedRoute>
+          </RoleBasedRoute>
         }
       />
+      
+      {/* Grade routes */}
       <Route
         path="/grade/:grade"
         element={
-          <ProtectedRoute>
+          <RoleBasedRoute requiredPermissions={['view_assigned_classes']}>
             <AppSidebarProvider>
               <GradeRecognition />
             </AppSidebarProvider>
-          </ProtectedRoute>
+          </RoleBasedRoute>
         }
       />
+      
+      {/* Admin-only routes */}
       <Route
         path="/import"
         element={
-          <ProtectedRoute>
+          <RoleBasedRoute allowedRoles={['admin', 'supervisor']} requiredPermissions={['import_data']}>
             <AppSidebarProvider>
               <Import />
             </AppSidebarProvider>
-          </ProtectedRoute>
+          </RoleBasedRoute>
         }
       />
+      
+      <Route
+        path="/users"
+        element={
+          <RoleBasedRoute allowedRoles={['admin']} requiredPermissions={['manage_users']}>
+            <AppSidebarProvider>
+              <UserManagement />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
+      <Route
+        path="/class-sections"
+        element={
+          <RoleBasedRoute allowedRoles={['admin', 'supervisor']} requiredPermissions={['manage_sections']}>
+            <AppSidebarProvider>
+              <ClassSections />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
+      {/* Exam and Score routes */}
       <Route
         path="/scores"
         element={
-          <ProtectedRoute>
+          <RoleBasedRoute requiredPermissions={['view_assigned_students']}>
             <AppSidebarProvider>
               <Scores />
             </AppSidebarProvider>
-          </ProtectedRoute>
+          </RoleBasedRoute>
         }
       />
       <Route
         path="/exam-center"
         element={
-          <ProtectedRoute>
+          <RoleBasedRoute requiredPermissions={['create_exams']}>
             <AppSidebarProvider>
               <ExamCenter />
             </AppSidebarProvider>
-          </ProtectedRoute>
+          </RoleBasedRoute>
         }
       />
+      
+      {/* Reports route */}
+      <Route
+        path="/reports"
+        element={
+          <RoleBasedRoute allowedRoles={['admin', 'supervisor', 'counselor']} requiredPermissions={['view_all_reports']}>
+            <AppSidebarProvider>
+              <ReportsPage />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
@@ -149,13 +181,15 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <BrowserRouter>
-        <AuthProvider>
-          <AppProvider>
-            <Toaster />
-            <Sonner />
-            <AppRoutes />
-          </AppProvider>
-        </AuthProvider>
+        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+          <AuthProvider>
+            <AppProvider>
+              <Toaster />
+              <Sonner />
+              <AppRoutes />
+            </AppProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

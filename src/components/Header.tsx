@@ -12,7 +12,7 @@ import { getTranslations } from '@/lib/i18n';
 
 const Header = () => {
   const { language, setLanguage } = useAppContext();
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -20,6 +20,7 @@ const Header = () => {
   
   // Get user's display name
   const displayName = user?.name || 'User';
+  const userRole = user?.role || 'teacher';
 
   return (
     <header className="flex items-center justify-between py-4 px-4 sm:px-6 border-b border-border">
@@ -41,6 +42,7 @@ const Header = () => {
         <div className="flex items-center space-x-1 sm:space-x-2">
           <Sun className="h-[1.2rem] w-[1.2rem] dark:hidden" />
           <Switch
+            checked={theme === 'dark'}
             onCheckedChange={(checked) => {
               setTheme(checked ? 'dark' : 'light');
             }}
@@ -50,9 +52,20 @@ const Header = () => {
         
         {isAuthenticated ? (
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium hidden md:block">
-              {language === 'en' ? 'Welcome, ' : 'مرحباً، '}{displayName}
-            </span>
+            <div className="hidden md:flex flex-col items-end">
+              <span className="text-sm font-medium">
+                {language === 'en' ? 'Welcome, ' : 'مرحباً، '}{displayName}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {language === 'en' ? 
+                  (userRole === 'admin' ? 'Administrator' : 
+                   userRole === 'supervisor' ? 'Supervisor' : 
+                   userRole === 'counselor' ? 'Counselor' : 'Teacher') : 
+                  (userRole === 'admin' ? 'مدير النظام' : 
+                   userRole === 'supervisor' ? 'مشرف' : 
+                   userRole === 'counselor' ? 'مرشد طلابي' : 'معلم')}
+              </span>
+            </div>
             <Button
               variant="outline"
               size={isMobile ? "icon" : "sm"}
@@ -76,4 +89,3 @@ const Header = () => {
 };
 
 export default Header;
-
