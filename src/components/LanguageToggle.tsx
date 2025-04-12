@@ -2,6 +2,7 @@
 import React from 'react';
 import { useAppContext } from '@/context/AppContext';
 import { Globe } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const LanguageToggle: React.FC = () => {
   const { language, setLanguage } = useAppContext();
@@ -11,15 +12,18 @@ const LanguageToggle: React.FC = () => {
   };
 
   return (
-    <button 
+    <Button 
+      variant="ghost"
+      size="sm"
       onClick={toggleLanguage}
-      className="flex items-center space-x-1 p-2 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-all duration-200"
+      className="flex items-center gap-1 px-2"
       aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
     >
       <Globe className="h-4 w-4" />
-      <span className="text-sm font-medium">{language === 'en' ? 'AR' : 'EN'}</span>
-    </button>
+      <span className="text-sm font-medium">{language === 'en' ? 'العربية' : 'English'}</span>
+    </Button>
   );
 };
 
 export default LanguageToggle;
+
