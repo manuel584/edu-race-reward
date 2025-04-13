@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -21,10 +20,39 @@ import {
   Trophy,
   Award,
   Heart,
-  FileDown
+  FileDown,
+  Trash2,
+  ArchiveIcon,
+  AlertTriangle
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue 
+} from '@/components/ui/select';
 
 const StudentView = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,15 +60,22 @@ const StudentView = () => {
   const { 
     students, 
     language, 
-    goalPoints 
+    goalPoints,
+    deleteStudent,
+    archiveStudent
   } = useAppContext();
   
   const [nominateOpen, setNominateOpen] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteAction, setDeleteAction] = useState<'delete' | 'archive' | 'transfer'>('delete');
+  const [transferClass, setTransferClass] = useState('');
   
   const student = students.find(s => s.id === id) || null;
   const t = getTranslations(language);
+  
+  const availableGrades = [...new Set(students.map(s => s.grade))].sort();
 
-  // Check if student exists
   useEffect(() => {
     if (!student) {
       navigate('/dashboard');
@@ -50,10 +85,8 @@ const StudentView = () => {
 
   if (!student) return null;
 
-  // Calculate progress percentage
   const progressPercentage = Math.min(100, (student.points / goalPoints) * 100);
   
-  // Get progress status
   const getProgressStatus = () => {
     if (progressPercentage >= 100) {
       return {
@@ -83,6 +116,57 @@ const StudentView = () => {
   };
 
   const progressStatus = getProgressStatus();
+
+  const handleDeleteClick = () => {
+    setShowDeleteDialog(true);
+  };
+
+  const handleDeleteOption = (action: 'delete' | 'archive' | 'transfer') => {
+    setDeleteAction(action);
+    
+    if (action === 'transfer') {
+    } else {
+      setShowDeleteDialog(false);
+      setShowDeleteConfirm(true);
+    }
+  };
+
+  const handleTransferConfirm = () => {
+    if (!transferClass) {
+      toast.error(language === 'en' ? 'Please select a class' : 'الرجاء اختيار فصل');
+      return;
+    }
+    
+    toast.success(
+      language === 'en' 
+        ? `${student.name} transferred to ${transferClass}` 
+        : `تم نقل ${student.name} إلى ${transferClass}`
+    );
+    
+    setShowDeleteDialog(false);
+    navigate('/students');
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteAction === 'delete') {
+      deleteStudent(student.id);
+      toast.success(
+        language === 'en' 
+          ? `${student.name} has been deleted` 
+          : `تم حذف ${student.name}`
+      );
+    } else if (deleteAction === 'archive') {
+      archiveStudent(student.id);
+      toast.success(
+        language === 'en' 
+          ? `${student.name} has been archived` 
+          : `تم أرشفة ${student.name}`
+      );
+    }
+    
+    setShowDeleteConfirm(false);
+    navigate('/students');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -125,6 +209,14 @@ const StudentView = () => {
                 >
                   <Heart className="h-4 w-4 text-rose-500" />
                   {t.nominate || "Nominate"}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={handleDeleteClick}
+                  className="flex items-center gap-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  {language === 'en' ? "Remove Student" : "إزالة الطالب"}
                 </Button>
                 <QuickPointAdjust studentId={student.id} studentName={student.name} isAdd={true} />
               </div>
@@ -234,6 +326,165 @@ const StudentView = () => {
         open={nominateOpen} 
         onOpenChange={setNominateOpen}
       />
+
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center">
+              {language === 'en' ? 'Remove Student' : 'إزالة الطالب'}
+            </DialogTitle>
+            <DialogDescription className="text-center">
+              {language === 'en' 
+                ? `Choose what you want to do with ${student.name}'s record` 
+                : `اختر ما تريد فعله بسجل ${student.name}`}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid grid-cols-1 gap-4 py-4">
+            <Button 
+              variant="outline" 
+              className="p-4 h-auto flex items-center justify-start gap-3"
+              onClick={() => handleDeleteOption('transfer')}
+            >
+              <div className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center">
+                <Users className="h-5 w-5 text-blue-600" />
+              </div>
+              <div className="text-left">
+                <div className="font-medium">
+                  {language === 'en' ? 'Transfer to Another Class' : 'نقل إلى فصل آخر'}
+                </div>
+                <div className="text-xs text-gray-500">
+                  {language === 'en' 
+                    ? 'Keep student record and move to a different class' 
+                    : 'احتفظ بسجل الطالب وانقله إلى فصل آخر'}
+                </div>
+              </div>
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              className="p-4 h-auto flex items-center justify-start gap-3"
+              onClick={() => handleDeleteOption('archive')}
+            >
+              <div className="h-9 w-9 rounded-full bg-amber-100 flex items-center justify-center">
+                <ArchiveIcon className="h-5 w-5 text-amber-600" />
+              </div>
+              <div className="text-left">
+                <div className="font-medium">
+                  {language === 'en' ? 'Archive Student' : 'أرشفة الطالب'}
+                </div>
+                <div className="text-xs text-gray-500">
+                  {language === 'en' 
+                    ? 'Hide student from active lists but preserve record' 
+                    : 'إخفاء الطالب من القوائم النشطة مع الاحتفاظ بالسجل'}
+                </div>
+              </div>
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              className="p-4 h-auto flex items-center justify-start gap-3 hover:bg-red-50 hover:border-red-200"
+              onClick={() => handleDeleteOption('delete')}
+            >
+              <div className="h-9 w-9 rounded-full bg-red-100 flex items-center justify-center">
+                <Trash2 className="h-5 w-5 text-red-600" />
+              </div>
+              <div className="text-left">
+                <div className="font-medium text-red-600">
+                  {language === 'en' ? 'Delete Permanently' : 'حذف نهائي'}
+                </div>
+                <div className="text-xs text-gray-500">
+                  {language === 'en' 
+                    ? 'Remove student and all associated data' 
+                    : 'إزالة الطالب وجميع البيانات المرتبطة به'}
+                </div>
+              </div>
+            </Button>
+          </div>
+
+          {deleteAction === 'transfer' && (
+            <div className="border-t pt-4">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    {language === 'en' ? 'Select Class' : 'اختر الفصل'}
+                  </label>
+                  <Select value={transferClass} onValueChange={setTransferClass}>
+                    <SelectTrigger>
+                      <SelectValue placeholder={language === 'en' ? 'Select class' : 'اختر الفصل'} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableGrades.map((grade) => (
+                        <SelectItem key={grade} value={grade}>
+                          {grade}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
+                    {language === 'en' ? 'Cancel' : 'إلغاء'}
+                  </Button>
+                  <Button onClick={handleTransferConfirm}>
+                    {language === 'en' ? 'Transfer Student' : 'نقل الطالب'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-center">
+              {deleteAction === 'delete'
+                ? language === 'en' ? 'Confirm Permanent Deletion' : 'تأكيد الحذف الدائم'
+                : language === 'en' ? 'Confirm Archive' : 'تأكيد الأرشفة'}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-center">
+              {deleteAction === 'delete'
+                ? language === 'en' 
+                  ? `Are you sure you want to permanently delete ${student.name}?`
+                  : `هل أنت متأكد من رغبتك في حذف ${student.name} بشكل دائم؟`
+                : language === 'en'
+                  ? `Are you sure you want to archive ${student.name}?`
+                  : `هل أنت متأكد من رغبتك في أرشفة ${student.name}؟`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          <div className={`p-4 ${deleteAction === 'delete' ? 'bg-red-50 border-red-200' : 'bg-amber-50 border-amber-200'} border rounded-md mb-4`}>
+            <div className="flex items-start gap-3">
+              <AlertTriangle className={`h-5 w-5 ${deleteAction === 'delete' ? 'text-red-500' : 'text-amber-500'} mt-0.5 flex-shrink-0`} />
+              <p className={`text-sm ${deleteAction === 'delete' ? 'text-red-800' : 'text-amber-800'}`}>
+                {deleteAction === 'delete'
+                  ? language === 'en'
+                    ? 'This action cannot be undone. All student data including points, achievements, and history will be permanently deleted.'
+                    : 'لا يمكن التراجع عن هذا الإجراء. سيتم حذف جميع بيانات الطالب بما في ذلك النقاط والإنجازات والتاريخ بشكل دائم.'
+                  : language === 'en'
+                    ? 'The student will be hidden from active lists but their data will be preserved. You can restore archived students later.'
+                    : 'سيتم إخفاء الطالب من القوائم النشطة ولكن سيتم الاحتفاظ ببياناته. يمكنك استعادة الطلاب المؤرشفين لاحقًا.'}
+              </p>
+            </div>
+          </div>
+          
+          <AlertDialogFooter>
+            <AlertDialogCancel>
+              {language === 'en' ? 'Cancel' : 'إلغاء'}
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleConfirmDelete} 
+              className={deleteAction === 'delete' ? 'bg-red-500 hover:bg-red-600' : ''}
+            >
+              {deleteAction === 'delete'
+                ? language === 'en' ? 'Yes, Delete Permanently' : 'نعم، حذف نهائي'
+                : language === 'en' ? 'Yes, Archive Student' : 'نعم، أرشفة الطالب'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

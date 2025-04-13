@@ -1,5 +1,7 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { StudentScore, Exam, Question } from '@/types/student-score';
+import { toast } from 'sonner';
 
 // Types
 export type Student = {
@@ -27,6 +29,7 @@ export type Student = {
     type: 'helpfulness' | 'respect' | 'teamwork' | 'excellence';
     description: string;
   }[];
+  archived?: boolean;
 };
 
 export type ClassMetrics = {
@@ -37,6 +40,14 @@ export type ClassMetrics = {
   averageEngagement: number;
   weeklyImprovement: number;
   achievements: string[];
+};
+
+export type DeletedItem = {
+  id: string;
+  type: 'student' | 'class';
+  data: any;
+  deletedAt: string;
+  deletedBy: string;
 };
 
 export type AppContextType = {
@@ -53,6 +64,12 @@ export type AppContextType = {
   setSelectedStudent: React.Dispatch<React.SetStateAction<Student | null>>;
   updateStudent: (id: string, studentData: Partial<Omit<Student, 'id' | 'pointsHistory'>>) => void;
   deleteStudent: (id: string) => void;
+  deleteStudents: (ids: string[]) => void;
+  deleteStudentsByClass: (className: string) => void;
+  archiveStudent: (id: string) => void;
+  archiveStudents: (ids: string[]) => void;
+  getArchivedStudents: () => Student[];
+  restoreArchivedStudent: (id: string) => void;
   addRecognition: (studentId: string, type: 'helpfulness' | 'respect' | 'teamwork' | 'excellence', description: string) => void;
   addClassAchievement: (className: string, achievement: string) => void;
   getClassMetrics: () => ClassMetrics[];
@@ -65,6 +82,10 @@ export type AppContextType = {
   addExam: (exam: Omit<Exam, 'id' | 'createdAt'>) => void;
   updateExam: (id: string, examData: Omit<Exam, 'id' | 'createdAt'>) => void;
   deleteExam: (id: string) => void;
+  deletedItems: DeletedItem[];
+  getDeletedItems: () => DeletedItem[];
+  restoreDeletedItem: (id: string) => void;
+  permanentlyDeleteItem: (id: string) => void;
 };
 
 const AppContext = createContext<AppContextType>({
@@ -81,6 +102,12 @@ const AppContext = createContext<AppContextType>({
   setSelectedStudent: () => {},
   updateStudent: () => {},
   deleteStudent: () => {},
+  deleteStudents: () => {},
+  deleteStudentsByClass: () => {},
+  archiveStudent: () => {},
+  archiveStudents: () => {},
+  getArchivedStudents: () => [],
+  restoreArchivedStudent: () => {},
   addRecognition: () => {},
   addClassAchievement: () => {},
   getClassMetrics: () => [],
@@ -93,6 +120,10 @@ const AppContext = createContext<AppContextType>({
   addExam: () => {},
   updateExam: () => {},
   deleteExam: () => {},
+  deletedItems: [],
+  getDeletedItems: () => [],
+  restoreDeletedItem: () => {},
+  permanentlyDeleteItem: () => {},
 });
 
 export const useAppContext = () => useContext(AppContext);
@@ -105,6 +136,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [classAchievements, setClassAchievements] = useState<{[className: string]: string[]}>({});
   const [scores, setScores] = useState<StudentScore[]>([]);
   const [exams, setExams] = useState<Exam[]>([]);
+  const [deletedItems, setDeletedItems] = useState<DeletedItem[]>([]);
 
   useEffect(() => {
     const savedStudents = localStorage.getItem('students');
@@ -112,6 +144,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const savedGoalPoints = localStorage.getItem('goalPoints');
     const savedScores = localStorage.getItem('studentScores');
     const savedExams = localStorage.getItem('exams');
+    const savedDeletedItems = localStorage.getItem('deletedItems');
 
     if (savedStudents) {
       setStudents(JSON.parse(savedStudents));
@@ -131,6 +164,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     
     if (savedExams) {
       setExams(JSON.parse(savedExams));
+    }
+
+    if (savedDeletedItems) {
+      setDeletedItems(JSON.parse(savedDeletedItems));
     }
   }, []);
 
@@ -155,6 +192,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     localStorage.setItem('exams', JSON.stringify(exams));
   }, [exams]);
+
+  useEffect(() => {
+    localStorage.setItem('deletedItems', JSON.stringify(deletedItems));
+  }, [deletedItems]);
 
   const generateId = () => {
     return Date.now().toString(36) + Math.random().toString(36).substring(2);
@@ -197,7 +238,133 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const deleteStudent = (id: string) => {
+    // Get the student to archive before removing
+    const studentToDelete = students.find(student => student.id === id);
+    
+    if (studentToDelete) {
+      // Add to deleted items
+      const deletedItem: DeletedItem = {
+        id: generateId(),
+        type: 'student',
+        data: studentToDelete,
+        deletedAt: new Date().toISOString(),
+        deletedBy: 'admin', // In a real app, this would be the current user
+      };
+      
+      setDeletedItems(prev => [...prev, deletedItem]);
+    }
+    
+    // Remove from active students
     setStudents((prev) => prev.filter(student => student.id !== id));
+  };
+
+  const deleteStudents = (ids: string[]) => {
+    // Get students to delete before removing
+    const studentsToDelete = students.filter(student => ids.includes(student.id));
+    
+    // Add each to deleted items
+    studentsToDelete.forEach(student => {
+      const deletedItem: DeletedItem = {
+        id: generateId(),
+        type: 'student',
+        data: student,
+        deletedAt: new Date().toISOString(),
+        deletedBy: 'admin', // In a real app, this would be the current user
+      };
+      
+      setDeletedItems(prev => [...prev, deletedItem]);
+    });
+    
+    // Remove from active students
+    setStudents((prev) => prev.filter(student => !ids.includes(student.id)));
+  };
+
+  const deleteStudentsByClass = (className: string) => {
+    // Get students in this class
+    const studentsInClass = students.filter(student => student.grade === className);
+    const studentIds = studentsInClass.map(student => student.id);
+    
+    if (studentIds.length > 0) {
+      deleteStudents(studentIds);
+    }
+  };
+
+  const archiveStudent = (id: string) => {
+    setStudents((prev) => 
+      prev.map((student) => {
+        if (student.id === id) {
+          return {
+            ...student,
+            archived: true,
+          };
+        }
+        return student;
+      })
+    );
+  };
+
+  const archiveStudents = (ids: string[]) => {
+    setStudents((prev) => 
+      prev.map((student) => {
+        if (ids.includes(student.id)) {
+          return {
+            ...student,
+            archived: true,
+          };
+        }
+        return student;
+      })
+    );
+  };
+
+  const getArchivedStudents = () => {
+    return students.filter(student => student.archived);
+  };
+
+  const restoreArchivedStudent = (id: string) => {
+    setStudents((prev) => 
+      prev.map((student) => {
+        if (student.id === id) {
+          const { archived, ...rest } = student;
+          return rest;
+        }
+        return student;
+      })
+    );
+  };
+
+  const getDeletedItems = () => {
+    return deletedItems;
+  };
+
+  const restoreDeletedItem = (id: string) => {
+    const itemToRestore = deletedItems.find(item => item.id === id);
+    
+    if (itemToRestore) {
+      if (itemToRestore.type === 'student') {
+        // Add student back to active students
+        setStudents(prev => [...prev, itemToRestore.data]);
+      }
+      
+      // Remove from deleted items
+      setDeletedItems(prev => prev.filter(item => item.id !== id));
+      
+      toast.success(
+        language === 'en' 
+          ? `${itemToRestore.type === 'student' ? 'Student' : 'Class'} restored successfully` 
+          : `تمت استعادة ${itemToRestore.type === 'student' ? 'الطالب' : 'الفصل'} بنجاح`
+      );
+    }
+  };
+
+  const permanentlyDeleteItem = (id: string) => {
+    setDeletedItems(prev => prev.filter(item => item.id !== id));
+    
+    toast.success(
+      language === 'en' 
+        ? 'Item permanently deleted' 
+        : 'تم حذف العنصر نهائيًا'
+    );
   };
 
   const updateStudentPoints = (id: string, change: number, reason: string) => {
@@ -292,7 +459,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const getClassMetrics = (): ClassMetrics[] => {
     const classBuckets: {[className: string]: Student[]} = {};
     
-    students.forEach(student => {
+    // Only include non-archived students
+    const activeStudents = students.filter(student => !student.archived);
+    
+    activeStudents.forEach(student => {
       if (!classBuckets[student.grade]) {
         classBuckets[student.grade] = [];
       }
@@ -397,6 +567,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setSelectedStudent,
     updateStudent,
     deleteStudent,
+    deleteStudents,
+    deleteStudentsByClass,
+    archiveStudent,
+    archiveStudents,
+    getArchivedStudents,
+    restoreArchivedStudent,
     addRecognition,
     addClassAchievement,
     getClassMetrics,
@@ -409,6 +585,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addExam,
     updateExam,
     deleteExam,
+    deletedItems,
+    getDeletedItems,
+    restoreDeletedItem,
+    permanentlyDeleteItem,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

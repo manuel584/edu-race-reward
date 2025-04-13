@@ -5,7 +5,7 @@ import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
-import { Home, Plus, Search, Trash2, PencilLine, GraduationCap, Users } from 'lucide-react';
+import { Home, Plus, Search, Trash2, PencilLine, GraduationCap, Users, AlertTriangle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { 
@@ -19,10 +19,22 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { 
   Select,
   SelectContent,
@@ -32,6 +44,7 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
 
 // Define section type
 type Section = {
@@ -46,9 +59,12 @@ type Section = {
 };
 
 const ClassSections = () => {
-  const { language, students } = useAppContext();
+  const { language, students, deleteStudentsByClass } = useAppContext();
   const t = getTranslations(language);
   const [searchTerm, setSearchTerm] = useState('');
+  const [sectionToDelete, setSectionToDelete] = useState<Section | null>(null);
+  const [deletionType, setDeletionType] = useState<'structure' | 'all'>('structure');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   
   // Example section data
   const [sections, setSections] = useState<Section[]>([
@@ -118,6 +134,30 @@ const ClassSections = () => {
     { label: t.home || 'Home', path: '/', icon: <Home className="h-4 w-4" /> },
     { label: t.classSections || 'Class Sections' },
   ];
+
+  // Handle deletion
+  const handleDeleteSection = (section: Section, type: 'structure' | 'all') => {
+    setSectionToDelete(section);
+    setDeletionType(type);
+    setShowDeleteConfirm(true);
+  };
+
+  // Confirm deletion
+  const confirmDeletion = () => {
+    if (!sectionToDelete) return;
+
+    if (deletionType === 'all') {
+      // Delete students associated with this class
+      deleteStudentsByClass(`${sectionToDelete.grade}${sectionToDelete.name}`);
+    }
+    
+    // Remove the section
+    setSections(prev => prev.filter(s => s.id !== sectionToDelete.id));
+    
+    toast.success(`${language === 'en' ? 'Class deleted successfully' : 'تم حذف الفصل بنجاح'}`);
+    setShowDeleteConfirm(false);
+    setSectionToDelete(null);
+  };
   
   return (
     <div className="min-h-screen bg-background">
@@ -251,9 +291,77 @@ const ClassSections = () => {
                                 <Button variant="ghost" size="icon">
                                   <PencilLine className="h-4 w-4" />
                                 </Button>
-                                <Button variant="ghost" size="icon" className="text-red-500">
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="text-red-500">
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle className="text-center">
+                                        {language === 'en' ? 'Delete Class' : 'حذف الفصل'}
+                                      </DialogTitle>
+                                      <DialogDescription className="text-center">
+                                        {language === 'en' 
+                                          ? `You are about to delete ${section.name} with ${section.studentCount} students` 
+                                          : `أنت على وشك حذف ${section.name} مع ${section.studentCount} طالب`}
+                                      </DialogDescription>
+                                    </DialogHeader>
+                                    <div className="p-4 bg-amber-50 border border-amber-200 rounded-md mb-4">
+                                      <div className="flex items-start gap-3">
+                                        <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
+                                        <p className="text-sm text-amber-800">
+                                          {language === 'en' 
+                                            ? 'This will remove all class data including grades and recognitions.' 
+                                            : 'سيؤدي هذا إلى إزالة جميع بيانات الفصل بما في ذلك الدرجات والتقديرات.'}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <p className="text-sm text-center mb-4">
+                                      {language === 'en' 
+                                        ? 'Choose how you want to delete this class:' 
+                                        : 'اختر كيفية حذف هذا الفصل:'}
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-4 mb-4">
+                                      <Button 
+                                        variant="outline" 
+                                        className="p-4 h-auto flex flex-col items-center gap-2"
+                                        onClick={() => handleDeleteSection(section, 'structure')}
+                                      >
+                                        <GraduationCap className="h-6 w-6" />
+                                        <span className="font-medium">
+                                          {language === 'en' ? 'Delete Structure Only' : 'حذف الهيكل فقط'}
+                                        </span>
+                                        <span className="text-xs text-center text-gray-500">
+                                          {language === 'en' 
+                                            ? 'Keep all student records' 
+                                            : 'الاحتفاظ بجميع سجلات الطلاب'}
+                                        </span>
+                                      </Button>
+                                      <Button 
+                                        variant="destructive" 
+                                        className="p-4 h-auto flex flex-col items-center gap-2"
+                                        onClick={() => handleDeleteSection(section, 'all')}
+                                      >
+                                        <Trash2 className="h-6 w-6" />
+                                        <span className="font-medium">
+                                          {language === 'en' ? 'Delete All Data' : 'حذف جميع البيانات'}
+                                        </span>
+                                        <span className="text-xs text-center text-gray-200">
+                                          {language === 'en' 
+                                            ? 'Remove students as well' 
+                                            : 'إزالة الطلاب أيضًا'}
+                                        </span>
+                                      </Button>
+                                    </div>
+                                    <DialogFooter>
+                                      <Button variant="outline">
+                                        {language === 'en' ? 'Cancel' : 'إلغاء'}
+                                      </Button>
+                                    </DialogFooter>
+                                  </DialogContent>
+                                </Dialog>
                               </div>
                             </div>
                           </CardHeader>
@@ -369,6 +477,54 @@ const ClassSections = () => {
           </div>
         </motion.div>
       </main>
+
+      {/* Final Confirmation Alert Dialog */}
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-center">
+              {language === 'en' ? 'Confirm Deletion' : 'تأكيد الحذف'}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-center">
+              {language === 'en' 
+                ? `Are you sure you want to ${deletionType === 'all' ? 'delete' : 'remove'} ${sectionToDelete?.name}?`
+                : `هل أنت متأكد أنك تريد ${deletionType === 'all' ? 'حذف' : 'إزالة'} ${sectionToDelete?.name}؟`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="p-4 bg-red-50 border border-red-200 rounded-md mb-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-red-800">
+                {deletionType === 'all'
+                  ? language === 'en'
+                    ? `This will permanently delete ${sectionToDelete?.studentCount} student records and cannot be undone.`
+                    : `سيؤدي هذا إلى حذف سجلات ${sectionToDelete?.studentCount} طالب بشكل دائم ولا يمكن التراجع عنه.`
+                  : language === 'en'
+                    ? 'The class structure will be removed, but student records will be preserved.'
+                    : 'سيتم إزالة هيكل الفصل، ولكن سيتم الاحتفاظ بسجلات الطلاب.'}
+              </p>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <div className="text-sm">
+              <span className="font-medium">
+                {language === 'en' ? 'Administrator Password:' : 'كلمة مرور المسؤول:'}
+              </span>
+              <Input type="password" className="mt-1" placeholder="••••••••" />
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>
+              {language === 'en' ? 'Cancel' : 'إلغاء'}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeletion} className={deletionType === 'all' ? 'bg-red-500 hover:bg-red-600' : ''}>
+              {language === 'en' 
+                ? deletionType === 'all' ? 'Permanently Delete' : 'Remove Class Only'
+                : deletionType === 'all' ? 'حذف نهائي' : 'إزالة الفصل فقط'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
