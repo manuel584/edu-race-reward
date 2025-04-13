@@ -1,5 +1,25 @@
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
 
-createRoot(document.getElementById("root")!).render(<App />);
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import { AppProvider } from '@/context/AppContext';
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from '@/hooks/useAuth';
+import { Toaster } from 'sonner';
+import './index.css';
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <ThemeProvider defaultTheme="light">
+        <AuthProvider>
+          <AppProvider>
+            <App />
+            <Toaster position="top-right" />
+          </AppProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+);

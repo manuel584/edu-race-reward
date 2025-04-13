@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { StudentScore, Exam, Question } from '@/types/student-score';
 import { toast } from 'sonner';
@@ -56,7 +55,7 @@ export type AppContextType = {
   language: 'en' | 'ar';
   setLanguage: React.Dispatch<React.SetStateAction<'en' | 'ar'>>;
   addStudent: (student: Omit<Student, 'id' | 'pointsHistory' | 'recognitions' | 'awards'>) => void;
-  updateStudentPoints: (id: string, change: number, reason: string) => void;
+  updateStudentPoints: (id: string, change: number, reason: string, teacherId?: string, subject?: string) => void;
   goalPoints: number;
   setGoalPoints: React.Dispatch<React.SetStateAction<number>>;
   importStudents: (students: Omit<Student, 'id' | 'pointsHistory' | 'recognitions' | 'awards'>[]) => void;
@@ -86,6 +85,11 @@ export type AppContextType = {
   getDeletedItems: () => DeletedItem[];
   restoreDeletedItem: (id: string) => void;
   permanentlyDeleteItem: (id: string) => void;
+  theme: 'light' | 'dark' | 'system';
+  setTheme: (theme: 'light' | 'dark' | 'system') => void;
+  updateGradeName: (oldName: string, newName: string) => void;
+  getDailyBehaviorReports: () => { date: string; worstBehaved: Student[]; bestBehaved: Student[] }[];
+  addBehaviorReport: (date: string, worstStudentIds: string[], bestStudentIds: string[]) => void;
 };
 
 const AppContext = createContext<AppContextType>({
@@ -124,6 +128,11 @@ const AppContext = createContext<AppContextType>({
   getDeletedItems: () => [],
   restoreDeletedItem: () => {},
   permanentlyDeleteItem: () => {},
+  theme: 'light',
+  setTheme: () => {},
+  updateGradeName: () => {},
+  getDailyBehaviorReports: () => [],
+  addBehaviorReport: () => {},
 });
 
 export const useAppContext = () => useContext(AppContext);
@@ -137,6 +146,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [scores, setScores] = useState<StudentScore[]>([]);
   const [exams, setExams] = useState<Exam[]>([]);
   const [deletedItems, setDeletedItems] = useState<DeletedItem[]>([]);
+  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('light');
+  const [behaviorReports, setBehaviorReports] = useState<{ 
+    date: string; 
+    worstBehaved: string[]; 
+    bestBehaved: string[] 
+  }[]>([]);
 
   useEffect(() => {
     const savedStudents = localStorage.getItem('students');
@@ -145,6 +160,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const savedScores = localStorage.getItem('studentScores');
     const savedExams = localStorage.getItem('exams');
     const savedDeletedItems = localStorage.getItem('deletedItems');
+    const savedTheme = localStorage.getItem('theme');
+    const savedBehaviorReports = localStorage.getItem('behaviorReports');
 
     if (savedStudents) {
       setStudents(JSON.parse(savedStudents));
@@ -168,6 +185,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     if (savedDeletedItems) {
       setDeletedItems(JSON.parse(savedDeletedItems));
+    }
+    
+    if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
+      setTheme(savedTheme as 'light' | 'dark' | 'system');
+    }
+    
+    if (savedBehaviorReports) {
+      setBehaviorReports(JSON.parse(savedBehaviorReports));
     }
   }, []);
 
@@ -196,6 +221,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     localStorage.setItem('deletedItems', JSON.stringify(deletedItems));
   }, [deletedItems]);
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+    
+    // Update DOM for theme
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+    
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      root.classList.add(systemTheme);
+    } else {
+      root.classList.add(theme);
+    }
+  }, [theme]);
+  
+  useEffect(() => {
+    localStorage.setItem('behaviorReports', JSON.stringify(behaviorReports));
+  }, [behaviorReports]);
 
   const generateId = () => {
     return Date.now().toString(36) + Math.random().toString(36).substring(2);
@@ -367,7 +411,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
   };
 
-  const updateStudentPoints = (id: string, change: number, reason: string) => {
+  const updateStudentPoints = (id: string, change: number, reason: string, teacherId?: string, subject?: string) => {
     setStudents((prev) => 
       prev.map((student) => {
         if (student.id === id) {
@@ -381,6 +425,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                 date: new Date().toISOString(),
                 change,
                 reason,
+                teacherId,
+                subject
               },
             ],
           };
@@ -553,6 +599,53 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setExams(prev => prev.filter(exam => exam.id !== id));
   };
 
+  const updateGradeName = (oldName: string, newName: string) => {
+    if (oldName === newName) return;
+    
+    setStudents((prev) => 
+      prev.map((student) => {
+        if (student.grade === oldName) {
+          return {
+            ...student,
+            grade: newName
+          };
+        }
+        return student;
+      })
+    );
+  };
+  
+  const getDailyBehaviorReports = () => {
+    return behaviorReports.map(report => ({
+      date: report.date,
+      worstBehaved: students.filter(s => report.worstBehaved.includes(s.id)),
+      bestBehaved: students.filter(s => report.bestBehaved.includes(s.id))
+    }));
+  };
+  
+  const addBehaviorReport = (date: string, worstStudentIds: string[], bestStudentIds: string[]) => {
+    const existingReportIndex = behaviorReports.findIndex(r => r.date === date);
+    
+    if (existingReportIndex >= 0) {
+      const updatedReports = [...behaviorReports];
+      updatedReports[existingReportIndex] = {
+        date,
+        worstBehaved: worstStudentIds,
+        bestBehaved: bestStudentIds
+      };
+      setBehaviorReports(updatedReports);
+    } else {
+      setBehaviorReports([
+        ...behaviorReports,
+        {
+          date,
+          worstBehaved: worstStudentIds,
+          bestBehaved: bestStudentIds
+        }
+      ]);
+    }
+  };
+
   const value = {
     students,
     setStudents,
@@ -589,6 +682,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     getDeletedItems,
     restoreDeletedItem,
     permanentlyDeleteItem,
+    theme,
+    setTheme,
+    updateGradeName,
+    getDailyBehaviorReports,
+    addBehaviorReport,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

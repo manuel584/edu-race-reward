@@ -170,13 +170,13 @@ const StudentView = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
       <StudentStickyHeader student={student} language={language} goalPoints={goalPoints} />
       
       <main className="page-container relative pb-20">
         <motion.div 
-          className="bg-white rounded-2xl shadow-sm border border-gray-100 mb-8 overflow-hidden"
+          className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 mb-8 overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -261,34 +261,40 @@ const StudentView = () => {
             </Tabs>
           </div>
           
-          <div className="border-t border-gray-100">
+          <div className="border-t border-gray-100 dark:border-gray-700">
             <div className="p-8">
-              <h2 className="text-xl font-semibold mb-4">{t.pointsHistory || "Points History"}</h2>
+              <h2 className="text-xl font-semibold mb-4 dark:text-white">{t.pointsHistory || "Points History"}</h2>
               
               {student.pointsHistory && student.pointsHistory.length > 0 ? (
                 <div className="overflow-x-auto">
-                  <div className="rounded-xl border border-gray-200 min-w-full">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                  <div className="rounded-xl border border-gray-200 dark:border-gray-700 min-w-full">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                      <thead className="bg-gray-50 dark:bg-gray-800">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             {t.date || "Date"}
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             {t.change || "Change"}
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             {t.reason || "Reason"}
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {t.subject || "Subject"}
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            {t.teacher || "Teacher"}
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {student.pointsHistory
                           .slice()
                           .reverse()
                           .map((entry, index) => (
-                            <tr key={index}>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <tr key={index} className="dark:hover:bg-gray-700">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                 <div className="flex items-center">
                                   <Calendar className="h-4 w-4 text-gray-400 mr-2" />
                                   {formatDateFromIso(entry.date, language)}
@@ -296,14 +302,20 @@ const StudentView = () => {
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm">
                                 <span className={`
-                                  ${entry.change > 0 ? 'text-green-600' : entry.change < 0 ? 'text-red-600' : 'text-gray-500'}
+                                  ${entry.change > 0 ? 'text-green-600 dark:text-green-400' : entry.change < 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'}
                                   font-medium
                                 `}>
                                   {entry.change > 0 ? '+' : ''}{entry.change}
                                 </span>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                 {entry.reason}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                {entry.subject || "-"}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                {entry.teacherId ? "Teacher" : "-"}
                               </td>
                             </tr>
                           ))}
@@ -312,7 +324,7 @@ const StudentView = () => {
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                   {t.noPointsHistory || "No points history available"}
                 </div>
               )}
