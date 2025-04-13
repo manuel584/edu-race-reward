@@ -5,7 +5,7 @@ import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
-import { Home, Users, UserPlus, Search, Trash2, PencilLine, User, Shield } from 'lucide-react';
+import { Home, Users, UserPlus, Search, Trash2, PencilLine } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { 
@@ -74,6 +74,14 @@ const UserManagement = () => {
       name: 'Sarah Johnson',
       email: 'sarah.johnson@school.edu',
       role: 'counselor',
+    },
+    {
+      id: '5',
+      name: 'عمر عبدالمنعم',
+      email: 'omar@school.edu',
+      role: 'teacher',
+      subjects: ['العلوم', 'الرياضيات'],
+      assignedClasses: ['5A', '5B', '6A'],
     },
   ]);
 

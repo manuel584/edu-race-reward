@@ -19,6 +19,7 @@ const Login = () => {
   const { theme, setTheme } = useTheme();
   const t = getTranslations(language);
   const [selectedRole, setSelectedRole] = useState<UserRole>('teacher');
+  const [demoType, setDemoType] = useState<'default' | 'arabic'>('default');
   
   React.useEffect(() => {
     if (isAuthenticated) {
@@ -27,18 +28,32 @@ const Login = () => {
   }, [isAuthenticated, navigate]);
   
   const handleDemoLogin = () => {
-    login({
-      id: '1',
-      name: 'Demo User',
-      email: 'demo@school.edu',
-      role: selectedRole,
-      profile: {
-        subjects: selectedRole === 'teacher' ? ['Math', 'Science'] : undefined,
-        assignedGrades: selectedRole === 'teacher' || selectedRole === 'supervisor' ? ['5', '6'] : undefined,
-        assignedSections: selectedRole === 'teacher' ? ['5A', '5B', '6A'] : undefined,
-        departments: selectedRole === 'supervisor' ? ['Science', 'Math'] : undefined,
-      }
-    });
+    if (demoType === 'arabic') {
+      login({
+        id: '5',
+        name: 'عمر عبدالمنعم',
+        email: 'omar@school.edu',
+        role: 'teacher',
+        profile: {
+          subjects: ['العلوم', 'الرياضيات'],
+          assignedGrades: ['5', '6'],
+          assignedSections: ['5A', '5B', '6A'],
+        }
+      });
+    } else {
+      login({
+        id: '1',
+        name: 'Demo User',
+        email: 'demo@school.edu',
+        role: selectedRole,
+        profile: {
+          subjects: selectedRole === 'teacher' ? ['Math', 'Science'] : undefined,
+          assignedGrades: selectedRole === 'teacher' || selectedRole === 'supervisor' ? ['5', '6'] : undefined,
+          assignedSections: selectedRole === 'teacher' ? ['5A', '5B', '6A'] : undefined,
+          departments: selectedRole === 'supervisor' ? ['Science', 'Math'] : undefined,
+        }
+      });
+    }
   };
   
   return (
@@ -81,29 +96,53 @@ const Login = () => {
           </div>
           
           <div className="space-y-4">
-            <div className="space-y-2">
+            {demoType === 'default' && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground">
+                  {language === 'en' ? 'Login as:' : 'تسجيل الدخول كـ:'}
+                </label>
+                <Select value={selectedRole} onValueChange={(value: UserRole) => setSelectedRole(value)}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder={language === 'en' ? 'Select role' : 'اختر الدور'} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">
+                      {language === 'en' ? 'Administrator' : 'مدير النظام'}
+                    </SelectItem>
+                    <SelectItem value="supervisor">
+                      {language === 'en' ? 'Supervisor' : 'مشرف'}
+                    </SelectItem>
+                    <SelectItem value="counselor">
+                      {language === 'en' ? 'Student Counselor' : 'مرشد طلابي'}
+                    </SelectItem>
+                    <SelectItem value="teacher">
+                      {language === 'en' ? 'Teacher' : 'معلم'}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            
+            <div className="flex flex-col space-y-2">
               <label className="text-sm font-medium text-foreground">
-                {language === 'en' ? 'Login as:' : 'تسجيل الدخول كـ:'}
+                {language === 'en' ? 'Demo Account:' : 'حساب تجريبي:'}
               </label>
-              <Select value={selectedRole} onValueChange={(value: UserRole) => setSelectedRole(value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder={language === 'en' ? 'Select role' : 'اختر الدور'} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">
-                    {language === 'en' ? 'Administrator' : 'مدير النظام'}
-                  </SelectItem>
-                  <SelectItem value="supervisor">
-                    {language === 'en' ? 'Supervisor' : 'مشرف'}
-                  </SelectItem>
-                  <SelectItem value="counselor">
-                    {language === 'en' ? 'Student Counselor' : 'مرشد طلابي'}
-                  </SelectItem>
-                  <SelectItem value="teacher">
-                    {language === 'en' ? 'Teacher' : 'معلم'}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="grid grid-cols-2 gap-2">
+                <Button 
+                  variant={demoType === 'default' ? "default" : "outline"} 
+                  onClick={() => setDemoType('default')}
+                  className="w-full"
+                >
+                  {language === 'en' ? 'Default' : 'افتراضي'}
+                </Button>
+                <Button 
+                  variant={demoType === 'arabic' ? "default" : "outline"} 
+                  onClick={() => setDemoType('arabic')}
+                  className="w-full"
+                >
+                  {language === 'en' ? 'Arabic Teacher' : 'معلم عربي'}
+                </Button>
+              </div>
             </div>
             
             <motion.button
@@ -115,10 +154,14 @@ const Login = () => {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              <span>{language === 'en' ? `Demo Login (${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)})` : 
+              <span>
+                {demoType === 'arabic' 
+                  ? (language === 'en' ? 'Login as عمر عبدالمنعم' : 'تسجيل الدخول كـ عمر عبدالمنعم')
+                  : (language === 'en' ? `Demo Login (${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)})` : 
                     `تسجيل دخول تجريبي (${selectedRole === 'admin' ? 'مدير النظام' : 
-                                         selectedRole === 'supervisor' ? 'مشرف' : 
-                                         selectedRole === 'counselor' ? 'مرشد طلابي' : 'معلم'})`}
+                                      selectedRole === 'supervisor' ? 'مشرف' : 
+                                      selectedRole === 'counselor' ? 'مرشد طلابي' : 'معلم'})`)
+                }
               </span>
             </motion.button>
             
