@@ -23,7 +23,8 @@ import {
   FileDown,
   Trash2,
   ArchiveIcon,
-  AlertTriangle
+  AlertTriangle,
+  Users
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
