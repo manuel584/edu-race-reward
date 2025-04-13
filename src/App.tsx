@@ -1,9 +1,10 @@
+
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AppProvider } from "@/context/AppContext";
 import { AppSidebarProvider } from "@/components/AppSidebar";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
@@ -179,19 +180,18 @@ const AppRoutes = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <BrowserRouter>
-        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-          <AuthProvider>
-            <AppProvider>
-              <Toaster />
-              <Sonner />
-              <AppRoutes />
-            </AppProvider>
-          </AuthProvider>
-        </ThemeProvider>
-      </BrowserRouter>
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+        <AuthProvider>
+          <AppProvider>
+            <Toaster />
+            <Sonner />
+            <AppRoutes />
+          </AppProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
 
 export default App;
+
