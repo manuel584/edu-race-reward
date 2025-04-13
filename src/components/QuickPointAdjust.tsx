@@ -68,7 +68,7 @@ const QuickPointAdjust: React.FC<QuickPointAdjustProps> = ({
   // Handle point adjustment
   const handlePointAdjustment = (reason: string) => {
     if (!selectedSubject) {
-      toast.error(t.selectSubject || "Please select a subject");
+      toast.error(t.selectSubjects || "Please select a subject");
       return;
     }
     
@@ -91,7 +91,7 @@ const QuickPointAdjust: React.FC<QuickPointAdjustProps> = ({
           variant="outline" 
           size="sm" 
           className={`flex-1 items-center justify-center gap-1 ${
-            isAdd ? 'text-green-600 hover:bg-green-50' : 'text-red-600 hover:bg-red-50'
+            isAdd ? 'text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20' : 'text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20'
           }`}
         >
           {isAdd ? (
@@ -103,10 +103,10 @@ const QuickPointAdjust: React.FC<QuickPointAdjustProps> = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-60 p-3">
-        <h4 className="text-sm font-medium mb-2">{t.selectSubject || "Select Subject"}</h4>
+        <h4 className="text-sm font-medium mb-2">{t.selectSubjects || "Select Subject"}</h4>
         <Select value={selectedSubject} onValueChange={setSelectedSubject}>
           <SelectTrigger className="mb-3">
-            <SelectValue placeholder={t.selectSubject || "Select subject"} />
+            <SelectValue placeholder={t.selectSubjects || "Select subject"} />
           </SelectTrigger>
           <SelectContent>
             {subjects.map(subject => (
