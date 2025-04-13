@@ -1,825 +1,522 @@
-
 type Translations = {
-  home?: string;
-  students?: string;
-  addStudent?: string;
-  importStudents?: string;
-  name?: string;
-  points?: string;
-  attendance?: string;
-  booksOwned?: string;
-  engagementScore?: string;
-  nationality?: string;
-  grade?: string;
-  subjects?: string;
-  actions?: string;
-  search?: string;
-  add?: string;
-  edit?: string;
-  delete?: string;
-  studentName?: string;
-  studentDetails?: string;
-  pointsHistory?: string;
-  date?: string;
-  change?: string;
-  reason?: string;
-  helpfulness?: string;
-  respect?: string;
-  teamwork?: string;
-  excellence?: string;
-  awards?: string;
-  recognitions?: string;
-  type?: string;
-  description?: string;
-  save?: string;
-  cancel?: string;
-  confirmDelete?: string;
-  studentDeleted?: string;
-  editStudent?: string;
-  updatePoints?: string;
-  enterPointsChange?: string;
-  reasonForChange?: string;
-  nominateStudent?: string;
-  category?: string;
-  nominator?: string;
-  submitNomination?: string;
-  nominationSubmitted?: string;
-  gradeRecognition?: string;
-  achievements?: string;
-  addClassAchievement?: string;
-  achievementDescription?: string;
-  classMetrics?: string;
-  totalPoints?: string;
-  averageAttendance?: string;
-  averageEngagement?: string;
-  weeklyImprovement?: string;
-  import?: string;
-  chooseFile?: string;
-  upload?: string;
-  fileUploaded?: string;
-  login?: string;
-  username?: string;
-  password?: string;
-  loginButton?: string;
-  logout?: string;
-  studentAdded?: string;
-  studentUpdated?: string;
-  examCenter?: string;
-  scores?: string;
-  createExam?: string;
-  allExams?: string;
-  upcoming?: string;
-  archived?: string;
-  noExamsYet?: string;
-  noExamsDescription?: string;
-  examTitle?: string;
-  enterExamTitle?: string;
-  titleRequired?: string;
-  examType?: string;
-  selectType?: string;
-  quiz?: string;
-  exam?: string;
-  test?: string;
-  duration?: string;
-  enterDuration?: string;
-  validDurationRequired?: string;
-  questions?: string;
-  addQuestion?: string;
-  addAtLeastOneQuestion?: string;
-  noQuestionsAdded?: string;
-  addYourFirstQuestion?: string;
-  updateExam?: string;
-  questionText?: string;
-  enterQuestionText?: string;
-  questionType?: string;
-  multipleChoice?: string;
-  trueFalse?: string;
-  shortAnswer?: string;
-  essay?: string;
-  options?: string;
-  allowMultipleAnswers?: string;
-  option?: string;
-  addOption?: string;
-  correctAnswer?: string;
-  forGrading?: string;
-  enterCorrectAnswer?: string;
-  essayNoCorrectAnswer?: string;
-  minutes?: string;
-  view?: string;
-  examDeleted?: string;
-  examUpdated?: string;
-  examAdded?: string;
-  addScore?: string;
-  editScore?: string;
-  examName?: string;
-  score?: string;
-  enterStudentName?: string;
-  enterExamName?: string;
-  enterScore?: string;
-  studentNameRequired?: string;
-  examNameRequired?: string;
-  validScoreRequired?: string;
-  updateScore?: string;
-  scoreAdded?: string;
-  scoreUpdated?: string;
-  scoreDeleted?: string;
-  noScoresYet?: string;
-  export?: string;
-  studentScores?: string;
-  average?: string;
-  exportSuccess?: string;
-  nav?: string;
-  dash?: string;
-  filter?: string;
-  nationalStuds?: string;
-  internationalStuds?: string;
-  studentOpts?: string;
-  addPts?: string;
-  exportDt?: string;
-  sett?: string;
-  recogCats?: string;
-  enterDescription?: string;
-  // Export related translations
-  exportData?: string;
-  exportOptions?: string;
-  exportFormat?: string;
-  selectDataType?: string;
-  selectExportScope?: string;
-  individualStudent?: string;
-  entireGrade?: string;
-  allStudents?: string;
-  raceToGoalData?: string;
-  nominationData?: string;
-  recognitionData?: string;
-  allData?: string;
-  selectStudent?: string;
-  selectGrade?: string;
-  downloadExport?: string;
-  exportingData?: string;
-  noDataToExport?: string;
-  exportCompleted?: string;
-  
-  // Missing translations
-  engagement?: string;
-  books?: string;
-  international?: string;
-  national?: string;
-  significantImprovement?: string;
-  improving?: string;
-  steady?: string;
-  needsAttention?: string;
-  noData?: string;
-  viewStudents?: string;
-  addAchievement?: string;
-  generateReport?: string;
-  more?: string;
-  noAchievementsYet?: string;
-  viewClass?: string;
-  generatingReportFor?: string;
-  reportNotImplemented?: string;
-  achievementAdded?: string;
-  addedTo?: string;
-  classes?: string;
-  addAchievementDescription?: string;
-  achievement?: string;
-  achievementPlaceholder?: string;
-  studentsImported?: string;
-  errorParsingFile?: string;
-  uploading?: string;
-  uploadFile?: string;
-  question?: string;
-  attendanceReason?: string;
-  participationReason?: string;
-  homeworkReason?: string;
-  testResultReason?: string;
-  absenceReason?: string;
-  misbehaviorReason?: string;
-  incompleteWorkReason?: string;
-  lateSubmissionReason?: string;
-  quickAdd?: string;
-  quickDeduct?: string;
-  selectReason?: string;
-  errorSubmittingForm?: string;
-  selectNationality?: string;
-  updateStudent?: string;
-  nominatedFor?: string;
-  searchStudents?: string;
-  recentlyNominated?: string;
-  noStudentsFound?: string;
-  noRecentNominations?: string;
-  reasonForNomination?: string;
-  selectReasonDescription?: string;
-  additionalComments?: string;
-  commentsPlaceholder?: string;
-  nominateStudentDesc?: string;
-  overview?: string;
-  history?: string;
-  recognitionScores?: string;
-  totalRecognitions?: string;
-  balancedAchievement?: string;
-  balancedDesc?: string;
-  recentRecognitions?: string;
-  noRecognitionsYet?: string;
-  noAwardsYet?: string;
-  specialRecognitions?: string;
-  balancedGrowth?: string;
-  achievedOn?: string;
-  needsAllCategories?: string;
-  goalReached?: string;
-  toGoal?: string;
-  studentProgress?: string;
-  classComparison?: string;
-  recognitionSystem?: string;
-  raceToGoal?: string;
-  progressOverview?: string;
-  noStudents?: string;
-  gradeOverview?: string;
-  overviewOfAllRecognitionCategories?: string;
-  averageScore?: string;
-  topPerformers?: string;
-  studentsWithHighestRecognitionLevels?: string;
-  analysis?: string;
-  detailedBreakdownOfSubcategories?: string;
-  subcategories?: string;
-  distribution?: string;
-  importText?: string;
-  uploadDescription?: string;
-  welcome?: string;
-  getStarted?: string;
-  dashboard?: string;
-  or?: string;
-  signInWithGoogle?: string;
-  demoLoginNote?: string;
-  allRightsReserved?: string;
-  back?: string;
-  congratulations?: string;
-  reachedGoal?: string;
-  almost?: string;
-  keepGoing?: string;
-  needsImprovement?: string;
-  profile?: string;
-  recognition?: string;
-  noPointsHistory?: string;
-  clearFilters?: string;
-  level?: string;
-  nominate?: string;
-  progressToGoal?: string;
-  helpfulnessDescription?: string;
-  respectDescription?: string;
-  teamworkDescription?: string;
-  excellenceDescription?: string;
-  recognitionDistribution?: string;
-  noGradesFound?: string;
+  home: string;
+  dashboard: string;
+  students: string;
+  studentDetails: string;
+  scores: string;
+  examCenter: string;
+  import: string;
+  userManagement: string;
+  reports: string;
+  classSections: string;
+  settings: string;
+  profile: string;
+  logout: string;
+  search: string;
+  myClasses: string;
+  myStudents: string;
+  recentRecognitions: string;
+  myTasks: string;
+  upcomingExams: string;
+  viewAll: string;
+  studentInformation: string;
+  academicPerformance: string;
+  behavior: string;
+  attendance: string;
+  recognition: string;
+  notes: string;
+  contacts: string;
+  addStudent: string;
+  editStudent: string;
+  deleteStudent: string;
+  name: string;
+  email: string;
+  grade: string;
+  section: string;
+  actions: string;
+  cancel: string;
+  submit: string;
+  save: string;
+  delete: string;
+  edit: string;
+  view: string;
+  back: string;
+  next: string;
+  previous: string;
+  loading: string;
+  noResults: string;
+  error: string;
+  success: string;
+  warning: string;
+  info: string;
+  confirmation: string;
+  areYouSure: string;
+  thisActionCannot: string;
+  yes: string;
+  no: string;
+  or: string;
+  all: string;
+  none: string;
+  filters: string;
+  applyFilters: string;
+  clearFilters: string;
+  sortBy: string;
+  ascending: string;
+  descending: string;
+  today: string;
+  yesterday: string;
+  thisWeek: string;
+  lastWeek: string;
+  thisMonth: string;
+  lastMonth: string;
+  custom: string;
+  date: string;
+  time: string;
+  status: string;
+  active: string;
+  inactive: string;
+  pending: string;
+  completed: string;
+  add: string;
+  remove: string;
+  subcategories: string;
+  optional: string;
+  option: string;
+  note: string;
+  notFound: string;
+  goBack: string;
+  goHome: string;
+  welcomeTo: string;
+  login: string;
+  signUp: string;
+  forgotPassword: string;
+  rememberMe: string;
+  dontHaveAccount: string;
+  alreadyHaveAccount: string;
+  signInWithGoogle: string;
+  signInWithMicrosoft: string;
+  demoLoginNote: string;
+  allRightsReserved: string;
+  departments: string;
+  subjects: string;
+  teachers: string;
+  admin: string;
+  supervisor: string;
+  counselor: string;
+  teacher: string;
+  permissions: string;
+  role: string;
+  roles: string;
+  newUser: string;
+  editUser: string;
+  deleteUser: string;
+  addUser: string;
+  editProfile: string;
+  changePassword: string;
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+  passwordsMustMatch: string;
+  passwordRequirements: string;
+  classes: string;
+  account: string;
+  manageAccount: string;
+  manageUsers: string;
+  teacherAssignments: string;
+  classAssignments: string;
+  userPermissions: string;
+  workload: string;
+  initialPassword: string;
+  resetPassword: string;
+  forcePasswordChange: string;
+  sendEmailInvitation: string;
+  permissionsUpdated: string;
+  statusUpdated: string;
+  passwordReset: string;
+  assignmentsUpdated: string;
+  subjectsUpdated: string;
+  managementConsole: string;
+  assignmentMatrix: string;
+  selectClasses: string;
+  selectSubjects: string;
+  selectTeachers: string;
+  applyRoleTemplate: string;
+  recommendedPermissions: string;
+  noSpecificPermissions: string;
+  fullName: string;
+  emailAddress: string;
+  userRole: string;
+  assignedClasses: string;
+  currentPermissions: string;
+  lastLogin: string;
+  inviteUser: string;
+  userCreated: string;
+  userDeleted: string;
+  accountSettings: string;
+  systemSettings: string;
+  appearance: string;
+  language: string;
+  notifications: string;
+  security: string;
+  advancedSettings: string;
+  helpSupport: string;
+  contactSupport: string;
+  reportBug: string;
+  documentation: string;
+  about: string;
+  version: string;
+  termsOfService: string;
+  privacyPolicy: string;
+  cookiePolicy: string;
+  accessControl: string;
 };
 
-const translations: { [key: string]: Translations } = {
-  en: {
-    home: 'Home',
-    students: 'Students',
-    addStudent: 'Add Student',
-    importStudents: 'Import Students',
-    name: 'Name',
-    points: 'Points',
-    attendance: 'Attendance',
-    booksOwned: 'Books Owned',
-    books: 'Books',
-    engagementScore: 'Engagement Score',
-    engagement: 'Engagement',
-    nationality: 'Nationality',
-    grade: 'Grade',
-    subjects: 'Subjects',
-    actions: 'Actions',
-    search: 'Search',
-    add: 'Add',
-    edit: 'Edit',
-    delete: 'Delete',
-    studentName: 'Student Name',
-    studentDetails: 'Student Details',
-    pointsHistory: 'Points History',
-    date: 'Date',
-    change: 'Change',
-    reason: 'Reason',
-    helpfulness: 'Helpfulness',
-    respect: 'Respect',
-    teamwork: 'Teamwork',
-    excellence: 'Excellence',
-    awards: 'Awards',
-    recognitions: 'Recognitions',
-    type: 'Type',
-    description: 'Description',
-    save: 'Save',
-    cancel: 'Cancel',
-    confirmDelete: 'Are you sure you want to delete this student?',
-    studentDeleted: 'Student deleted successfully',
-    editStudent: 'Edit Student',
-    updatePoints: 'Update Points',
-    enterPointsChange: 'Enter points change',
-    reasonForChange: 'Reason for change',
-    nominateStudent: 'Nominate Student',
-    category: 'Category',
-    nominator: 'Nominator',
-    submitNomination: 'Submit Nomination',
-    nominationSubmitted: 'Nomination submitted successfully',
-    gradeRecognition: 'Grade Recognition',
-    achievements: 'Achievements',
-    addClassAchievement: 'Add Class Achievement',
-    achievementDescription: 'Achievement Description',
-    classMetrics: 'Class Metrics',
-    totalPoints: 'Total Points',
-    averageAttendance: 'Average Attendance',
-    averageEngagement: 'Average Engagement',
-    weeklyImprovement: 'Weekly Improvement',
-    import: 'Import',
-    chooseFile: 'Choose File',
-    upload: 'Upload',
-    fileUploaded: 'File uploaded successfully',
-    login: 'Login',
-    username: 'Username',
-    password: 'Password',
-    loginButton: 'Login',
-    logout: 'Logout',
-    studentAdded: 'Student added successfully',
-    studentUpdated: 'Student updated successfully',
-    examCenter: 'Exam Center',
-    scores: 'Scores',
-    createExam: 'Create Exam',
-    allExams: 'All Exams',
-    upcoming: 'Upcoming',
-    archived: 'Archived',
-    noExamsYet: 'No exams created yet',
-    noExamsDescription: 'Start by creating your first exam to manage quizzes and track student performance.',
-    examTitle: 'Exam Title',
-    enterExamTitle: 'Enter exam title',
-    titleRequired: 'Title is required',
-    enterDescription: 'Enter exam description',
-    examType: 'Exam Type',
-    selectType: 'Select exam type',
-    quiz: 'Quiz',
-    exam: 'Exam',
-    test: 'Test',
-    duration: 'Duration (minutes)',
-    enterDuration: 'Enter duration in minutes',
-    validDurationRequired: 'Please enter a valid duration',
-    questions: 'Questions',
-    question: 'Question',
-    addQuestion: 'Add Question',
-    addAtLeastOneQuestion: 'Add at least one question',
-    noQuestionsAdded: 'No questions added yet',
-    addYourFirstQuestion: 'Add your first question',
-    updateExam: 'Update Exam',
-    questionText: 'Question Text',
-    enterQuestionText: 'Enter question text',
-    questionType: 'Question Type',
-    multipleChoice: 'Multiple Choice',
-    trueFalse: 'True/False',
-    shortAnswer: 'Short Answer',
-    essay: 'Essay',
-    options: 'Options',
-    allowMultipleAnswers: 'Allow multiple answers',
-    option: 'Option',
-    addOption: 'Add Option',
-    correctAnswer: 'Correct Answer',
-    forGrading: 'for grading',
-    enterCorrectAnswer: 'Enter correct answer',
-    essayNoCorrectAnswer: 'Essay questions require manual grading',
-    minutes: 'minutes',
-    view: 'View',
-    examDeleted: 'Exam deleted successfully',
-    examUpdated: 'Exam updated successfully',
-    examAdded: 'Exam created successfully',
-    addScore: 'Add Score',
-    editScore: 'Edit Score',
-    examName: 'Exam Name',
-    score: 'Score',
-    enterStudentName: 'Enter student name',
-    enterExamName: 'Enter exam name',
-    enterScore: 'Enter score (0-100)',
-    studentNameRequired: 'Student name is required',
-    examNameRequired: 'Exam name is required',
-    validScoreRequired: 'Please enter a valid score (0-100)',
-    updateScore: 'Update Score',
-    scoreAdded: 'Score added successfully',
-    scoreUpdated: 'Score updated successfully',
-    scoreDeleted: 'Score deleted successfully',
-    noScoresYet: 'No scores added yet',
-    export: 'Export',
-    studentScores: 'Student Scores',
-    average: 'Average',
-    exportSuccess: 'Exported successfully',
-    nav: 'Navigation',
-    dash: 'Dashboard',
-    filter: 'Filters',
-    nationalStuds: 'National Students',
-    internationalStuds: 'International Students',
-    studentOpts: 'Student Options',
-    addPts: 'Add Points',
-    exportDt: 'Export Data',
-    sett: 'Settings',
-    recogCats: 'Recognition Categories',
-    // Export related translations
-    exportData: 'Export Data',
-    exportOptions: 'Export Options',
-    exportFormat: 'Export Format',
-    selectDataType: 'Select Data Type',
-    selectExportScope: 'Select Export Scope',
-    individualStudent: 'Individual Student',
-    entireGrade: 'Entire Grade',
-    allStudents: 'All Students',
-    raceToGoalData: 'Race to Goal Data',
-    nominationData: 'Nomination Data',
-    recognitionData: 'Recognition Data',
-    allData: 'All Data',
-    selectStudent: 'Select Student',
-    selectGrade: 'Select Grade',
-    downloadExport: 'Download Export',
-    exportingData: 'Exporting Data...',
-    noDataToExport: 'No data available to export',
-    exportCompleted: 'Export completed successfully',
-    
-    // Added missing translations
-    international: 'International',
-    national: 'National',
-    significantImprovement: 'Significant Improvement',
-    improving: 'Improving',
-    steady: 'Steady Performance',
-    needsAttention: 'Needs Attention',
-    noData: 'No Data Available',
-    viewStudents: 'View Students',
-    addAchievement: 'Add Achievement',
-    generateReport: 'Generate Report',
-    more: 'More',
-    noAchievementsYet: 'No achievements yet',
-    viewClass: 'View Class',
-    generatingReportFor: 'Generating report for',
-    reportNotImplemented: 'Report generation is not fully implemented yet',
-    achievementAdded: 'Achievement added',
-    addedTo: 'added to',
-    classes: 'Classes',
-    addAchievementDescription: 'Add Achievement Description',
-    achievement: 'Achievement',
-    achievementPlaceholder: 'Enter achievement description...',
-    studentsImported: 'Students imported successfully',
-    errorParsingFile: 'Error parsing file',
-    uploading: 'Uploading',
-    uploadFile: 'Upload File',
-    attendanceReason: 'Good attendance',
-    participationReason: 'Active participation',
-    homeworkReason: 'Completed homework',
-    testResultReason: 'Good test result',
-    absenceReason: 'Absence',
-    misbehaviorReason: 'Misbehavior',
-    incompleteWorkReason: 'Incomplete work',
-    lateSubmissionReason: 'Late submission',
-    quickAdd: 'Quick Add',
-    quickDeduct: 'Quick Deduct',
-    selectReason: 'Select a reason',
-    errorSubmittingForm: 'Error submitting form',
-    selectNationality: 'Select nationality',
-    updateStudent: 'Update Student',
-    nominatedFor: 'Nominated for',
-    searchStudents: 'Search students',
-    recentlyNominated: 'Recently Nominated',
-    noStudentsFound: 'No students found',
-    noRecentNominations: 'No recent nominations',
-    reasonForNomination: 'Reason for Nomination',
-    selectReasonDescription: 'Select a reason that best describes why you are nominating this student',
-    additionalComments: 'Additional Comments',
-    commentsPlaceholder: 'Enter any additional comments about this nomination...',
-    nominateStudentDesc: 'Nominate a student for their outstanding performance, behavior, or contribution',
-    overview: 'Overview',
-    history: 'History',
-    recognitionScores: 'Recognition Scores',
-    totalRecognitions: 'Total Recognitions',
-    balancedAchievement: 'Balanced Achievement',
-    balancedDesc: 'Student has demonstrated balanced growth across all recognition categories',
-    recentRecognitions: 'Recent Recognitions',
-    noRecognitionsYet: 'No recognitions yet',
-    noAwardsYet: 'No awards yet',
-    specialRecognitions: 'Special Recognitions',
-    balancedGrowth: 'Balanced Growth Award',
-    achievedOn: 'Achieved on',
-    needsAllCategories: 'Student needs recognition in all categories to achieve this award',
-    goalReached: 'Goal Reached',
-    toGoal: 'to goal',
-    studentProgress: 'Student Progress',
-    classComparison: 'Class Comparison',
-    recognitionSystem: 'Recognition System',
-    raceToGoal: 'Race to Goal',
-    progressOverview: 'Progress Overview',
-    noStudents: 'No students yet',
-    gradeOverview: 'Grade Overview',
-    overviewOfAllRecognitionCategories: 'Overview of all recognition categories',
-    averageScore: 'Average Score',
-    topPerformers: 'Top Performers',
-    studentsWithHighestRecognitionLevels: 'Students with highest recognition levels',
-    analysis: 'Analysis',
-    detailedBreakdownOfSubcategories: 'Detailed breakdown of subcategories',
-    subcategories: 'Subcategories',
-    distribution: 'Distribution',
-    importText: 'Import Student Data',
-    uploadDescription: 'Upload a CSV or Excel file with student data',
-    welcome: 'Welcome to Student Management System',
-    getStarted: 'Get Started',
-    dashboard: 'Dashboard',
-    or: 'or',
-    signInWithGoogle: 'Sign in with Google',
-    demoLoginNote: 'For demo purposes, you can use any username and password',
-    allRightsReserved: 'All rights reserved',
-    back: 'Back to Home',
-    congratulations: 'Congratulations!',
-    reachedGoal: 'reached goal!',
-    almost: 'Almost there!',
-    keepGoing: 'Keep going!',
-    needsImprovement: 'Needs improvement',
-    profile: 'Profile',
-    recognition: 'Recognition',
-    noPointsHistory: 'No points history available',
-    clearFilters: 'Clear Filters',
-    level: 'Level',
-    nominate: 'Nominate',
-    progressToGoal: 'Progress to Goal',
-    helpfulnessDescription: 'Helpfulness includes assisting others, volunteering, and being supportive',
-    respectDescription: 'Respect includes politeness, following rules, and respecting diversity',
-    teamworkDescription: 'Teamwork includes collaboration, sharing, and contributing to group goals',
-    excellenceDescription: 'Excellence includes academic performance, effort, and personal growth',
-    recognitionDistribution: 'Recognition Distribution',
-    noGradesFound: 'No grades found'
-  },
-  ar: {
-    home: 'الرئيسية',
-    students: 'الطلاب',
-    addStudent: 'إضافة طالب',
-    importStudents: 'استيراد الطلاب',
-    name: 'الاسم',
-    points: 'النقاط',
-    attendance: 'الحضور',
-    booksOwned: 'الكتب المملوكة',
-    books: 'الكتب',
-    engagementScore: 'نقاط المشاركة',
-    engagement: 'المشاركة',
-    nationality: 'الجنسية',
-    grade: 'الصف',
-    subjects: 'المواد',
-    actions: 'الإجراءات',
-    search: 'بحث',
-    add: 'إضافة',
-    edit: 'تعديل',
-    delete: 'حذف',
-    studentName: 'اسم الطالب',
-    studentDetails: 'تفاصيل الطالب',
-    pointsHistory: 'سجل النقاط',
-    date: 'التاريخ',
-    change: 'التغيير',
-    reason: 'السبب',
-    helpfulness: 'المساعدة',
-    respect: 'الاحترام',
-    teamwork: 'العمل الجماعي',
-    excellence: 'التميز',
-    awards: 'الجوائز',
-    recognitions: 'التقديرات',
-    type: 'النوع',
-    description: 'الوصف',
-    save: 'حفظ',
-    cancel: 'إلغاء',
-    confirmDelete: 'هل أنت متأكد أنك تريد حذف هذا الطالب؟',
-    studentDeleted: 'تم حذف الطالب بنجاح',
-    editStudent: 'تعديل الطالب',
-    updatePoints: 'تحديث النقاط',
-    enterPointsChange: 'أدخل تغيير النقاط',
-    reasonForChange: 'سبب التغيير',
-    nominateStudent: 'ترشيح الطالب',
-    category: 'الفئة',
-    nominator: 'المرشح',
-    submitNomination: 'إرسال الترشيح',
-    nominationSubmitted: 'تم إرسال الترشيح بنجاح',
-    gradeRecognition: 'تقدير الصف',
-    achievements: 'الإنجازات',
-    addClassAchievement: 'إضافة إنجاز للصف',
-    achievementDescription: 'وصف الإنجاز',
-    classMetrics: 'مقاييس الصف',
-    totalPoints: 'مجموع النقاط',
-    averageAttendance: 'متوسط الحضور',
-    averageEngagement: 'متوسط المشاركة',
-    weeklyImprovement: 'التحسن الأسبوعي',
-    import: 'استيراد',
-    chooseFile: 'اختر ملفا',
-    upload: 'رفع',
-    fileUploaded: 'تم رفع الملف بنجاح',
-    login: 'تسجيل الدخول',
-    username: 'اسم المستخدم',
-    password: 'كلمة المرور',
-    loginButton: 'تسجيل الدخول',
-    logout: 'تسجيل الخروج',
-    studentAdded: 'تمت إضافة الطالب بنجاح',
-    studentUpdated: 'تم تحديث الطالب بنجاح',
-    examCenter: 'مركز الاختبارات',
-    scores: 'النتائج',
-    createExam: 'إنشاء اختبار',
-    allExams: 'جميع الاختبارات',
-    upcoming: 'القادمة',
-    archived: 'المؤرشفة',
-    noExamsYet: 'لا توجد اختبارات تم إنشاؤها حتى الآن',
-    noExamsDescription: 'ابدأ بإنشاء الاختبار الأول لإدارة الاختبارات القصيرة وتتبع أداء الطلاب.',
-    examTitle: 'عنوان الاختبار',
-    enterExamTitle: 'أدخل عنوان الاختبار',
-    titleRequired: 'العنوان مطلوب',
-    enterDescription: 'أدخل وصف الاختبار',
-    examType: 'نوع الاختبار',
-    selectType: 'اختر نوع الاختبار',
-    quiz: 'اختبار قصير',
-    exam: 'امتحان',
-    test: 'اختبار',
-    duration: 'المدة (بالدقائق)',
-    enterDuration: 'أدخل المدة بالدقائق',
-    validDurationRequired: 'الرجاء إدخال مدة صحيحة',
-    questions: 'الأسئلة',
-    question: 'سؤال',
-    addQuestion: 'إضافة سؤال',
-    addAtLeastOneQuestion: 'أضف سؤال واحد على الأقل',
-    noQuestionsAdded: 'لم يتم إضافة أسئلة بعد',
-    addYourFirstQuestion: 'أضف سؤالك الأول',
-    updateExam: 'تحديث الاختبار',
-    questionText: 'نص السؤال',
-    enterQuestionText: 'أدخل نص السؤال',
-    questionType: 'نوع السؤال',
-    multipleChoice: 'اختيار من متعدد',
-    trueFalse: 'صواب / خطأ',
-    shortAnswer: 'إجابة قصيرة',
-    essay: 'مقال',
-    options: 'خيارات',
-    allowMultipleAnswers: 'السماح بإجابات متعددة',
-    option: 'خيار',
-    addOption: 'إضافة خيار',
-    correctAnswer: 'الإجابة الصحيحة',
-    forGrading: 'للتصحيح',
-    enterCorrectAnswer: 'أدخل الإجابة الصحيحة',
-    essayNoCorrectAnswer: 'تتطلب أسئلة المقال تصحيحًا يدويًا',
-    minutes: 'دقائق',
-    view: 'عرض',
-    examDeleted: 'تم حذف الاختبار بنجاح',
-    examUpdated: 'تم تحديث الاختبار بنجاح',
-    examAdded: 'تم إنشاء الاختبار بنجاح',
-    addScore: 'إضافة نتيجة',
-    editScore: 'تعديل النتيجة',
-    examName: 'اسم الاختبار',
-    score: 'النتيجة',
-    enterStudentName: 'أدخل اسم الطالب',
-    enterExamName: 'أدخل اسم الاختبار',
-    enterScore: 'أدخل النتيجة (0-100)',
-    studentNameRequired: 'اسم الطالب مطلوب',
-    examNameRequired: 'اسم الاختبار مطلوب',
-    validScoreRequired: 'الرجاء إدخال نتيجة صحيحة (0-100)',
-    updateScore: 'تحديث النتيجة',
-    scoreAdded: 'تمت إضافة النتيجة بنجاح',
-    scoreUpdated: 'تم تحديث النتيجة بنجاح',
-    scoreDeleted: 'تم حذف النتيجة بنجاح',
-    noScoresYet: 'لم يتم إضافة نتائج بعد',
-    export: 'تصدير',
-    studentScores: 'نتائج الطلاب',
-    average: 'المعدل',
-    exportSuccess: 'تم التصدير بنجاح',
-    nav: 'التنقل',
-    dash: 'لوحة التحكم',
-    filter: 'التصفية',
-    nationalStuds: 'الطلاب الوطنيون',
-    internationalStuds: 'الطلاب الدوليون',
-    studentOpts: 'خيارات الطالب',
-    addPts: 'إضافة نقاط',
-    exportDt: 'تصدير البيانات',
-    sett: 'الإعدادات',
-    recogCats: 'فئات التقدير',
-    // Export related translations in Arabic
-    exportData: 'تصدير البيانات',
-    exportOptions: 'خيارات التصدير',
-    exportFormat: 'تنسيق التصدير',
-    selectDataType: 'اختر نوع البيانات',
-    selectExportScope: 'اختر نطاق التصدير',
-    individualStudent: 'طالب فردي',
-    entireGrade: 'الصف بأكمله',
-    allStudents: 'جميع الطلاب',
-    raceToGoalData: 'بيانات سباق الهدف',
-    nominationData: 'بيانات الترشيح',
-    recognitionData: 'بيانات التقدير',
-    allData: 'كل البيانات',
-    selectStudent: 'اختر الطالب',
-    selectGrade: 'اختر الصف',
-    downloadExport: 'تنزيل التصدير',
-    exportingData: 'جاري تصدير البيانات...',
-    noDataToExport: 'لا توجد بيانات متاحة للتصدير',
-    exportCompleted: 'اكتمل التصدير بنجاح',
-    
-    // Added missing translations in Arabic
-    international: 'دولي',
-    national: 'وطني',
-    significantImprovement: 'تحسن ملحوظ',
-    improving: 'يتحسن',
-    steady: 'أداء ثابت',
-    needsAttention: 'يحتاج اهتمام',
-    noData: 'لا توجد بيانات متاحة',
-    viewStudents: 'عرض الطلاب',
-    addAchievement: 'إضافة إنجاز',
-    generateReport: 'إنشاء تقرير',
-    more: 'المزيد',
-    noAchievementsYet: 'لا توجد إنجازات بعد',
-    viewClass: 'عرض الصف',
-    generatingReportFor: 'جاري إنشاء تقرير لـ',
-    reportNotImplemented: 'إنشاء التقارير غير مكتمل التنفيذ حتى الآن',
-    achievementAdded: 'تمت إضافة الإنجاز',
-    addedTo: 'تمت الإضافة إلى',
-    classes: 'الصفوف',
-    addAchievementDescription: 'إضافة وصف الإنجاز',
-    achievement: 'إنجاز',
-    achievementPlaceholder: 'أدخل وصف الإنجاز...',
-    studentsImported: 'تم استيراد الطلاب بنجاح',
-    errorParsingFile: 'خطأ في تحليل الملف',
-    uploading: 'جاري الرفع',
-    uploadFile: 'رفع ملف',
-    attendanceReason: 'حضور جيد',
-    participationReason: 'مشاركة فعالة',
-    homeworkReason: 'إكمال الواجب المنزلي',
-    testResultReason: 'نتيجة اختبار جيدة',
-    absenceReason: 'غياب',
-    misbehaviorReason: 'سوء سلوك',
-    incompleteWorkReason: 'عمل غير مكتمل',
-    lateSubmissionReason: 'تسليم متأخر',
-    quickAdd: 'إضافة سريعة',
-    quickDeduct: 'خصم سريع',
-    selectReason: 'اختر سببًا',
-    errorSubmittingForm: 'خطأ في إرسال النموذج',
-    selectNationality: 'اختر الجنسية',
-    updateStudent: 'تحديث الطالب',
-    nominatedFor: 'مرشح لـ',
-    searchStudents: 'البحث عن طلاب',
-    recentlyNominated: 'مرشحون مؤخرًا',
-    noStudentsFound: 'لم يتم العثور على طلاب',
-    noRecentNominations: 'لا توجد ترشيحات حديثة',
-    reasonForNomination: 'سبب الترشيح',
-    selectReasonDescription: 'اختر السبب الذي يصف بشكل أفضل سبب ترشيحك لهذا الطالب',
-    additionalComments: 'تعليقات إضافية',
-    commentsPlaceholder: 'أدخل أي تعليقات إضافية حول هذا الترشيح...',
-    nominateStudentDesc: 'ترشيح طالب لأدائه المتميز أو سلوكه أو مساهمته',
-    overview: 'نظرة عامة',
-    history: 'التاريخ',
-    recognitionScores: 'درجات التقدير',
-    totalRecognitions: 'إجمالي التقديرات',
-    balancedAchievement: 'إنجاز متوازن',
-    balancedDesc: 'أظهر الطالب نموًا متوازنًا في جميع فئات التقدير',
-    recentRecognitions: 'التقديرات الحديثة',
-    noRecognitionsYet: 'لا توجد تقديرات بعد',
-    noAwardsYet: 'لا توجد جوائز بعد',
-    specialRecognitions: 'تقديرات خاصة',
-    balancedGrowth: 'جائزة النمو المتوازن',
-    achievedOn: 'تم تحقيقه في',
-    needsAllCategories: 'يحتاج الطالب إلى تقدير في جميع الفئات للحصول على هذه الجائزة',
-    goalReached: 'تم الوصول للهدف',
-    toGoal: 'للهدف',
-    studentProgress: 'تقدم الطالب',
-    classComparison: 'مقارنة الصف',
-    recognitionSystem: 'نظام التقدير',
-    raceToGoal: 'سباق نحو الهدف',
-    progressOverview: 'نظرة عامة على التقدم',
-    noStudents: 'لا يوجد طلاب بعد',
-    gradeOverview: 'نظرة عامة على الصف',
-    overviewOfAllRecognitionCategories: 'نظرة عامة على جميع فئات التقدير',
-    averageScore: 'متوسط النقاط',
-    topPerformers: 'الأفضل أداءً',
-    studentsWithHighestRecognitionLevels: 'الطلاب ذوو أعلى مستويات التقدير',
-    analysis: 'تحليل',
-    detailedBreakdownOfSubcategories: 'تفصيل مفصل للفئات الفرعية',
-    subcategories: 'الفئات الفرعية',
-    distribution: 'التوزيع',
-    importText: 'استيراد بيانات الطالب',
-    uploadDescription: 'قم برفع ملف CSV أو Excel يحتوي على بيانات الطلاب',
-    welcome: 'مرحبًا بك في نظام إدارة الطلاب',
-    getStarted: 'ابدأ الآن',
-    dashboard: 'لوحة التحكم',
-    or: 'أو',
-    signInWithGoogle: 'تسجيل الدخول باستخدام Google',
-    demoLoginNote: 'لأغراض العرض التوضيحي، يمكنك استخدام أي اسم مستخدم وكلمة مرور',
-    allRightsReserved: 'جميع الحقوق محفوظة',
-    back: 'العودة إلى الصفحة الرئيسية',
-    congratulations: 'تهانينا!',
-    reachedGoal: 'وصل إلى الهدف!',
-    almost: 'اقترب من الهدف!',
-    keepGoing: 'استمر!',
-    needsImprovement: 'يحتاج إلى تحسين',
-    profile: 'الملف الشخصي',
-    recognition: 'التقدير',
-    noPointsHistory: 'لا يوجد سجل نقاط متاح',
-    clearFilters: 'مسح التصفية',
-    level: 'المستوى',
-    nominate: 'ترشيح',
-    progressToGoal: 'التقدم نحو الهدف',
-    helpfulnessDescription: 'المساعدة تشمل مساعدة الآخرين والتطوع وتقديم الدعم',
-    respectDescription: 'الاحترام يشمل التهذيب واتباع القواعد واحترام التنوع',
-    teamworkDescription: 'العمل الجماعي يشمل التعاون والمشاركة والمساهمة في أهداف المجموعة',
-    excellenceDescription: 'التميز يشمل الأداء الأكاديمي والجهد والنمو الشخصي',
-    recognitionDistribution: 'توزيع التقدير',
-    noGradesFound: 'لم يتم العثور على صفوف'
-  },
+const enTranslations: Translations = {
+  home: 'Home',
+  dashboard: 'Dashboard',
+  students: 'Students',
+  studentDetails: 'Student Details',
+  scores: 'Scores',
+  examCenter: 'Exam Center',
+  import: 'Import',
+  userManagement: 'User Management',
+  reports: 'Reports',
+  classSections: 'Class Sections',
+  settings: 'Settings',
+  profile: 'Profile',
+  logout: 'Logout',
+  search: 'Search',
+  myClasses: 'My Classes',
+  myStudents: 'My Students',
+  recentRecognitions: 'Recent Recognitions',
+  myTasks: 'My Tasks',
+  upcomingExams: 'Upcoming Exams',
+  viewAll: 'View All',
+  studentInformation: 'Student Information',
+  academicPerformance: 'Academic Performance',
+  behavior: 'Behavior',
+  attendance: 'Attendance',
+  recognition: 'Recognition',
+  notes: 'Notes',
+  contacts: 'Contacts',
+  addStudent: 'Add Student',
+  editStudent: 'Edit Student',
+  deleteStudent: 'Delete Student',
+  name: 'Name',
+  email: 'Email',
+  grade: 'Grade',
+  section: 'Section',
+  actions: 'Actions',
+  cancel: 'Cancel',
+  submit: 'Submit',
+  save: 'Save',
+  delete: 'Delete',
+  edit: 'Edit',
+  view: 'View',
+  back: 'Back',
+  next: 'Next',
+  previous: 'Previous',
+  loading: 'Loading',
+  noResults: 'No results found',
+  error: 'Error',
+  success: 'Success',
+  warning: 'Warning',
+  info: 'Info',
+  confirmation: 'Confirmation',
+  areYouSure: 'Are you sure?',
+  thisActionCannot: 'This action cannot be undone.',
+  yes: 'Yes',
+  no: 'No',
+  or: 'or',
+  all: 'All',
+  none: 'None',
+  filters: 'Filters',
+  applyFilters: 'Apply Filters',
+  clearFilters: 'Clear Filters',
+  sortBy: 'Sort By',
+  ascending: 'Ascending',
+  descending: 'Descending',
+  today: 'Today',
+  yesterday: 'Yesterday',
+  thisWeek: 'This Week',
+  lastWeek: 'Last Week',
+  thisMonth: 'This Month',
+  lastMonth: 'Last Month',
+  custom: 'Custom',
+  date: 'Date',
+  time: 'Time',
+  status: 'Status',
+  active: 'Active',
+  inactive: 'Inactive',
+  pending: 'Pending',
+  completed: 'Completed',
+  add: 'Add',
+  remove: 'Remove',
+  subcategories: 'Subcategories',
+  optional: 'Optional',
+  option: 'Option',
+  note: 'Note',
+  notFound: 'Not Found',
+  goBack: 'Go Back',
+  goHome: 'Go Home',
+  welcomeTo: 'Welcome to',
+  login: 'Login',
+  signUp: 'Sign Up',
+  forgotPassword: 'Forgot Password',
+  rememberMe: 'Remember Me',
+  dontHaveAccount: 'Don\'t have an account?',
+  alreadyHaveAccount: 'Already have an account?',
+  signInWithGoogle: 'Sign in with Google',
+  signInWithMicrosoft: 'Sign in with Microsoft',
+  demoLoginNote: 'For demo purposes, you can use any username and password',
+  allRightsReserved: 'All rights reserved',
+  departments: 'Departments',
+  subjects: 'Subjects',
+  teachers: 'Teachers',
+  admin: 'Administrator',
+  supervisor: 'Supervisor',
+  counselor: 'Counselor',
+  teacher: 'Teacher',
+  permissions: 'Permissions',
+  role: 'Role',
+  roles: 'Roles',
+  newUser: 'New User',
+  editUser: 'Edit User',
+  deleteUser: 'Delete User',
+  addUser: 'Add User',
+  editProfile: 'Edit Profile',
+  changePassword: 'Change Password',
+  currentPassword: 'Current Password',
+  newPassword: 'New Password',
+  confirmPassword: 'Confirm Password',
+  passwordsMustMatch: 'Passwords must match',
+  passwordRequirements: 'Password must be at least 8 characters',
+  classes: 'Classes',
+  account: 'Account',
+  manageAccount: 'Manage Account',
+  manageUsers: 'Manage Users',
+  teacherAssignments: 'Teacher Assignments',
+  classAssignments: 'Class Assignments',
+  userPermissions: 'User Permissions',
+  workload: 'Workload',
+  initialPassword: 'Initial Password',
+  resetPassword: 'Reset Password',
+  forcePasswordChange: 'Force Password Change',
+  sendEmailInvitation: 'Send Email Invitation',
+  permissionsUpdated: 'Permissions Updated',
+  statusUpdated: 'Status Updated',
+  passwordReset: 'Password Reset',
+  assignmentsUpdated: 'Assignments Updated',
+  subjectsUpdated: 'Subjects Updated',
+  managementConsole: 'Management Console',
+  assignmentMatrix: 'Assignment Matrix',
+  selectClasses: 'Select Classes',
+  selectSubjects: 'Select Subjects',
+  selectTeachers: 'Select Teachers',
+  applyRoleTemplate: 'Apply Role Template',
+  recommendedPermissions: 'Recommended',
+  noSpecificPermissions: 'No specific permissions assigned',
+  fullName: 'Full Name',
+  emailAddress: 'Email Address',
+  userRole: 'User Role',
+  assignedClasses: 'Assigned Classes',
+  currentPermissions: 'Current Permissions',
+  lastLogin: 'Last Login',
+  inviteUser: 'Invite User',
+  userCreated: 'User Created',
+  userDeleted: 'User Deleted',
+  accountSettings: 'Account Settings',
+  systemSettings: 'System Settings',
+  appearance: 'Appearance',
+  language: 'Language',
+  notifications: 'Notifications',
+  security: 'Security',
+  advancedSettings: 'Advanced Settings',
+  helpSupport: 'Help & Support',
+  contactSupport: 'Contact Support',
+  reportBug: 'Report a Bug',
+  documentation: 'Documentation',
+  about: 'About',
+  version: 'Version',
+  termsOfService: 'Terms of Service',
+  privacyPolicy: 'Privacy Policy',
+  cookiePolicy: 'Cookie Policy',
+  accessControl: 'Access Control',
+};
+
+const arTranslations: Translations = {
+  home: 'الرئيسية',
+  dashboard: 'لوحة التحكم',
+  students: 'الطلاب',
+  studentDetails: 'تفاصيل الطالب',
+  scores: 'النتائج',
+  examCenter: 'مركز الاختبارات',
+  import: 'استيراد',
+  userManagement: 'إدارة المستخدمين',
+  reports: 'التقارير',
+  classSections: 'شعب الفصول',
+  settings: 'الإعدادات',
+  profile: 'الملف الشخصي',
+  logout: 'تسجيل الخروج',
+  search: 'بحث',
+  myClasses: 'صفوفي',
+  myStudents: 'طلابي',
+  recentRecognitions: 'التقديرات الحديثة',
+  myTasks: 'مهامي',
+  upcomingExams: 'الاختبارات القادمة',
+  viewAll: 'عرض الكل',
+  studentInformation: 'معلومات الطالب',
+  academicPerformance: 'أداء الأكاديمي',
+  behavior: 'سلوك',
+  attendance: 'الحضور',
+  recognition: 'التقدير',
+  notes: 'ملاحظات',
+  contacts: 'جهات اتصال',
+  addStudent: 'إضافة طالب',
+  editStudent: 'تعديل طالب',
+  deleteStudent: 'حذف طالب',
+  name: 'الاسم',
+  email: 'البريد الإلكتروني',
+  grade: 'الصف',
+  section: 'الشعبة',
+  actions: 'الإجراءات',
+  cancel: 'إلغاء',
+  submit: 'إرسال',
+  save: 'حفظ',
+  delete: 'حذف',
+  edit: 'تعديل',
+  view: 'عرض',
+  back: 'رجوع',
+  next: 'التالي',
+  previous: 'السابق',
+  loading: 'جاري التحميل',
+  noResults: 'لم يتم العثور على نتائج',
+  error: 'خطأ',
+  success: 'نجاح',
+  warning: 'تحذير',
+  info: 'معلومات',
+  confirmation: 'تأكيد',
+  areYouSure: 'هل أنت متأكد؟',
+  thisActionCannot: 'هذه الأجراء لا يمكن التراجع عنها.',
+  yes: 'نعم',
+  no: 'لا',
+  or: 'أو',
+  all: 'الكل',
+  none: 'لا شيء',
+  filters: 'التصفية',
+  applyFilters: 'تطبيق التصفية',
+  clearFilters: 'مسح التصفية',
+  sortBy: 'ترتيب حسب',
+  ascending: 'تصاعدي',
+  descending: 'تنازلي',
+  today: 'اليوم',
+  yesterday: 'المساء',
+  thisWeek: 'الأسبوع الحالي',
+  lastWeek: 'الأسبوع السابق',
+  thisMonth: 'الشهر الحالي',
+  lastMonth: 'الشهر السابق',
+  custom: 'مخصص',
+  date: 'التاريخ',
+  time: 'الوقت',
+  status: 'الحالة',
+  active: 'مفعل',
+  inactive: 'غير مفعل',
+  pending: 'قيد الانتظار',
+  completed: 'مكتمل',
+  add: 'إضافة',
+  remove: 'حذف',
+  subcategories: 'الفئات الفرعية',
+  optional: 'اختياري',
+  option: 'خيار',
+  note: 'ملاحظة',
+  notFound: 'لا يوجد',
+  goBack: 'رجوع',
+  goHome: 'العودة إلى الصفحة الرئيسية',
+  welcomeTo: 'مرحبًا بك في',
+  login: 'تسجيل الدخول',
+  signUp: 'إنشاء حساب',
+  forgotPassword: 'هل نسيت كلمة المرور؟',
+  rememberMe: 'تذكرني',
+  dontHaveAccount: 'لا يوجد حساب؟',
+  alreadyHaveAccount: 'لديك حساب؟',
+  signInWithGoogle: 'تسجيل الدخول باستخدام Google',
+  signInWithMicrosoft: 'تسجيل الدخول باستخدام Microsoft',
+  demoLoginNote: 'لأغراض العرض التوضيحي، يمكنك استخدام أي اسم مستخدم وكلمة مرور',
+  allRightsReserved: 'جميع الحقوق محفوظة',
+  departments: 'ال departamentos',
+  subjects: 'المادة',
+  teachers: 'المعلمين',
+  admin: 'مدير النظام',
+  supervisor: 'مشرف',
+  counselor: 'مرشد طلابي',
+  teacher: 'معلم',
+  permissions: 'الصلاحيات',
+  role: 'الدور',
+  roles: 'الأدوار',
+  newUser: 'مستخدم جديد',
+  editUser: 'تعديل المستخدم',
+  deleteUser: 'حذف المستخدم',
+  addUser: 'إضافة مستخدم',
+  editProfile: 'تعديل الملف الشخصي',
+  changePassword: 'تغيير كلمة المرور',
+  currentPassword: 'كلمة المرور الحالية',
+  newPassword: 'كلمة المرور الجديدة',
+  confirmPassword: 'تأكيد كلمة المرور',
+  passwordsMustMatch: 'يجب أن تتطابق كلمات المرور',
+  passwordRequirements: 'يجب أن تكون كلمة المرور 8 أحرف على الأقل',
+  classes: 'الفصول',
+  account: 'الحساب',
+  manageAccount: 'إدارة الحساب',
+  manageUsers: 'إدارة المستخدمين',
+  teacherAssignments: 'تعيينات المعلمين',
+  classAssignments: 'تعيينات الفصول',
+  userPermissions: 'صلاحيات المستخدم',
+  workload: 'عبء العمل',
+  initialPassword: 'كلمة المرور الأولية',
+  resetPassword: 'إعادة تعيين كلمة المرور',
+  forcePasswordChange: 'فرض تغيير كلمة المرور',
+  sendEmailInvitation: 'إرسال دعوة بالبريد الإلكتروني',
+  permissionsUpdated: 'تم تحديث الصلاحيات',
+  statusUpdated: 'تم تحديث الحالة',
+  passwordReset: 'تم إعادة تعيين كلمة المرور',
+  assignmentsUpdated: 'تم تحديث التعيينات',
+  subjectsUpdated: 'تم تحديث المواد',
+  managementConsole: 'وحدة الإدارة',
+  assignmentMatrix: 'مصفوفة التعيينات',
+  selectClasses: 'اختر الفصول',
+  selectSubjects: 'اختر المواد',
+  selectTeachers: 'اختر المعلمين',
+  applyRoleTemplate: 'تطبيق قالب الدور',
+  recommendedPermissions: 'موصى به',
+  noSpecificPermissions: 'لم يتم تعيين صلاحيات محددة',
+  fullName: 'الاسم الكامل',
+  emailAddress: 'البريد الإلكتروني',
+  userRole: 'دور المستخدم',
+  assignedClasses: 'الفصول المعينة',
+  currentPermissions: 'الصلاحيات الحالية',
+  lastLogin: 'آخر تسجيل دخول',
+  inviteUser: 'دعوة مستخدم',
+  userCreated: 'تم إنشاء المستخدم',
+  userDeleted: 'تم حذف المستخدم',
+  accountSettings: 'إعدادات الحساب',
+  systemSettings: 'إعدادات النظام',
+  appearance: 'المظهر',
+  language: 'اللغة',
+  notifications: 'الإشعارات',
+  security: 'الأمان',
+  advancedSettings: 'إعدادات متقدمة',
+  helpSupport: 'المساعدة والدعم',
+  contactSupport: 'التواصل مع الدعم',
+  reportBug: 'الإبلاغ عن خطأ',
+  documentation: 'التوثيق',
+  about: 'حول',
+  version: 'الإصدار',
+  termsOfService: 'شروط الخدمة',
+  privacyPolicy: 'سياسة الخصوصية',
+  cookiePolicy: 'سياسة ملفات تعريف الارتباط',
+  accessControl: 'التحكم في الوصول',
 };
 
 export const getTranslations = (language: string = 'en'): Translations => {
   return translations[language] || translations.en;
 };
-
