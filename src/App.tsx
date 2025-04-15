@@ -1,7 +1,24 @@
+
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { Loading } from '@/components/ui/loading';
+import { Skeleton } from '@/components/ui/skeleton';
+
+// Loading Component
+const Loading = () => (
+  <div className="flex flex-col items-center justify-center min-h-screen p-4">
+    <div className="space-y-4 w-full max-w-md">
+      <Skeleton className="h-12 w-2/3 mx-auto" />
+      <Skeleton className="h-32 w-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-5/6" />
+        <Skeleton className="h-4 w-4/6" />
+      </div>
+      <Skeleton className="h-32 w-full" />
+    </div>
+  </div>
+);
 
 const Login = lazy(() => import('@/pages/Login'));
 const Home = lazy(() => import('@/pages/Home'));
