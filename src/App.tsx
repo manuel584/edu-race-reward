@@ -27,6 +27,7 @@ const TeacherDashboard = lazy(() => import('@/pages/TeacherDashboard'));
 const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 const UserManagement = lazy(() => import('@/pages/UserManagement'));
+const Students = lazy(() => import('@/pages/Students'));
 
 const RoleBasedRoute = ({
   children,
@@ -96,6 +97,12 @@ const App: React.FC = () => {
       path: '/user-management',
       element: <RoleBasedRoute allowedRoles={['admin']}>
         <UserManagement />
+      </RoleBasedRoute>
+    },
+    {
+      path: '/students',
+      element: <RoleBasedRoute allowedRoles={['admin', 'supervisor', 'counselor', 'teacher']}>
+        <Students />
       </RoleBasedRoute>
     },
     {
