@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAppContext } from '@/context/AppContext';
@@ -40,6 +39,9 @@ import TeacherForm from '@/components/TeacherForm';
 import TeacherCard from '@/components/TeacherCard';
 import WorkloadChart from '@/components/WorkloadChart';
 import { toast } from 'sonner';
+import TeacherFilters from '@/components/TeacherFilters';
+import AssignmentValidator from '@/components/AssignmentValidator';
+import { TeacherFilters as TeacherFiltersType } from '@/types/teacherAssignment';
 
 const TeacherManagement = () => {
   const { language } = useAppContext();
@@ -48,8 +50,9 @@ const TeacherManagement = () => {
   const [selectedTab, setSelectedTab] = useState('all');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
-  
-  // Sample teachers data - this would come from your context in a real implementation
+  const [filters, setFilters] = useState<TeacherFiltersType>({});
+  const [selectedTeachers, setSelectedTeachers] = useState<string[]>([]);
+
   const [teachers, setTeachers] = useState<Teacher[]>([
     {
       id: '1',
@@ -112,16 +115,22 @@ const TeacherManagement = () => {
     }
   ]);
 
-  // Filter teachers based on search term and selected tab
-  const filteredTeachers = teachers.filter(teacher => 
-    (teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     teacher.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     teacher.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     teacher.subjects.some(subject => subject.toLowerCase().includes(searchTerm.toLowerCase()))) &&
-    (selectedTab === 'all' || teacher.status === selectedTab)
-  );
+  const filteredTeachers = teachers.filter(teacher => {
+    const matchesSearch = (
+      teacher.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      teacher.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      teacher.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      teacher.subjects.some(subject => subject.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
 
-  // Generate breadcrumb items
+    const matchesDepartment = !filters.department || teacher.department === filters.department;
+    const matchesGrade = !filters.grade || teacher.assignedClasses.some(cls => cls.grade === filters.grade);
+    const matchesSubject = !filters.subject || teacher.subjects.includes(filters.subject);
+    const matchesStatus = selectedTab === 'all' || teacher.status === selectedTab;
+
+    return matchesSearch && matchesDepartment && matchesGrade && matchesSubject && matchesStatus;
+  });
+
   const breadcrumbItems = [
     { label: t.home || 'Home', path: '/', icon: <Home className="h-4 w-4" /> },
     { label: t.teacherManagement || 'Teacher Management' },
@@ -166,6 +175,15 @@ const TeacherManagement = () => {
     }
   };
 
+  const handleTeacherSelect = (teacherId: string) => {
+    setSelectedTeachers(prev => {
+      if (prev.includes(teacherId)) {
+        return prev.filter(id => id !== teacherId);
+      }
+      return [...prev, teacherId];
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -208,11 +226,19 @@ const TeacherManagement = () => {
             </Dialog>
           </div>
           
+          <TeacherFilters
+            filters={filters}
+            onFilterChange={setFilters}
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            language={language}
+          />
+          
           <Tabs 
             defaultValue="all" 
             value={selectedTab} 
             onValueChange={setSelectedTab}
-            className="mb-6"
+            className="mt-6"
           >
             <TabsList className="w-full sm:w-auto mb-4">
               <TabsTrigger value="all">
@@ -239,9 +265,11 @@ const TeacherManagement = () => {
               />
             </div>
             
-            <TabsContent value="all" className="mt-0">
+            <TabsContent value="all" className="mt-6">
               <TeacherManagementContent 
-                teachers={filteredTeachers} 
+                teachers={filteredTeachers}
+                selectedTeachers={selectedTeachers}
+                onTeacherSelect={handleTeacherSelect}
                 onEdit={(teacher) => {
                   setSelectedTeacher(teacher);
                   setIsDialogOpen(true);
@@ -250,9 +278,11 @@ const TeacherManagement = () => {
                 language={language}
               />
             </TabsContent>
-            <TabsContent value="active" className="mt-0">
+            <TabsContent value="active" className="mt-6">
               <TeacherManagementContent 
-                teachers={filteredTeachers} 
+                teachers={filteredTeachers}
+                selectedTeachers={selectedTeachers}
+                onTeacherSelect={handleTeacherSelect}
                 onEdit={(teacher) => {
                   setSelectedTeacher(teacher);
                   setIsDialogOpen(true);
@@ -261,9 +291,11 @@ const TeacherManagement = () => {
                 language={language}
               />
             </TabsContent>
-            <TabsContent value="inactive" className="mt-0">
+            <TabsContent value="inactive" className="mt-6">
               <TeacherManagementContent 
-                teachers={filteredTeachers} 
+                teachers={filteredTeachers}
+                selectedTeachers={selectedTeachers}
+                onTeacherSelect={handleTeacherSelect}
                 onEdit={(teacher) => {
                   setSelectedTeacher(teacher);
                   setIsDialogOpen(true);
@@ -272,9 +304,11 @@ const TeacherManagement = () => {
                 language={language}
               />
             </TabsContent>
-            <TabsContent value="on-leave" className="mt-0">
+            <TabsContent value="on-leave" className="mt-6">
               <TeacherManagementContent 
-                teachers={filteredTeachers} 
+                teachers={filteredTeachers}
+                selectedTeachers={selectedTeachers}
+                onTeacherSelect={handleTeacherSelect}
                 onEdit={(teacher) => {
                   setSelectedTeacher(teacher);
                   setIsDialogOpen(true);
@@ -290,23 +324,25 @@ const TeacherManagement = () => {
   );
 };
 
-// Component for the content in each tab
 interface TeacherManagementContentProps {
   teachers: Teacher[];
+  selectedTeachers: string[];
+  onTeacherSelect: (id: string) => void;
   onEdit: (teacher: Teacher) => void;
   onDelete: (id: string) => void;
   language: string;
 }
 
 const TeacherManagementContent: React.FC<TeacherManagementContentProps> = ({ 
-  teachers, 
-  onEdit, 
+  teachers,
+  selectedTeachers,
+  onTeacherSelect,
+  onEdit,
   onDelete,
   language
 }) => {
-  const [viewMode, setViewMode] = useState<'table' | 'cards' | 'workload'>('table');
+  const [viewMode, setViewMode] = useState<'table' | 'cards' | 'workload'>('cards');
   
-  // Calculate workload statistics for visualization
   const workloadData = teachers.map(teacher => {
     const subjectDistribution: Record<string, number> = {};
     const gradeDistribution: Record<string, number> = {};
@@ -314,7 +350,6 @@ const TeacherManagementContent: React.FC<TeacherManagementContentProps> = ({
     let totalHours = 0;
     
     teacher.assignedClasses.forEach(cls => {
-      // Calculate hours for this class
       const classHours = cls.schedule.reduce((total, session) => {
         const start = new Date(`1970-01-01T${session.startTime}:00`);
         const end = new Date(`1970-01-01T${session.endTime}:00`);
@@ -324,14 +359,12 @@ const TeacherManagementContent: React.FC<TeacherManagementContentProps> = ({
       
       totalHours += classHours;
       
-      // Add to subject distribution
       if (subjectDistribution[cls.subject]) {
         subjectDistribution[cls.subject] += classHours;
       } else {
         subjectDistribution[cls.subject] = classHours;
       }
       
-      // Add to grade distribution
       if (gradeDistribution[cls.grade]) {
         gradeDistribution[cls.grade] += classHours;
       } else {
@@ -474,6 +507,8 @@ const TeacherManagementContent: React.FC<TeacherManagementContentProps> = ({
                 onEdit={() => onEdit(teacher)}
                 onDelete={() => onDelete(teacher.id)}
                 language={language}
+                onAssign={() => onTeacherSelect(teacher.id)}
+                isSelected={selectedTeachers.includes(teacher.id)}
               />
             ))
           ) : (
