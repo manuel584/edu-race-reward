@@ -32,8 +32,7 @@ const Scores = () => {
   const handleDeleteScore = (id: string) => {
     if (window.confirm(t.confirmDelete || "Are you sure you want to delete this score?")) {
       deleteScore(id);
-      const message = language === 'en' ? "Score deleted successfully" : "تم حذف الدرجة بنجاح";
-      toast.success(message);
+      toast.success(t.scoreDeleted || "Score deleted successfully");
     }
   };
   
