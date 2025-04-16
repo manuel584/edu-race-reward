@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -6,7 +5,7 @@ import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
-import { Home, Book, GraduationCap, Flag, User, Edit, Archive, Award, Clock, ListChecks, TrendingUp } from 'lucide-react';
+import { Home, Book, GraduationCap, Flag, User, Edit, Archive, Unarchive, Award, Clock, ListChecks, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Tabs,
@@ -35,7 +34,7 @@ import QuickPointAdjust from '@/components/QuickPointAdjust';
 
 const StudentView = () => {
   const { id } = useParams<{ id: string }>();
-  const { students, language, archiveStudent, goalPoints } = useAppContext();
+  const { students, language, archiveStudent, unarchiveStudent, goalPoints } = useAppContext();
   const t = getTranslations(language);
   const navigate = useNavigate();
   
@@ -78,11 +77,9 @@ const StudentView = () => {
   };
   
   const handleUnarchiveStudent = () => {
-    // This is a placeholder since unarchiveStudent is not in AppContext
-    // You'll need to implement this function in your actual context
-    // For now, let's show a toast message to simulate the action
-    toast.success("Student unarchived successfully");
-    navigate('/students');
+    unarchiveStudent(student.id);
+    const message = language === 'en' ? "Student unarchived successfully" : "تم إلغاء أرشفة الطالب بنجاح";
+    toast.success(message);
   };
   
   return (
@@ -108,7 +105,7 @@ const StudentView = () => {
             
             <div className="mt-4 md:mt-0 flex gap-2 flex-wrap">
               <Button variant="outline" onClick={() => setNominationOpen(true)} className="flex items-center gap-2">
-                <Award className="h-4 w-4" />
+                {/* <Award className="h-4 w-4" /> */}
                 <span>{t.nominateStudent || "Nominate Student"}</span>
               </Button>
               
@@ -119,7 +116,7 @@ const StudentView = () => {
               
               {student.archived ? (
                 <Button variant="outline" onClick={handleUnarchiveStudent} className="flex items-center gap-2">
-                  <Archive className="h-4 w-4" />
+                  <Unarchive className="h-4 w-4" />
                   <span>{t.unarchive || "Unarchive"}</span>
                 </Button>
               ) : (
