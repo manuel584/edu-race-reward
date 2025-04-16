@@ -17,9 +17,9 @@ const AdminDashboard: React.FC = () => {
       
       <main className="page-container">
         <div className="mb-8">
-          <h1 className="text-3xl font-display font-bold">{t.adminDashboard || "Admin Dashboard"}</h1>
+          <h1 className="text-3xl font-display font-bold">{t.admin || "Admin Dashboard"}</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
-            {t.adminDashboardDesc || "System administration and management"}
+            {t.adminDesc || "System administration and management"}
           </p>
         </div>
         
@@ -27,7 +27,7 @@ const AdminDashboard: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 hover:shadow-md transition-shadow">
             <h2 className="text-xl font-semibold mb-4">{t.userManagement || "User Management"}</h2>
             <p className="text-gray-500 dark:text-gray-400 mb-6">
-              {t.userManagementDesc || "Manage user accounts and permissions"}
+              {t.managementDesc || "Manage user accounts and permissions"}
             </p>
             <Button onClick={() => navigate('/user-management')} variant="default">
               {t.manageUsers || "Manage Users"}
@@ -35,19 +35,19 @@ const AdminDashboard: React.FC = () => {
           </div>
           
           <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 hover:shadow-md transition-shadow">
-            <h2 className="text-xl font-semibold mb-4">{t.systemSettings || "System Settings"}</h2>
+            <h2 className="text-xl font-semibold mb-4">{t.settings || "System Settings"}</h2>
             <p className="text-gray-500 dark:text-gray-400 mb-6">
-              {t.systemSettingsDesc || "Configure system settings and preferences"}
+              {t.settingsDesc || "Configure system settings and preferences"}
             </p>
             <Button onClick={() => navigate('/settings')} variant="default">
-              {t.manageSettings || "Manage Settings"}
+              {t.manage || "Manage Settings"}
             </Button>
           </div>
           
           <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 hover:shadow-md transition-shadow">
-            <h2 className="text-xl font-semibold mb-4">{t.dataManagement || "Data Management"}</h2>
+            <h2 className="text-xl font-semibold mb-4">{t.data || "Data Management"}</h2>
             <p className="text-gray-500 dark:text-gray-400 mb-6">
-              {t.dataManagementDesc || "Import and export system data"}
+              {t.dataDesc || "Import and export system data"}
             </p>
             <Button onClick={() => navigate('/import')} variant="default">
               {t.manageData || "Manage Data"}

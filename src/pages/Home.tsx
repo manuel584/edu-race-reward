@@ -19,7 +19,7 @@ const Home: React.FC = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-display font-bold">{t.dashboard || "Dashboard"}</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
-            {t.welcomeMessage || "Welcome to the Education Reward System"}
+            {t.welcome || "Welcome to the Education Reward System"}
           </p>
         </div>
         
@@ -27,20 +27,20 @@ const Home: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 hover:shadow-md transition-shadow">
             <h2 className="text-xl font-semibold mb-4">{t.students || "Students"}</h2>
             <p className="text-gray-500 dark:text-gray-400 mb-6">
-              {t.manageStudents || "Manage your students and their progress"}
+              {t.studentsDesc || "Manage your students and their progress"}
             </p>
             <Button onClick={() => navigate('/students')} variant="default">
-              {t.openStudentDashboard || "Go to Students"}
+              {t.goToStudents || "Go to Students"}
             </Button>
           </div>
           
           <div className="bg-white dark:bg-gray-800 rounded-lg border p-6 hover:shadow-md transition-shadow">
-            <h2 className="text-xl font-semibold mb-4">{t.teacherDashboard || "Teacher Dashboard"}</h2>
+            <h2 className="text-xl font-semibold mb-4">{t.teacher || "Teacher Dashboard"}</h2>
             <p className="text-gray-500 dark:text-gray-400 mb-6">
-              {t.teacherDashboardDesc || "Manage your classes and teaching materials"}
+              {t.teacherDesc || "Manage your classes and teaching materials"}
             </p>
             <Button onClick={() => navigate('/teacher-dashboard')} variant="default">
-              {t.openTeacherDashboard || "Go to Teacher Dashboard"}
+              {t.goToTeacher || "Go to Teacher Dashboard"}
             </Button>
           </div>
           
