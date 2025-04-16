@@ -1,5 +1,5 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { StudentScore, Exam, Question } from '@/types/student-score';
 import { toast } from 'sonner';
 
@@ -198,7 +198,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [deletedItems]);
 
   const generateId = () => {
-    return Date.now().toString(36) + Math.random().toString(36).substring(2);
+    return uuidv4();
   };
 
   const addStudent = (student: Omit<Student, 'id' | 'pointsHistory' | 'recognitions' | 'awards'>) => {
