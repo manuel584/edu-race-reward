@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -20,6 +21,7 @@ import Scores from "./pages/Scores";
 import ExamCenter from "./pages/ExamCenter";
 import RoleBasedRoute from "./components/RoleBasedRoute";
 import UserManagement from "./pages/UserManagement";
+import TeacherManagement from "./pages/TeacherManagement";
 import ReportsPage from "./pages/ReportsPage";
 import ClassSections from "./pages/ClassSections";
 
@@ -120,6 +122,17 @@ const AppRoutes = () => {
           <RoleBasedRoute allowedRoles={['admin']} requiredPermissions={['manage_users']}>
             <AppSidebarProvider>
               <UserManagement />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+
+      <Route
+        path="/teachers"
+        element={
+          <RoleBasedRoute allowedRoles={['admin', 'supervisor']} requiredPermissions={['manage_users']}>
+            <AppSidebarProvider>
+              <TeacherManagement />
             </AppSidebarProvider>
           </RoleBasedRoute>
         }
