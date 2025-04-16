@@ -19,7 +19,7 @@ const StudentAwards: React.FC<StudentAwardsProps> = ({ studentId }) => {
   if (!awards.length) {
     return (
       <div className="text-center py-8 text-gray-500 bg-gray-50 dark:bg-gray-800 rounded-lg border">
-        {t.noAwards}
+        {t.awards ? t.noAchievements || "No achievements yet" : "No achievements yet"}
       </div>
     );
   }
