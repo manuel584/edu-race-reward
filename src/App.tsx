@@ -1,102 +1,197 @@
 
-import React, { Suspense, lazy } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { Loading } from '@/components/ui/loading';
+import React from "react";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { AppProvider } from "@/context/AppContext";
+import { AppSidebarProvider } from "@/components/AppSidebar";
+import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
+import Students from "./pages/Students";
+import StudentView from "./pages/StudentView";
+import GradeRecognition from "./pages/GradeRecognition";
+import Import from "./pages/Import";
+import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Scores from "./pages/Scores";
+import ExamCenter from "./pages/ExamCenter";
+import RoleBasedRoute from "./components/RoleBasedRoute";
+import UserManagement from "./pages/UserManagement";
+import ReportsPage from "./pages/ReportsPage";
+import ClassSections from "./pages/ClassSections";
 
-const Login = lazy(() => import('@/pages/Login'));
-const Home = lazy(() => import('@/pages/Home'));
-const StudentDashboard = lazy(() => import('@/pages/StudentDashboard'));
-const TeacherDashboard = lazy(() => import('@/pages/TeacherDashboard'));
-const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
-const NotFound = lazy(() => import('@/pages/NotFound'));
-const UserManagement = lazy(() => import('@/pages/UserManagement'));
+const queryClient = new QueryClient();
 
-const RoleBasedRoute = ({
-  children,
-  allowedRoles,
-}: {
-  children: React.ReactNode;
-  allowedRoles: string[];
-}) => {
-  const { user, isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
+// Component that redirects authenticated users away from login page
+const RedirectIfAuthenticated = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated } = useAuth();
+  
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
   }
-
-  if (user && allowedRoles.includes(user.role)) {
-    return <>{children}</>;
-  }
-
-  return <Navigate to="/unauthorized" />;
+  
+  return <>{children}</>;
 };
 
-const App: React.FC = () => {
-  const { isAuthenticated } = useAuth();
-
-  const routes = [
-    {
-      path: '/',
-      element: isAuthenticated ? <Navigate to="/home" /> : <Navigate to="/login" />,
-    },
-    {
-      path: '/login',
-      element: isAuthenticated ? <Navigate to="/home" /> : <Login />,
-    },
-    {
-      path: '/home',
-      element: (
-        <RoleBasedRoute allowedRoles={['admin', 'supervisor', 'counselor', 'teacher']}>
-          <Home />
-        </RoleBasedRoute>
-      ),
-    },
-    {
-      path: '/student-dashboard',
-      element: (
-        <RoleBasedRoute allowedRoles={['admin', 'supervisor', 'counselor', 'teacher']}>
-          <StudentDashboard />
-        </RoleBasedRoute>
-      ),
-    },
-    {
-      path: '/teacher-dashboard',
-      element: (
-        <RoleBasedRoute allowedRoles={['teacher']}>
-          <TeacherDashboard />
-        </RoleBasedRoute>
-      ),
-    },
-    {
-      path: '/admin-dashboard',
-      element: (
-        <RoleBasedRoute allowedRoles={['admin']}>
-          <AdminDashboard />
-        </RoleBasedRoute>
-      ),
-    },
-    {
-      path: '/user-management',
-      element: <RoleBasedRoute allowedRoles={['admin']}>
-        <UserManagement />
-      </RoleBasedRoute>
-    },
-    {
-      path: '*',
-      element: <NotFound />,
-    },
-  ];
-
+// Refactored App component to use route protection
+const AppRoutes = () => {
   return (
-    <Suspense fallback={<Loading />}>
-      <Routes>
-        {routes.map((route, index) => (
-          <Route key={index} path={route.path} element={route.element} />
-        ))}
-      </Routes>
-    </Suspense>
+    <Routes>
+      {/* Public login route that redirects to dashboard if already authenticated */}
+      <Route 
+        path="/login" 
+        element={
+          <RedirectIfAuthenticated>
+            <Login />
+          </RedirectIfAuthenticated>
+        } 
+      />
+      
+      {/* Redirect root path to login or dashboard based on auth status */}
+      <Route 
+        path="/" 
+        element={<Navigate to="/dashboard" replace />}
+      />
+      
+      {/* Protected routes - accessible by all authenticated users */}
+      <Route
+        path="/dashboard"
+        element={
+          <RoleBasedRoute>
+            <AppSidebarProvider>
+              <Dashboard />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
+      {/* Student routes - accessible based on roles */}
+      <Route
+        path="/students"
+        element={
+          <RoleBasedRoute requiredPermissions={['view_assigned_students']}>
+            <AppSidebarProvider>
+              <Students />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      <Route
+        path="/student/:id"
+        element={
+          <RoleBasedRoute requiredPermissions={['view_assigned_students']}>
+            <AppSidebarProvider>
+              <StudentView />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
+      {/* Grade routes */}
+      <Route
+        path="/grade/:grade"
+        element={
+          <RoleBasedRoute requiredPermissions={['view_assigned_classes']}>
+            <AppSidebarProvider>
+              <GradeRecognition />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
+      {/* Admin-only routes */}
+      <Route
+        path="/import"
+        element={
+          <RoleBasedRoute allowedRoles={['admin', 'supervisor']} requiredPermissions={['import_data']}>
+            <AppSidebarProvider>
+              <Import />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
+      <Route
+        path="/users"
+        element={
+          <RoleBasedRoute allowedRoles={['admin']} requiredPermissions={['manage_users']}>
+            <AppSidebarProvider>
+              <UserManagement />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
+      <Route
+        path="/class-sections"
+        element={
+          <RoleBasedRoute allowedRoles={['admin', 'supervisor']} requiredPermissions={['manage_sections']}>
+            <AppSidebarProvider>
+              <ClassSections />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
+      {/* Exam and Score routes */}
+      <Route
+        path="/scores"
+        element={
+          <RoleBasedRoute requiredPermissions={['view_assigned_students']}>
+            <AppSidebarProvider>
+              <Scores />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      <Route
+        path="/exam-center"
+        element={
+          <RoleBasedRoute requiredPermissions={['create_exams']}>
+            <AppSidebarProvider>
+              <ExamCenter />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
+      {/* Reports route */}
+      <Route
+        path="/reports"
+        element={
+          <RoleBasedRoute allowedRoles={['admin', 'supervisor', 'counselor']} requiredPermissions={['view_all_reports']}>
+            <AppSidebarProvider>
+              <ReportsPage />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 };
 
+// Main app component with providers
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+        <AuthProvider>
+          <AppProvider>
+            <Toaster />
+            <Sonner />
+            <AppRoutes />
+          </AppProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
 export default App;
+
