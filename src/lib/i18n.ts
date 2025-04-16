@@ -478,6 +478,23 @@ type Translations = {
   keepGoing: string;
   needsImprovement: string;
   nominate: string;
+  unarchive: string;
+  selectAtLeastOneStudent: string;
+  behaviorReportAdded: string;
+  addBehaviorReport: string;
+  dailyBehaviorReport: string;
+  selectBestAndWorstStudents: string;
+  selectDate: string;
+  bestBehavedStudents: string;
+  worstBehavedStudents: string;
+  noBestStudentsSelected: string;
+  noWorstStudentsSelected: string;
+  noBehaviorReports: string;
+  recentBehaviorReports: string;
+  gradeNameRequired: string;
+  studentUpdated: string;
+  studentRecognitions: string;
+  recentRecognitions: string;
 };
 
 const enTranslations: Translations = {
@@ -869,6 +886,23 @@ const enTranslations: Translations = {
   keepGoing: 'Keep Going',
   needsImprovement: 'Needs Improvement',
   nominate: 'Nominate',
+  unarchive: "Unarchive",
+  selectAtLeastOneStudent: "Please select at least one student",
+  behaviorReportAdded: "Behavior report added successfully",
+  addBehaviorReport: "Add Behavior Report",
+  dailyBehaviorReport: "Daily Behavior Report",
+  selectBestAndWorstStudents: "Select the best and worst behaved students for today",
+  selectDate: "Select Date",
+  bestBehavedStudents: "Best Behaved Students",
+  worstBehavedStudents: "Misbehaved Students",
+  noBestStudentsSelected: "No students selected",
+  noWorstStudentsSelected: "No students selected",
+  noBehaviorReports: "No behavior reports available yet",
+  recentBehaviorReports: "Recent Behavior Reports",
+  gradeNameRequired: "Grade name is required",
+  studentUpdated: "Student updated successfully",
+  studentRecognitions: "Student Recognitions",
+  recentRecognitions: "Recent Recognitions",
 };
 
 const arTranslations: Translations = {
@@ -953,7 +987,7 @@ const arTranslations: Translations = {
   add: 'إضافة',
   remove: 'حذف',
   subcategories: 'الفئات الفرعية',
-  optional: 'اختياري',
+  optional: 'اختيار��',
   option: 'خيار',
   note: 'ملاحظة',
   notFound: 'لا يوجد',
@@ -1039,7 +1073,7 @@ const arTranslations: Translations = {
   about: 'حول',
   version: 'الإصدار',
   termsOfService: 'شروط الخدمة',
-  privacyPolicy: 'سياسة الخصوصية',
+  privacyPolicy: 'سياسة ا��خصوصية',
   cookiePolicy: 'سياسة ملفات تعريف الارتباط',
   accessControl: 'التحكم في الوصول',
   nav: 'القائمة',
@@ -1260,6 +1294,23 @@ const arTranslations: Translations = {
   keepGoing: 'واصل',
   needsImprovement: 'يحتاج إلى تحسين',
   nominate: 'الالتحاق',
+  unarchive: "إلغاء الأرشفة",
+  selectAtLeastOneStudent: "الرجاء اختيار طالب واحد على الأقل",
+  behaviorReportAdded: "تمت إضافة تقرير السلوك بنجاح",
+  addBehaviorReport: "إضافة تقرير السلوك",
+  dailyBehaviorReport: "تقرير السلوك اليومي",
+  selectBestAndWorstStudents: "اختر أفضل وأسوأ الطلاب سلوكًا لهذا اليوم",
+  selectDate: "اختر التاريخ",
+  bestBehavedStudents: "أفضل الطلاب سلوكًا",
+  worstBehavedStudents: "الطلاب الأسوأ سلوكًا",
+  noBestStudentsSelected: "لم يتم اختيار أي طلاب",
+  noWorstStudentsSelected: "لم يتم اختيار أي طلاب",
+  noBehaviorReports: "لا توجد تقارير سلوك متاحة حتى الآن",
+  recentBehaviorReports: "تقارير السلوك الأخيرة",
+  gradeNameRequired: "اسم الصف مطلوب",
+  studentUpdated: "تم تحديث بيانات الطالب بنجاح",
+  studentRecognitions: "تقديرات الطالب",
+  recentRecognitions: "التقديرات الأخيرة",
 };
 
 const translations: Record<string, Translations> = {

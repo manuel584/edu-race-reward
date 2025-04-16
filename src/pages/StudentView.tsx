@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -5,7 +6,7 @@ import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
-import { Home, Book, GraduationCap, Flag, User, Edit, Archive, Unarchive, Award, Clock, ListChecks, TrendingUp } from 'lucide-react';
+import { Home, Book, GraduationCap, Flag, User, Edit, Archive, ArchiveRestore, Award, Clock, ListChecks, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Tabs,
@@ -116,7 +117,7 @@ const StudentView = () => {
               
               {student.archived ? (
                 <Button variant="outline" onClick={handleUnarchiveStudent} className="flex items-center gap-2">
-                  <Unarchive className="h-4 w-4" />
+                  <ArchiveRestore className="h-4 w-4" />
                   <span>{t.unarchive || "Unarchive"}</span>
                 </Button>
               ) : (
