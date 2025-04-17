@@ -51,9 +51,11 @@ const TeacherCard: React.FC<TeacherCardProps> = ({
   
   // Get localized status text
   const getStatusText = (status: string) => {
-    return status === 'active' ? (language === 'en' ? 'Active' : 'نشط') : 
-           status === 'inactive' ? (language === 'en' ? 'غير نشط') : 
-           (language === 'en' ? 'On Leave' : 'في إجازة');
+    return status === 'active' 
+      ? (language === 'en' ? 'Active' : 'نشط')
+      : status === 'inactive' 
+      ? (language === 'en' ? 'Inactive' : 'غير نشط')
+      : (language === 'en' ? 'On Leave' : 'في إجازة');
   };
 
   return (
