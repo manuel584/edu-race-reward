@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
-import { generatePassword } from '@/lib/utils';
+import { generatePassword } from '@/lib/utils'; // Verify this import
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
