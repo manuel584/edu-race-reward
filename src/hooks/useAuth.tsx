@@ -1,4 +1,3 @@
-
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/hooks/use-toast";
@@ -65,12 +64,14 @@ const rolePermissions = {
     'view_all_classes', 'edit_all_classes', 'create_classes', 'delete_classes',
     'view_all_exams', 'create_exams', 'edit_exams', 'delete_exams',
     'view_all_reports', 'view_system_settings', 'edit_system_settings',
-    'import_data', 'export_data', 'manage_sections', 'assign_teachers'
+    'import_data', 'export_data', 'manage_sections', 'assign_teachers',
+    'view_teachers', 'manage_teachers', 'assign_teachers'
   ],
   supervisor: [
     'view_department_students', 'view_department_classes', 'view_department_exams',
     'view_department_reports', 'create_exams', 'edit_exams', 'view_teacher_performance',
-    'view_curriculum', 'export_data'
+    'view_curriculum', 'export_data',
+    'view_teachers', 'manage_teachers'
   ],
   counselor: [
     'view_all_students', 'view_student_behavior', 'view_student_academics', 
