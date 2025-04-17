@@ -1,3 +1,4 @@
+
 export const translations = {
   dash: {
     en: 'Dashboard',
@@ -86,6 +87,92 @@ export const translations = {
   teacherManagement: {
     en: 'Teacher Management',
     ar: 'إدارة المعلمين'
+  },
+  // New translations for AddUserForm
+  addUser: {
+    en: 'Add User',
+    ar: 'إضافة مستخدم'
+  },
+  fullName: {
+    en: 'Full Name',
+    ar: 'الاسم الكامل'
+  },
+  emailAddress: {
+    en: 'Email Address',
+    ar: 'البريد الإلكتروني'
+  },
+  password: {
+    en: 'Password',
+    ar: 'كلمة المرور'
+  },
+  generatePassword: {
+    en: 'Generate',
+    ar: 'إنشاء'
+  },
+  department: {
+    en: 'Department',
+    ar: 'القسم'
+  },
+  subjects: {
+    en: 'Subjects',
+    ar: 'المواد'
+  },
+  assignedClasses: {
+    en: 'Assigned Classes',
+    ar: 'الفصول المعينة'
+  },
+  cancel: {
+    en: 'Cancel',
+    ar: 'إلغاء'
+  },
+  role: {
+    en: 'Role',
+    ar: 'الدور'
+  },
+  selectRole: {
+    en: 'Select role',
+    ar: 'اختر الدور'
+  },
+  administrator: {
+    en: 'Administrator',
+    ar: 'مدير النظام'
+  },
+  supervisor: {
+    en: 'Supervisor',
+    ar: 'مشرف'
+  },
+  counselor: {
+    en: 'Counselor',
+    ar: 'مرشد طلابي'
+  },
+  teacher: {
+    en: 'Teacher',
+    ar: 'معلم'
+  },
+  show: {
+    en: 'Show',
+    ar: 'إظهار'
+  },
+  hide: {
+    en: 'Hide',
+    ar: 'إخفاء'
+  },
+  // Additional translations for error messages
+  error: {
+    en: 'Error',
+    ar: 'خطأ'
+  },
+  fillRequiredFields: {
+    en: 'Please fill in all required fields.',
+    ar: 'يرجى ملء جميع الحقول المطلوبة.'
+  },
+  passwordGenerated: {
+    en: 'Password Generated',
+    ar: 'تم إنشاء كلمة المرور'
+  },
+  securePasswordGenerated: {
+    en: 'A secure password has been generated.',
+    ar: 'تم إنشاء كلمة مرور آمنة.'
   }
 };
 
@@ -114,5 +201,27 @@ export const getTranslations = (language: string = 'en') => {
     examCenter: translations.examCenter[lang],
     userManagement: translations.userManagement[lang],
     teacherManagement: translations.teacherManagement[lang],
+    // New translations for AddUserForm
+    addUser: translations.addUser[lang],
+    fullName: translations.fullName[lang],
+    emailAddress: translations.emailAddress[lang],
+    password: translations.password[lang],
+    generatePassword: translations.generatePassword[lang],
+    department: translations.department[lang],
+    subjects: translations.subjects[lang],
+    assignedClasses: translations.assignedClasses[lang],
+    cancel: translations.cancel[lang],
+    role: translations.role[lang],
+    selectRole: translations.selectRole[lang],
+    administrator: translations.administrator[lang],
+    supervisor: translations.supervisor[lang],
+    counselor: translations.counselor[lang],
+    teacher: translations.teacher[lang],
+    show: translations.show[lang],
+    hide: translations.hide[lang],
+    error: translations.error[lang],
+    fillRequiredFields: translations.fillRequiredFields[lang],
+    passwordGenerated: translations.passwordGenerated[lang],
+    securePasswordGenerated: translations.securePasswordGenerated[lang],
   };
 };

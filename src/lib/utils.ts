@@ -6,7 +6,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// Ensure the function is exported correctly
+/**
+ * Generates a secure random password with specified length
+ * @param length The length of the password (default: 12)
+ * @returns A random password string
+ */
 export function generatePassword(length: number = 12): string {
   const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
