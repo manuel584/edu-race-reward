@@ -47,14 +47,14 @@ const TeacherFilters: React.FC<TeacherFiltersProps> = ({
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Select
-          value={filters.department}
-          onValueChange={(value) => onFilterChange({ ...filters, department: value })}
+          value={filters.department || "all-departments"}
+          onValueChange={(value) => onFilterChange({ ...filters, department: value === "all-departments" ? "" : value })}
         >
           <SelectTrigger>
             <SelectValue placeholder={language === 'en' ? 'Department' : 'القسم'} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">
+            <SelectItem value="all-departments">
               {language === 'en' ? 'All Departments' : 'جميع الأقسام'}
             </SelectItem>
             {departments.map((dept) => (
@@ -64,14 +64,14 @@ const TeacherFilters: React.FC<TeacherFiltersProps> = ({
         </Select>
 
         <Select
-          value={filters.grade}
-          onValueChange={(value) => onFilterChange({ ...filters, grade: value })}
+          value={filters.grade || "all-grades"}
+          onValueChange={(value) => onFilterChange({ ...filters, grade: value === "all-grades" ? "" : value })}
         >
           <SelectTrigger>
             <SelectValue placeholder={language === 'en' ? 'Grade Level' : 'المستوى الدراسي'} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">
+            <SelectItem value="all-grades">
               {language === 'en' ? 'All Grades' : 'جميع المراحل'}
             </SelectItem>
             {grades.map((grade) => (
@@ -81,14 +81,14 @@ const TeacherFilters: React.FC<TeacherFiltersProps> = ({
         </Select>
 
         <Select
-          value={filters.subject}
-          onValueChange={(value) => onFilterChange({ ...filters, subject: value })}
+          value={filters.subject || "all-subjects"}
+          onValueChange={(value) => onFilterChange({ ...filters, subject: value === "all-subjects" ? "" : value })}
         >
           <SelectTrigger>
             <SelectValue placeholder={language === 'en' ? 'Subject' : 'المادة'} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">
+            <SelectItem value="all-subjects">
               {language === 'en' ? 'All Subjects' : 'جميع المواد'}
             </SelectItem>
             {subjects.map((subject) => (
