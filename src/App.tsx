@@ -6,7 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AppProvider } from "@/context/AppContext";
-import { AppSidebarProvider } from "@/components/AppSidebarContext";
+import { AppSidebarProvider } from "@/components/AppSidebar";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
@@ -24,7 +24,6 @@ import UserManagement from "./pages/UserManagement";
 import TeacherManagement from "./pages/TeacherManagement";
 import ReportsPage from "./pages/ReportsPage";
 import ClassSections from "./pages/ClassSections";
-import TeacherAssignment from "./pages/TeacherAssignment";
 
 const queryClient = new QueryClient();
 
@@ -179,18 +178,6 @@ const AppRoutes = () => {
           <RoleBasedRoute allowedRoles={['admin', 'supervisor', 'counselor']} requiredPermissions={['view_all_reports']}>
             <AppSidebarProvider>
               <ReportsPage />
-            </AppSidebarProvider>
-          </RoleBasedRoute>
-        }
-      />
-      
-      {/* Teacher Assignment route */}
-      <Route
-        path="/teacher-assignments"
-        element={
-          <RoleBasedRoute allowedRoles={['admin', 'supervisor']} requiredPermissions={['manage_users']}>
-            <AppSidebarProvider>
-              <TeacherAssignment />
             </AppSidebarProvider>
           </RoleBasedRoute>
         }
