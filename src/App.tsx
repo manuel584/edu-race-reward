@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -24,6 +23,7 @@ import UserManagement from "./pages/UserManagement";
 import TeacherManagement from "./pages/TeacherManagement";
 import ReportsPage from "./pages/ReportsPage";
 import ClassSections from "./pages/ClassSections";
+import TeacherAssignment from "./pages/TeacherAssignment";
 
 const queryClient = new QueryClient();
 
@@ -178,6 +178,18 @@ const AppRoutes = () => {
           <RoleBasedRoute allowedRoles={['admin', 'supervisor', 'counselor']} requiredPermissions={['view_all_reports']}>
             <AppSidebarProvider>
               <ReportsPage />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
+      {/* Teacher Assignment route */}
+      <Route
+        path="/teacher-assignments"
+        element={
+          <RoleBasedRoute allowedRoles={['admin', 'supervisor']} requiredPermissions={['manage_users']}>
+            <AppSidebarProvider>
+              <TeacherAssignment />
             </AppSidebarProvider>
           </RoleBasedRoute>
         }
