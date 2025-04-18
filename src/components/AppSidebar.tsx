@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -15,7 +16,7 @@ import {
 } from "lucide-react";
 
 import { Icons } from "@/components/Icons";
-import { useAppSidebar } from "@/components/AppSidebar";
+import { useAppSidebar } from "@/components/AppSidebarContext";
 import { useAppContext } from "@/context/AppContext";
 import {
   Accordion,
@@ -31,7 +32,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarToggleButton,
 } from "@/components/ui/sidebar";
 
 export function AppSidebar() {
@@ -144,7 +144,6 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 
-                {/* Add this inside the admin section of your sidebar */}
                 <SidebarMenuItem className="pl-8">
                   <SidebarMenuButton asChild>
                     <Link to="/teacher-assignments">
