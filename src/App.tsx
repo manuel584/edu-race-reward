@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -24,10 +23,10 @@ import UserManagement from "./pages/UserManagement";
 import TeacherManagement from "./pages/TeacherManagement";
 import ReportsPage from "./pages/ReportsPage";
 import ClassSections from "./pages/ClassSections";
+import RecognitionRace from "./pages/RecognitionRace";
 
 const queryClient = new QueryClient();
 
-// Component that redirects authenticated users away from login page
 const RedirectIfAuthenticated = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   
@@ -38,11 +37,9 @@ const RedirectIfAuthenticated = ({ children }: { children: React.ReactNode }) =>
   return <>{children}</>;
 };
 
-// Refactored App component to use route protection
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public login route that redirects to dashboard if already authenticated */}
       <Route 
         path="/login" 
         element={
@@ -52,13 +49,11 @@ const AppRoutes = () => {
         } 
       />
       
-      {/* Redirect root path to login or dashboard based on auth status */}
       <Route 
         path="/" 
         element={<Navigate to="/dashboard" replace />}
       />
       
-      {/* Protected routes - accessible by all authenticated users */}
       <Route
         path="/dashboard"
         element={
@@ -70,7 +65,6 @@ const AppRoutes = () => {
         }
       />
       
-      {/* Student routes - accessible based on roles */}
       <Route
         path="/students"
         element={
@@ -92,7 +86,6 @@ const AppRoutes = () => {
         }
       />
       
-      {/* Grade routes */}
       <Route
         path="/grade/:grade"
         element={
@@ -104,7 +97,6 @@ const AppRoutes = () => {
         }
       />
       
-      {/* Admin-only routes */}
       <Route
         path="/import"
         element={
@@ -149,7 +141,6 @@ const AppRoutes = () => {
         }
       />
       
-      {/* Exam and Score routes */}
       <Route
         path="/scores"
         element={
@@ -171,7 +162,6 @@ const AppRoutes = () => {
         }
       />
       
-      {/* Reports route */}
       <Route
         path="/reports"
         element={
@@ -183,12 +173,22 @@ const AppRoutes = () => {
         }
       />
       
+      <Route
+        path="/recognition-race"
+        element={
+          <RoleBasedRoute allowedRoles={['counselor', 'teacher']} requiredPermissions={['view_recognitions']}>
+            <AppSidebarProvider>
+              <RecognitionRace />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
 
-// Main app component with providers
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
