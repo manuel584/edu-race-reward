@@ -198,6 +198,50 @@ export const translations = {
   addResults: {
     en: 'Add Results',
     ar: 'أضف النتائج'
+  },
+  excelStyleGrading: {
+    en: 'Excel-Style Grading',
+    ar: 'التقييم على غرار Excel'
+  },
+  selectExamToStart: {
+    en: 'Select an exam to start entering grades',
+    ar: 'حدد الاختبار لبدء إدخال الدرجات'
+  },
+  gradeEntry: {
+    en: 'Grade Entry',
+    ar: 'إدخال الدرجات'
+  },
+  performance: {
+    en: 'Performance',
+    ar: 'الأداء'
+  },
+  bar: {
+    en: 'Bar',
+    ar: 'شريطي'
+  },
+  pie: {
+    en: 'Pie',
+    ar: 'دائري'
+  },
+  keyInsights: {
+    en: 'Key Insights',
+    ar: 'النتائج الرئيسية'
+  },
+  gradeDistribution: {
+    en: 'Grade Distribution',
+    ar: 'توزيع الدرجات'
+  },
+  classAverage: {
+    en: 'Class Average',
+    ar: 'متوسط الصف'
+  },
+  passRate: {
+    en: 'Pass Rate',
+    ar: 'معدل النجاح'
+  },
+  noDataYet: {
+    en: 'No data available yet',
+    ar: 'لا توجد بيانات متاحة بعد'
   }
 };
 
@@ -254,5 +298,16 @@ export const getTranslations = (language: string = 'en') => {
     noResultsYet: translations.noResultsYet[lang],
     startAddingResults: translations.startAddingResults[lang],
     addResults: translations.addResults[lang],
+    excelStyleGrading: translations.excelStyleGrading[lang],
+    selectExamToStart: translations.selectExamToStart[lang],
+    gradeEntry: translations.gradeEntry[lang],
+    performance: translations.performance[lang],
+    bar: translations.bar[lang],
+    pie: translations.pie[lang],
+    keyInsights: translations.keyInsights[lang],
+    gradeDistribution: translations.gradeDistribution[lang],
+    classAverage: translations.classAverage[lang],
+    passRate: translations.passRate[lang],
+    noDataYet: translations.noDataYet[lang],
   };
 };

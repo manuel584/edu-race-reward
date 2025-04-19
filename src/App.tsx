@@ -24,6 +24,7 @@ import TeacherManagement from "./pages/TeacherManagement";
 import ReportsPage from "./pages/ReportsPage";
 import ClassSections from "./pages/ClassSections";
 import RecognitionRace from "./pages/RecognitionRace";
+import GradeEntry from "./pages/GradeEntry";
 
 const queryClient = new QueryClient();
 
@@ -153,13 +154,7 @@ const AppRoutes = () => {
       />
       <Route
         path="/exam-center"
-        element={
-          <RoleBasedRoute requiredPermissions={['create_exams']}>
-            <AppSidebarProvider>
-              <ExamCenter />
-            </AppSidebarProvider>
-          </RoleBasedRoute>
-        }
+        element={<Navigate to="/grade-entry" replace />}
       />
       
       <Route
@@ -179,6 +174,17 @@ const AppRoutes = () => {
           <RoleBasedRoute allowedRoles={['counselor', 'teacher']} requiredPermissions={['view_recognitions']}>
             <AppSidebarProvider>
               <RecognitionRace />
+            </AppSidebarProvider>
+          </RoleBasedRoute>
+        }
+      />
+      
+      <Route
+        path="/grade-entry"
+        element={
+          <RoleBasedRoute allowedRoles={['admin', 'teacher', 'supervisor']} requiredPermissions={['create_exams']}>
+            <AppSidebarProvider>
+              <GradeEntry />
             </AppSidebarProvider>
           </RoleBasedRoute>
         }
