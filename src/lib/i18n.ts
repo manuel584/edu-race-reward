@@ -1,4 +1,3 @@
-
 export const translations = {
   dash: {
     en: 'Dashboard',
@@ -88,7 +87,6 @@ export const translations = {
     en: 'Teacher Management',
     ar: 'إدارة المعلمين'
   },
-  // New translations for AddUserForm
   addUser: {
     en: 'Add User',
     ar: 'إضافة مستخدم'
@@ -157,7 +155,6 @@ export const translations = {
     en: 'Hide',
     ar: 'إخفاء'
   },
-  // Additional translations for error messages
   error: {
     en: 'Error',
     ar: 'خطأ'
@@ -173,6 +170,34 @@ export const translations = {
   securePasswordGenerated: {
     en: 'A secure password has been generated.',
     ar: 'تم إنشاء كلمة مرور آمنة.'
+  },
+  enterResults: {
+    en: 'Enter Results',
+    ar: 'إدخال النتائج'
+  },
+  allResults: {
+    en: 'All Results',
+    ar: 'جميع النتائج'
+  },
+  recentResults: {
+    en: 'Recent',
+    ar: 'حديثة'
+  },
+  historicalResults: {
+    en: 'Historical',
+    ar: 'تاريخية'
+  },
+  noResultsYet: {
+    en: 'No results recorded yet',
+    ar: 'لم يتم تسجيل أي نتائج حتى الآن'
+  },
+  startAddingResults: {
+    en: 'Start by adding your first quiz or exam results to track student performance.',
+    ar: 'ابدأ بإضافة نتائج الاختبارات الأولى لتتبع أداء الطلاب.'
+  },
+  addResults: {
+    en: 'Add Results',
+    ar: 'أضف النتائج'
   }
 };
 
@@ -201,7 +226,6 @@ export const getTranslations = (language: string = 'en') => {
     examCenter: translations.examCenter[lang],
     userManagement: translations.userManagement[lang],
     teacherManagement: translations.teacherManagement[lang],
-    // New translations for AddUserForm
     addUser: translations.addUser[lang],
     fullName: translations.fullName[lang],
     emailAddress: translations.emailAddress[lang],
@@ -223,5 +247,12 @@ export const getTranslations = (language: string = 'en') => {
     fillRequiredFields: translations.fillRequiredFields[lang],
     passwordGenerated: translations.passwordGenerated[lang],
     securePasswordGenerated: translations.securePasswordGenerated[lang],
+    enterResults: translations.enterResults[lang],
+    allResults: translations.allResults[lang],
+    recentResults: translations.recentResults[lang],
+    historicalResults: translations.historicalResults[lang],
+    noResultsYet: translations.noResultsYet[lang],
+    startAddingResults: translations.startAddingResults[lang],
+    addResults: translations.addResults[lang],
   };
 };

@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import CreateExamDialog from './CreateExamDialog';
 
 interface ExamListProps {
-  filter: 'all' | 'upcoming' | 'archived';
+  filter: 'all' | 'recent' | 'historical';
 }
 
 const ExamList: React.FC<ExamListProps> = ({ filter }) => {
@@ -24,9 +24,9 @@ const ExamList: React.FC<ExamListProps> = ({ filter }) => {
   const filteredExams = exams;
   
   const handleDeleteExam = (id: string) => {
-    if (window.confirm(t.confirmDelete || "Are you sure you want to delete this exam?")) {
+    if (window.confirm(t.confirmDelete || "Are you sure you want to delete this result?")) {
       deleteExam?.(id);
-      toast.success(t.examDeleted || "Exam deleted successfully");
+      toast.success(t.resultDeleted || "Result deleted successfully");
     }
   };
   
@@ -34,10 +34,10 @@ const ExamList: React.FC<ExamListProps> = ({ filter }) => {
     return (
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-10 text-center">
         <FileText className="h-12 w-12 mx-auto text-gray-300 mb-4" />
-        <h3 className="text-lg font-semibold text-gray-700 mb-2">{t.noExamsYet || "No exams created yet"}</h3>
-        <p className="text-gray-500 max-w-md mx-auto mb-6">{t.noExamsDescription || "Start by creating your first exam to manage quizzes and track student performance."}</p>
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">{t.noResultsYet || "No results recorded yet"}</h3>
+        <p className="text-gray-500 max-w-md mx-auto mb-6">{t.startAddingResults || "Start by adding your first quiz or exam results to track student performance."}</p>
         <Button onClick={() => setIsCreateExamDialogOpen(true)}>
-          {t.createExam || "Create Exam"}
+          {t.addResults || "Add Results"}
         </Button>
         <CreateExamDialog
           open={isCreateExamDialogOpen}
