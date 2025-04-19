@@ -5,6 +5,10 @@ export interface StudentScore {
   examName: string;
   score: number;
   date: string;
+  totalPossiblePoints?: number;
+  comments?: string;
+  grade?: string;
+  subject?: string;
 }
 
 export interface Exam {

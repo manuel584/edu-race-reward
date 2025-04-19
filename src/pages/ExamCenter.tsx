@@ -9,12 +9,12 @@ import { Home, FileText, File, FilePlus, Calendar } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import ExamList from '@/components/ExamList';
-import CreateExamDialog from '@/components/CreateExamDialog';
+import RecordResultDialog from '@/components/RecordResultDialog';
 
 const ExamCenter = () => {
   const { language } = useAppContext();
   const t = getTranslations(language);
-  const [isCreateExamDialogOpen, setIsCreateExamDialogOpen] = useState(false);
+  const [isRecordResultDialogOpen, setIsRecordResultDialogOpen] = useState(false);
   
   // Generate breadcrumb items
   const breadcrumbItems = [
@@ -39,10 +39,10 @@ const ExamCenter = () => {
             <h1 className="text-3xl font-display font-bold">{t.enterResults || "Enter Results"}</h1>
             <Button 
               className="mt-4 md:mt-0 flex items-center gap-2"
-              onClick={() => setIsCreateExamDialogOpen(true)}
+              onClick={() => setIsRecordResultDialogOpen(true)}
             >
               <FilePlus className="h-4 w-4" />
-              {t.addResults || "Add Results"}
+              {t.recordResult || "Record Result"}
             </Button>
           </div>
           
@@ -77,9 +77,9 @@ const ExamCenter = () => {
         </motion.div>
       </main>
       
-      <CreateExamDialog 
-        open={isCreateExamDialogOpen}
-        onOpenChange={setIsCreateExamDialogOpen}
+      <RecordResultDialog 
+        open={isRecordResultDialogOpen}
+        onOpenChange={setIsRecordResultDialogOpen}
       />
     </div>
   );
