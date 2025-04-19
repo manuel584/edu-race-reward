@@ -18,6 +18,7 @@ import { useAppContext } from '@/context/AppContext';
 import { getTranslations } from '@/lib/i18n';
 import { StudentScore } from '@/types/student-score';
 import { toast } from "sonner";
+import { useAuth } from '@/hooks/useAuth';
 
 interface RecordResultDialogProps {
   open: boolean;
@@ -31,6 +32,7 @@ const RecordResultDialog: React.FC<RecordResultDialogProps> = ({
   initialData
 }) => {
   const { language, addScore, updateScore, students = [] } = useAppContext();
+  const { user } = useAuth();
   const t = getTranslations(language);
   
   // Define the form schema with Zod
@@ -45,10 +47,8 @@ const RecordResultDialog: React.FC<RecordResultDialogProps> = ({
     subject: z.string().optional(),
   });
 
-  type FormValues = z.infer<typeof formSchema>;
-
   // Set up form with default values
-  const form = useForm<FormValues>({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       examName: "",
@@ -61,6 +61,32 @@ const RecordResultDialog: React.FC<RecordResultDialogProps> = ({
       subject: "",
     },
   });
+
+  // Get filtered students based on teacher's context
+  const getFilteredStudents = () => {
+    if (!user) return [];
+
+    // For admin role, show all students
+    if (user.role === 'admin') return students;
+
+    // Get teacher's assignments
+    const teacherProfile = user.profile;
+    if (!teacherProfile) return [];
+
+    const assignedGrades = teacherProfile.assignedGrades || [];
+    const assignedSubjects = teacherProfile.subjects || [];
+
+    return students.filter(student => 
+      assignedGrades.includes(student.grade) && 
+      student.subjects.some(subject => assignedSubjects.includes(subject))
+    );
+  };
+
+  // Get available grades and subjects based on teacher's assignments
+  const availableGrades = user?.profile?.assignedGrades || [];
+  const availableSubjects = user?.profile?.subjects || [];
+  
+  const filteredStudents = getFilteredStudents();
 
   // Update form when initialData changes
   useEffect(() => {
@@ -75,22 +101,11 @@ const RecordResultDialog: React.FC<RecordResultDialogProps> = ({
         grade: initialData.grade || "",
         subject: initialData.subject || "",
       });
-    } else {
-      form.reset({
-        examName: "",
-        studentName: "",
-        score: 0,
-        totalPossiblePoints: 100,
-        date: new Date(),
-        comments: "",
-        grade: "",
-        subject: "",
-      });
     }
   }, [initialData, form]);
 
   // Submit handler
-  const onSubmit = (values: FormValues) => {
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
     try {
       if (initialData) {
         // Update existing score
@@ -114,18 +129,6 @@ const RecordResultDialog: React.FC<RecordResultDialogProps> = ({
       toast.error(t.errorSavingResult || "Error saving result");
     }
   };
-
-  // Get unique grades from students
-  const grades = [...new Set(students.map(student => student.grade))].sort();
-  
-  // Get unique subjects across all students
-  const subjects = [...new Set(students.flatMap(student => student.subjects))].sort();
-  
-  // Get student names from the grade selected (if any)
-  const selectedGrade = form.watch("grade");
-  const filteredStudents = selectedGrade 
-    ? students.filter(student => student.grade === selectedGrade)
-    : students;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -156,7 +159,7 @@ const RecordResultDialog: React.FC<RecordResultDialogProps> = ({
               )}
             />
             
-            {/* Subject (Optional) */}
+            {/* Subject */}
             <FormField
               control={form.control}
               name="subject"
@@ -174,7 +177,7 @@ const RecordResultDialog: React.FC<RecordResultDialogProps> = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {subjects.map(subject => (
+                      {availableSubjects.map(subject => (
                         <SelectItem key={subject} value={subject}>
                           {subject}
                         </SelectItem>
@@ -186,7 +189,7 @@ const RecordResultDialog: React.FC<RecordResultDialogProps> = ({
               )}
             />
             
-            {/* Grade (Optional) */}
+            {/* Grade */}
             <FormField
               control={form.control}
               name="grade"
@@ -204,7 +207,7 @@ const RecordResultDialog: React.FC<RecordResultDialogProps> = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {grades.map(grade => (
+                      {availableGrades.map(grade => (
                         <SelectItem key={grade} value={grade}>
                           {grade}
                         </SelectItem>
@@ -246,7 +249,7 @@ const RecordResultDialog: React.FC<RecordResultDialogProps> = ({
               )}
             />
 
-            {/* Score */}
+            {/* Score and Total Points */}
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -336,6 +339,7 @@ const RecordResultDialog: React.FC<RecordResultDialogProps> = ({
               )}
             />
 
+            {/* Submit Buttons */}
             <div className="flex justify-end gap-2 pt-2">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 {t.cancel || "Cancel"}
