@@ -9,6 +9,8 @@ export interface StudentScore {
   comments?: string;
   grade?: string;
   subject?: string;
+  letterGrade?: string;
+  studentId?: string;
 }
 
 export interface Exam {
@@ -32,3 +34,11 @@ export interface Question {
 }
 
 export type QuestionType = 'multiple-choice' | 'true-false' | 'short-answer' | 'essay';
+
+export interface GradeDistribution {
+  A: number;
+  B: number;
+  C: number;
+  D: number;
+  F: number;
+}
