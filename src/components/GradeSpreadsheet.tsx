@@ -20,7 +20,7 @@ interface GradeSpreadsheetProps {
 }
 
 const GradeSpreadsheet: React.FC<GradeSpreadsheetProps> = ({ examName, onUpdateChartData }) => {
-  const { language, scores = [], addScore, updateScore, deleteScore } = useAppContext();
+  const { language, scores = [], addScore, updateScore, deleteScore, students = [] } = useAppContext();
   const { user } = useAuth();
   const t = getTranslations(language);
   
@@ -29,13 +29,24 @@ const GradeSpreadsheet: React.FC<GradeSpreadsheetProps> = ({ examName, onUpdateC
   const [history, setHistory] = useState<Array<Array<StudentScore & { isNew?: boolean }>>>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [hasPendingChanges, setHasPendingChanges] = useState(false);
+  const [studentIdCounter, setStudentIdCounter] = useState(1001); // Starting ID for new students
   
   // Ref for keyboard navigation
   const tableRef = useRef<HTMLTableElement>(null);
   
-  // Load initial data based on exam name
+  // Load initial data based on exam name and initialize student ID counter
   useEffect(() => {
     const filteredScores = scores.filter(score => score.examName === examName);
+    
+    // Get the highest existing student ID to ensure new IDs don't conflict
+    const existingIds = students.map(student => {
+      if (!student.studentId) return 0;
+      const numericId = parseInt(student.studentId.replace(/\D/g, ''), 10);
+      return isNaN(numericId) ? 0 : numericId;
+    });
+    
+    const highestId = Math.max(1000, ...existingIds);
+    setStudentIdCounter(highestId + 1);
     
     if (filteredScores.length > 0) {
       setRows(filteredScores);
@@ -46,7 +57,7 @@ const GradeSpreadsheet: React.FC<GradeSpreadsheetProps> = ({ examName, onUpdateC
       // Add an empty row if no data exists
       addNewRow();
     }
-  }, [examName, scores]);
+  }, [examName, scores, students]);
   
   // Calculate grade distribution and average whenever rows change
   useEffect(() => {
@@ -104,11 +115,19 @@ const GradeSpreadsheet: React.FC<GradeSpreadsheetProps> = ({ examName, onUpdateC
     return distribution;
   };
   
+  // Function to generate a new student ID
+  const generateStudentId = (): string => {
+    const newId = `S-${studentIdCounter}`;
+    setStudentIdCounter(prev => prev + 1);
+    return newId;
+  };
+  
   // Function to add a new row
   const addNewRow = () => {
     const newRow: StudentScore & { isNew: boolean } = {
       id: uuidv4(),
       studentName: '',
+      studentId: generateStudentId(), // Auto-generate student ID
       examName,
       score: 0,
       date: new Date().toISOString(),
@@ -274,7 +293,7 @@ const GradeSpreadsheet: React.FC<GradeSpreadsheetProps> = ({ examName, onUpdateC
             totalPossiblePoints: totalPointsKey ? Number(row[totalPointsKey]) : 100,
             letterGrade: letterGradeKey ? String(row[letterGradeKey]) : '',
             comments: commentsKey ? String(row[commentsKey]) : '',
-            studentId: studentIdKey ? String(row[studentIdKey]) : '',
+            studentId: studentIdKey && row[studentIdKey] ? String(row[studentIdKey]) : generateStudentId(),
             isNew: true
           };
         });
@@ -307,7 +326,6 @@ const GradeSpreadsheet: React.FC<GradeSpreadsheetProps> = ({ examName, onUpdateC
     // Create sample data
     const data = [
       {
-        [t.studentId || 'Student ID']: 'S-101',
         [t.studentName || 'Student Name']: 'Ahmed Ali',
         [t.score || 'Score']: 85,
         [t.totalPossiblePoints || 'Total Possible Points']: 100,
@@ -315,7 +333,6 @@ const GradeSpreadsheet: React.FC<GradeSpreadsheetProps> = ({ examName, onUpdateC
         [t.comments || 'Comments']: 'Great effort!'
       },
       {
-        [t.studentId || 'Student ID']: 'S-102',
         [t.studentName || 'Student Name']: 'Sara Mohamed',
         [t.score || 'Score']: 92,
         [t.totalPossiblePoints || 'Total Possible Points']: 100,
@@ -323,7 +340,6 @@ const GradeSpreadsheet: React.FC<GradeSpreadsheetProps> = ({ examName, onUpdateC
         [t.comments || 'Comments']: 'Top of class!'
       },
       {
-        [t.studentId || 'Student ID']: 'S-103',
         [t.studentName || 'Student Name']: 'Mariam Khalid',
         [t.score || 'Score']: 78,
         [t.totalPossiblePoints || 'Total Possible Points']: 100,
@@ -337,7 +353,6 @@ const GradeSpreadsheet: React.FC<GradeSpreadsheetProps> = ({ examName, onUpdateC
     
     // Set column widths
     const colWidths = [
-      { wch: 15 }, // Student ID
       { wch: 25 }, // Student Name
       { wch: 10 }, // Score
       { wch: 20 }, // Total Possible Points
@@ -500,9 +515,9 @@ const GradeSpreadsheet: React.FC<GradeSpreadsheetProps> = ({ examName, onUpdateC
                 <TableCell>
                   <Input
                     value={row.studentId || ''}
-                    onChange={(e) => handleCellChange(row.id, 'studentId', e.target.value)}
                     placeholder={t.enterStudentId || 'Enter ID'}
-                    onKeyDown={(e) => handleKeyDown(e, rowIndex, 'studentId')}
+                    readOnly // Student ID is read-only, auto-generated
+                    className="bg-gray-100"
                   />
                 </TableCell>
                 <TableCell>
